@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.joongAng.academy.dao.EstablishedSubjectDAO">
+	<select id="estList" parameterType="HashMap" resultType="HashMap">
+		SELECT * FROM ESTBL_SBJCT
+		WHERE CRCLM_CD = #{crc}
+        <if test="year != ''">
+			AND CRCLM_YEAR = #{year}
+        </if>
+        <if test="hlf != ''">
+			AND CRCLM_HALF = #{hlf}
+        </if>
+	</select>
+
+	<select id="estCodeList" parameterType="String" resultType="HashMap">
+		SELECT * FROM CODE_INFO
+		WHERE CD_CLSF = (SELECT CD FROM CODE_INFO WHERE CD_NM = #{division})
+	</select>
+	<select id="estYearList" parameterType="String" resultType="HashMap">
+		SELECT CRCLM_YEAR FROM CRCLM_INFO
+		WHERE CRCLM_CD = #{crc}
+		GROUP BY CRCLM_YEAR
+	</select>
+</mapper>
