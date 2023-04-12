@@ -23,6 +23,8 @@ dependencies {
 	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
    	annotationProcessor 'org.projectlombok:lombok'
+   // json -  https://mvnrepository.com/artifact/org.json/json
+   implementation 'org.json:json:20220924'
 }
 
 tasks.named('test') {
