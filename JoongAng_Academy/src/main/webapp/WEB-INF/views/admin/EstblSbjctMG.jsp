@@ -125,7 +125,11 @@
 			}
 		});
 		grid.on('click', function(ev){
-			
+			if(ev.rowKey == null){
+				return false;
+			}else{
+				console.log(grid.getRow(ev.rowKey));
+			}
 		});
 	});
 </script>
@@ -147,26 +151,31 @@
 							Management</li>
 					</ol>
 					<div class="row">
-						<div class="col-md-3">
-							<select class="form-select col-3" id="crclmSelect">
+						<div class="col-md-4">
+							<select class="form-select" id="crclmSelect">
 								<option selected value=''>교육과정선택</option>
 							</select>
 						</div>
-						<div class="col-md-3">
-							<select class="form-select col-3" id="yearSelect">
+						<div class="col-md-2">
+							<select class="form-select" id="yearSelect">
 								<option selected value=''>연도선택</option>
 							</select>
 						</div>
-						<div class="col-md-3">
-							<select class="form-select col-3" id="halfSelect">
+						<div class="col-md-2">
+							<select class="form-select" id="halfSelect">
 								<option selected value=''>반기선택</option>
 							</select>
 						</div>
 						<button class="btn btn-primary col-md-1" id="searchBtn">조회</button>
+						<button class="btn btn-info col-md-1" id="insertBtn">신규</button>
+						<button class="btn btn-secondary col-md-1" id="saveBtn">저장</button>
+						<button class="btn btn-danger col-md-1" id="deleteBtn">삭제</button>
 						<div id="grid" class="mb-3" style="width: 100%;"></div>
 					</div>
 					<div>
-						<h1>test</h1>
+						<div class="" style="background-color:#F3FAFE; width:100%; height:300px;">
+						
+						</div>
 					</div>
 					</div>
 				<div class="container-fluid"></div>
