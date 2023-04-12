@@ -18,4 +18,16 @@ public class SbjctService {
 		return sbjctDAO.list();
 	}
 
+	public int addsbj(Map<String, Object> map) {
+		return sbjctDAO.addsbj(map);
+	}
+
+	public int delsbj(int rowcnt) {
+		return sbjctDAO.delsbj(rowcnt);
+	}
+
+	public int updatesbj(Map<String, Object> map) {
+		return sbjctDAO.updatesbj(map);
+	}
+
 }

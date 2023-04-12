@@ -23,46 +23,257 @@
 
 <script>
 	$(function() {
-		$.post({
-			url : "/listAjax",
-			dataType : "json"
+		function fn_control_mouse(){
+			$(document).bind("contextmenu", function(e){
+				return false;
+			});
+			$(document).bind("selectstart", function(e){
+				return false;
+			});
+			$(document).bind("dragstart", function(e){
+				return false;
+			});
+		}
+		fn_control_mouse();
+		
+		$("#searchbtn").click(function() {
+			$.post({
+				url : "/listAjax",
+				dataType : "json"
 
-		}).done(function(data) {
-      	  grid.resetData(data.list);
-		}).fail(function() {
-			alert("문제가 발생했습니다.");
+			}).done(function(data) {
+				grid.resetData(data.list);
+				let selectedRowKey = null;
+				grid.on('focusChange', (ev) => {
+					  grid.setSelectionRange({
+					    start: [ev.rowKey, 0],
+					    end: [ev.rowKey, grid.getColumns().length]
+					  });
+				});
+				grid.on('click', () => {
+					const rowKey = grid.getFocusedCell().rowKey
+					var obj = grid.getRow(rowKey);
+					var keys = Object.values(obj);
+					var sbjno = keys[0];
+					var sbjnm = keys[1];
+					var sbjex = keys[2];
+					var eduhr = keys[3];
+					var useyn = keys[4];
+					var delyn = keys[5];
+					$(".sbjnm").attr("disabled",false);
+					$(".sbjhr").attr("disabled",false);
+					$(".sbjex").attr("disabled",false);
+					$(".delU").attr("disabled",false);
+					$(".useU").attr("disabled",false);
+					
+					$(".sbjno").val(sbjno);
+					$(".sbjnm").val(sbjnm);
+					$(".sbjhr").val(eduhr);
+					$(".sbjex").val(sbjex);
+					if(useyn == 'Y'){
+						$("input:radio[name ='useU']:input[value='Y']").attr("checked", true);
+					} else if(useyn == 'N'){
+						$("input:radio[name ='useU']:input[value='N']").attr("checked", true);
+					}
+					if(delyn == 'Y'){
+						$("input:radio[name ='delU']:input[value='Y']").attr("checked", true);
+					} else if(delyn == 'N'){
+						$("input:radio[name ='delU']:input[value='N']").attr("checked", true);
+					}
+					
+					$("#updatebtn").click(function(){
+						
+						var sbjnmv = $(".sbjnm").val();
+						var sbjhrv = $(".sbjhr").val();
+						var sbjexv = $(".sbjex").val();
+						var useUv = $("input[name=useU]:checked").val();
+						var delUv = $("input[name=delU]:checked").val();
+						var rowcnt = grid.getRowCount();
+						if(confirm("저장하시겠습니까?")){
+						if(sbjno == null){
+							$.post({
+								url : "/addsbjAjax",
+								data: {
+									"rowcnt" : rowcnt,
+									"SBJCT_NM" :sbjnmv,
+									"SBJCT_EXPLN":sbjexv,
+									"EDU_HR":sbjhrv,
+									"USE_YN":useUv
+								},
+								dataType : "json"
+
+							}).done(function(data) {
+								if(data.result == 1){
+									alert("저장되었습니다.");
+									grid.resetData(data.list);
+									var sbjnm = $(".sbjnm").val("");
+									var sbjhr = $(".sbjhr").val("");
+									var sbjex = $(".sbjex").val("");
+									var useU = $("input[name=useU]").prop("checked", false);
+									$(".sbjnm").attr("disabled",true);
+									$(".sbjhr").attr("disabled",true);
+									$(".sbjex").attr("disabled",true);
+									$(".useU").attr("disabled",true);
+									$(".delU").attr("disabled",true);
+								}
+							}).fail(function() {
+								alert("문제가 발생했습니다.");
+							});		
+							}else if(sbjno != null){
+								$.post({
+									url : "/updatesbjAjax",
+									data: {
+										"SBJCT_NO" : sbjno,
+										"SBJCT_NM" :sbjnmv,
+										"SBJCT_EXPLN":sbjexv,
+										"EDU_HR":sbjhrv,
+										"USE_YN":useUv,
+										"DEL_YN":delUv,
+									},
+									dataType : "json"
+
+								}).done(function(data) {
+									if(data.result == 1){
+										alert("저장되었습니다.2");
+										grid.resetData(data.list);
+										$(".sbjnm").val("");
+										$(".sbjhr").val("");
+										$(".sbjex").val("");
+										$("input[name=useU]").prop("checked", false);
+										$("input[name=delU]").prop("checked", false);
+										$(".sbjnm").attr("disabled",true);
+										$(".sbjhr").attr("disabled",true);
+										$(".sbjex").attr("disabled",true);
+										$(".useU").attr("disabled",true);
+										$(".delU").attr("disabled",true);
+									}
+								}).fail(function() {
+									alert("문제가 발생했습니다.");
+								});	
+							}
+						}
+				});
+					
+					
+					
+				});
+				$("#addbtn").removeClass("disabled");
+				$("#updatebtn").removeClass("disabled");
+				$("#delbtn").removeClass("disabled");
+				$("#addbtn").click(function(){
+					$("#addbtn").addClass("disabled");
+					$(".sbjnm").attr("disabled",false);
+					$(".sbjhr").attr("disabled",false);
+					$(".sbjex").attr("disabled",false);
+					$(".useU").attr("disabled",false);
+					
+					grid.appendRow(data.list,{
+						focus : true
+					});
+					
+				});
+				
+			
+		
+			$("#delbtn").click(function(){
+				const rowKey = grid.getFocusedCell().rowKey
+				var obj = grid.getRow(rowKey);
+				var keys = Object.values(obj);
+				var sbjno= keys[0];
+				alert(keys[0]);
+				if(confirm("삭제하시겠습니까?")){
+					$.post({
+						url : "/delsbjAjax",
+						data: {
+							"rowcnt" : sbjno
+						},
+						dataType : "json"
+
+					}).done(function(data) {
+						if(data.result == 1){
+							alert("삭제되었습니다.");
+							grid.resetData(data.list);
+							var sbjnm = $(".sbjnm").val("");
+							var sbjhr = $(".sbjhr").val("");
+							var sbjex = $(".sbjex").val("");
+							var useU = $("input[name=useU]").prop("checked", false);
+							$(".sbjnm").attr("disabled",true);
+							$(".sbjhr").attr("disabled",true);
+							$(".sbjex").attr("disabled",true);
+							$(".useU").attr("disabled",true);
+							$(".delU").attr("disabled",true);
+						}
+					}).fail(function() {
+						alert("문제가 발생했습니다.");
+					});		
+				}
+			});
+			}).fail(function() {
+				alert("문제가 발생했습니다.");
+			});
+
 		});
+
 		const Grid = tui.Grid;
-        Grid.applyTheme('clean');
-   
-        
-        
-        
+		
+		Grid.applyTheme('clean', { 
+			  row: { 
+				    hover: { 
+				      background: '#e9ecef' 
+				    }
+				  }
+				});
+	
+	
+
+		
 		var grid = new tui.Grid({
 			el : document.getElementById('grid'),
 			scrollX : false,
 			scrollY : true,
-			bodyHeight: 250,
+			contextMenu: null,
+			bodyHeight : 250,
 			rowHeaders : [ 'checkbox' ],
 			columns : [ {
 				header : '과목코드',
-				name : 'SBJCT_NO'  
+				name : 'SBJCT_NO',
+				align : 'center',
+				width:200
+			
 			}, {
 				header : '과목명',
 				name : 'SBJCT_NM',
+				align : 'center',
+				width:280
 			}, {
 				header : '과목설명',
-				name : 'SBJCT_EXPLN'
+				name : 'SBJCT_EXPLN',
+				width:800
 			}, {
 				header : '총 강의시간',
-				name : 'EDU_HR'
+				name : 'EDU_HR',
+				align : 'center',
+				width:100,
+				formatter({value}) {
+					var hr = value;
+				    if(value != null){
+					return hr+'분' ;
+				    }
+				}
 			}, {
 				header : '사용여부',
 				name : 'USE_YN',
+				align : 'center',
+				width:100
 			}, {
 				header : '삭제여부',
 				name : 'DEL_YN',
-			} ]
+				width:100,
+				align : 'center'
+				
+			} ],
+			selectionUnit: 'row'
+			
 		});
 
 	});
@@ -84,10 +295,14 @@
 					<hr style="height: 4px;" class="m-0 mb-1">
 					<div class="d-flex justify-content-end pb-1 mb-1">
 						<div>
-							<button type="button" class="btn btn-secondary btn-sm">조회</button>
-							<button type="button" class="btn btn-secondary btn-sm">신규</button>
-							<button type="button" class="btn btn-secondary btn-sm">수정</button>
-							<button type="button" class="btn btn-secondary btn-sm">삭제</button>
+							<button type="button" class="btn btn-secondary btn-sm"
+								id="searchbtn">조회</button>
+							<button type="button" class="btn btn-secondary btn-sm disabled"
+								id="addbtn">신규</button>
+							<button type="button" class="btn btn-secondary btn-sm disabled"
+								id="delbtn">삭제</button>
+							<button type="button" class="btn btn-secondary btn-sm disabled"
+								id="updatebtn">저장</button>
 						</div>
 					</div>
 					<!-- 검색 -->
@@ -111,14 +326,16 @@
 									<div class="col-3 mt-3 py-1">
 										<div class="row">
 											<div class="col-6">
-												<input type="radio" class="form-radio" name="use" id="use1"
-													style="cursor: pointer;"> <label for="use1"
-													class="ml-1 text-center" style="cursor: pointer;">&nbsp;&nbsp;Y</label>
+												<input type="radio" class="form-check-input" name="use"
+													id="use1" style="cursor: pointer;"> <label
+													for="use1" class="ml-1 text-center form-check-label"
+													style="cursor: pointer;">&nbsp;Y</label>
 											</div>
 											<div class="col-6">
-												<input type="radio" class="form-radio" name="use" id="use2"
-													style="cursor: pointer;"> <label for="use2"
-													style="cursor: pointer;">&nbsp;&nbsp;N</label>
+												<input type="radio" class="form-check-input" name="use"
+													id="use2" style="cursor: pointer;"> <label
+													for="use2" class="form-check-label"
+													style="cursor: pointer;">&nbsp;N</label>
 											</div>
 										</div>
 									</div>
@@ -128,14 +345,14 @@
 										<div class="row">
 											<div class="col-6">
 												<input type="radio" style="cursor: pointer;"
-													class="form-radio" name="del" id="del1"> <label
+													class="form-check-input" name="del" id="del1"> <label
 													for="del1" style="cursor: pointer;"
-													class="ml-1 text-center">&nbsp;&nbsp;Y</label>
+													class="ml-1 text-center">&nbsp;Y</label>
 											</div>
 											<div class="col-6">
 												<input type="radio" style="cursor: pointer;"
-													class="form-radio" name="del" id="del2"> <label
-													for="del2" style="cursor: pointer;">&nbsp;&nbsp;N</label>
+													class="form-check-input" name="del" id="del2"> <label
+													for="del2" style="cursor: pointer;">&nbsp;N</label>
 											</div>
 										</div>
 									</div>
@@ -158,8 +375,8 @@
 							<div class="col-3 fw-bolder d-flex justify-content-end"
 								style="line-height: 60px;">과목코드</div>
 							<div class="col-2 mt-2 py-1">
-								<input type="text" disabled="disabled"
-									class="form-control col-6">
+								<input type="text" class="form-control col-6 sbjno"
+									disabled="disabled">
 							</div>
 						</div>
 						<div class="row" style="width: 100%;">
@@ -167,7 +384,8 @@
 							<div class="col-3 fw-bolder d-flex justify-content-end"
 								style="line-height: 60px;">과목명</div>
 							<div class="col-2 mt-2 py-1">
-								<input type="text" class="form-control col-6">
+								<input type="text" class="form-control col-6 sbjnm"
+									disabled="disabled" id="sbjnm">
 							</div>
 							<div class="col-2 fw-bolder d-flex justify-content-end"
 								style="line-height: 60px;">사용여부</div>
@@ -175,13 +393,17 @@
 								<div class="row">
 									<div class="col-3">
 										<input type="radio" style="cursor: pointer;"
-											class="form-radio" name="del" id="del1"> <label
-											for="del1" style="cursor: pointer;" class="ml-1 text-center">&nbsp;&nbsp;Y</label>
+											class="form-check-input useU" disabled="disabled" name="useU"
+											id="useU1" value="Y"> <label for="useU1"
+											style="cursor: pointer;"
+											class="ml-1 text-center form-check-label">&nbsp;Y</label>
 									</div>
 									<div class="col-3">
 										<input type="radio" style="cursor: pointer;"
-											class="form-radio" name="del" id="del2"> <label
-											for="del2" style="cursor: pointer;">&nbsp;&nbsp;N</label>
+											class="form-check-input useU" name="useU" id="useU2"
+											disabled="disabled" value="N"> <label for="useU2"
+											style="cursor: pointer;"
+											class="ml-1 text-center form-check-label">&nbsp;N</label>
 									</div>
 								</div>
 							</div>
@@ -191,11 +413,8 @@
 							<div class="col-3 fw-bolder d-flex justify-content-end"
 								style="line-height: 60px;">총 강의시간</div>
 							<div class="col-2 mt-2 py-1">
-								<select class="form-select">
-									<option>1시간</option>
-									<option>1시간 30분</option>
-									<option>2시간</option>
-								</select>
+								<input type="number" class="form-control sbjhr"
+									disabled="disabled" step="30">
 							</div>
 							<div class="col-2 fw-bolder d-flex justify-content-end"
 								style="line-height: 60px;">삭제여부</div>
@@ -203,13 +422,16 @@
 								<div class="row">
 									<div class="col-3">
 										<input type="radio" style="cursor: pointer;"
-											class="form-radio" name="del" id="del1"> <label
-											for="del1" style="cursor: pointer;" class="ml-1 text-center">&nbsp;&nbsp;Y</label>
+											class="form-check-input delU" name="delU" id="delU1"
+											disabled="disabled" value="Y"> <label for="delU1"
+											style="cursor: pointer;"
+											class="ml-1 text-center form-check-label">&nbsp;Y</label>
 									</div>
 									<div class="col-3">
 										<input type="radio" style="cursor: pointer;"
-											class="form-radio" name="del" id="del2"> <label
-											for="del2" style="cursor: pointer;">&nbsp;&nbsp;N</label>
+											class="form-check-input delU" name="delU" id="delU2"
+											disabled="disabled" value="N"> <label for="delU2"
+											style="cursor: pointer;" class="form-check-label">&nbsp;N</label>
 									</div>
 								</div>
 							</div>
@@ -219,8 +441,8 @@
 							<div class="col-3 fw-bolder d-flex justify-content-end"
 								style="line-height: 60px;">과목 설명</div>
 							<div class="col-6 mt-2 py-1">
-								<textarea rows="5" class="form-control col-6"
-									style="resize: none;"></textarea>
+								<textarea rows="5" class="form-control col-6 sbjex"
+									style="resize: none;" disabled="disabled"></textarea>
 							</div>
 						</div>
 					</div>
