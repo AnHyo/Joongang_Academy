@@ -12,4 +12,10 @@ public interface SbjctDAO {
 
 	public List<Map<String, Object>> list();
 
+	public int addsbj(Map<String, Object> map);
+
+	public int delsbj(int rowcnt);
+
+	public int updatesbj(Map<String, Object> map);
+
 }

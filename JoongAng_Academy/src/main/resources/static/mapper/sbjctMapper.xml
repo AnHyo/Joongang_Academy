@@ -5,4 +5,28 @@
 	<select id="list" resultType="SbjctDTO">
 		SELECT * FROM SBJCT_INFO;
 	</select>
+	<insert id="addsbj" parameterType="HashMap">
+		INSERT INTO SBJCT_INFO
+		SET
+		SBJCT_NO = LPAD(#{rowcnt},'4','0'),
+		SBJCT_NM = #{SBJCT_NM},
+		SBJCT_EXPLN = #{SBJCT_EXPLN},
+		USE_YN=#{USE_YN},
+		EDU_HR=#{EDU_HR}
+	</insert>
+
+	<update id="delsbj" parameterType="Integer">
+		UPDATE SBJCT_INFO SET
+		DEL_YN ='Y'
+		WHERE SBJCT_NO =#{rowcnt}
+	</update>
+	<update id="updatesbj" parameterType="HashMap">
+		UPDATE SBJCT_INFO SET
+		SBJCT_NM = #{SBJCT_NM},
+		SBJCT_EXPLN = #{SBJCT_EXPLN},
+		USE_YN=#{USE_YN},
+		DEL_YN=#{DEL_YN},
+		EDU_HR=#{EDU_HR}
+		WHERE SBJCT_NO = #{SBJCT_NO}
+	</update>
 </mapper>
