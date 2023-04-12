@@ -14,22 +14,90 @@
 	rel="stylesheet" />
 <link href="css/styles.css" rel="stylesheet" />
 <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
 <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js"
 	crossorigin="anonymous"></script>
 <script>
 	$(function(){
-		$("#fbtn").click(function(){
+		$("#listBtn").click(function(){
 			$.post({
 				url : "/listCrclmAjax",
 				cache : false,
 				dataType : "json"
 			}).done(function(data) {
-				alert("성공");
+				 grid.resetData(data.listCrclm);
+				//alert(data);
 			}).fail(function(xhr, status, errorThrown) {
 				alert("문제가 발생했습니다.");
 			});
+			const Grid = tui.Grid;
+	        Grid.applyTheme('clean');
+	      
+	        
 		});
+	        var grid = new tui.Grid({
+				el : document.getElementById('grid'),
+				scrollX : false,
+				scrollY : true,
+				bodyHeight: 250,
+				rowHeaders : [ 'checkbox' ],
+				columns : [ {
+					header : '훈련과정코드',
+					name : 'CRCLM_CD'  
+				}, {
+					header : '훈련과정명',
+					name : 'CRCLM_NM',
+				}, {
+					header : '상/하반기',
+					name : 'CRCLM_HALF',
+					copyOptions:{
+						 useListItemText: true
+					},formatter: 'listItemText',
+			          editor: {
+			              type: 'radio',
+			              options: {
+			                listItems: [
+			                  { text: '상반기', value: '1' },
+			                  { text: '하반기', value: '2' }
+			                ]
+			              }
+			            }
+				}, {
+					header : '시작일',
+					name : 'EDU_BGNG_YMD'
+				}, {
+					header : '종료일',
+					name : 'EDU_END_YMD',
+				}, {
+					header : '대표강사',
+					name : 'KORN_FLNM',
+				}, {
+					header : '과정현황',
+					name : 'CRCLM_SCHDL_CD',
+					copyOptions:{
+						 useListItemText: true
+					},formatter: 'listItemText',
+			          editor: {
+			              type: 'radio',
+			              options: {
+			                listItems: [
+			                  { text: '모집', value: '0010' },
+			                  { text: '훈련', value: '0020' },
+			                  { text: '수료', value: '0030' }
+			                ]
+			              }
+			            }
+					
+				}, {
+					header : '종료여부',
+					name : 'EDU_FNSH_YN',
+				
+				}  
+				]
+			});
+		
+	
 		
 	});//func
 </script>
@@ -46,7 +114,7 @@
 					<hr>
 					<div style="width: 100%; position: relative;">
 						<div style="position: absolute; right: 0">
-							<button class="btn btn-secondary  btn-sm" id="fbtn">조회</button>
+							<button class="btn btn-secondary  btn-sm" id="listBtn">조회</button>
 							<button class="btn btn-secondary btn-sm">신규</button>
 							<button class="btn btn-secondary btn-sm">수정</button>
 							<button class="btn btn-secondary btn-sm">삭제</button>
@@ -55,9 +123,10 @@
 					</div>
 					<br>
 					<br>
+					
 					<div style="width: 100%; background-color: #F3FAFE; height: 100px; border: 1px solid #c0c0c0;  
 					 position :relative;">
-						<div style=" position: absolute; width: 100%; top:50%; transform: translateY(-50%) translateX(10%); ">
+						<div style=" position: absolute; width: 100%; top:50%; transform: translateY(-50%)" class="d-flex justify-content-center">
 						<div class="input-group "
 							style="width: calc(20%); float: left;">
 							학년도 <input type="text" class="form-control form-control-sm" style="margin-left:10px;"
@@ -115,7 +184,7 @@
 					<div>
 					<div class="float-start" style="width:10px; height:27px; background-color:#498c5f; margin-right: 10px;"></div>
 					<h6 class="mt-3 fw-bolder">교육훈련과정</h6>
-						<div id="grid"></div>
+						<div id="grid" style="font-size: 16px;"></div>
 					</div>
 					
 					<div>
