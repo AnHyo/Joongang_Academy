@@ -18,7 +18,7 @@
 <link href="css/styles.css" rel="stylesheet" />
 
 <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
 
 <style type="text/css">
 body{
@@ -36,35 +36,151 @@ body{
 </style>
 <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script> <!-- 그리드 -->
 <script type="text/javascript">
+$(function(){
+const gridData = [
+    {
+      name: 'Beautiful Lies',
+      artist: 'Birdy',
+      release: '2016.03.26',
+      type: 'Deluxe',
+      genre: 'Pop'
+    },
+    {
+      name: 'X',
+      artist: 'Ed Sheeran',
+      release: '2014.06.24',
+      type: 'Deluxe',
+      genre: 'Pop',
+      _attributes: {
+        disabled: true // A current row is disabled
+      }
+    },
+    {
+      name: 'Moves Like Jagger',
+      release: '2011.08.08',
+      artist: 'Maroon5',
+      type: 'Single',
+      genre: 'Pop,Rock',
+      _attributes: {
+        checkDisabled: true // A checkbox is disabled only
+      }
+    },
+    {
+      name: 'A Head Full Of Dreams',
+      artist: 'Coldplay',
+      release: '2015.12.04',
+      type: 'Deluxe',
+      genre: 'Rock',
+      _attributes: {
+        checked: true, // A checkbox is already checked while rendering
+        className: {
+          // Add class name on a row
+          row: ['red']
+        }
+      }
+    }
+  ];
 
-const grid = new tui.Grid({
+  const grid = new tui.Grid({
     el: document.getElementById('grid'),
     data: gridData,
     scrollX: false,
     scrollY: false,
+    rowHeaders: ['checkbox'],
     columns: [
       {
-        header: 'Name',
+        header: '훈련과정명',
         name: 'name'
       },
       {
-        header: 'Artist',
+        header: '과목번호',
         name: 'artist'
       },
       {
-        header: 'Type',
+        header: '이수구분',
         name: 'type'
       },
       {
-        header: 'Release',
+        header: '과목명',
         name: 'release'
       },
       {
-        header: 'Genre',
+        header: '수강인원',
         name: 'genre'
+      },
+      {
+          header: '담당강사',
+          name: 'genre'
+      },
+      {
+          header: '총 훈련일수',
+          name: 'genre'
+      },
+      {
+          header: '강의시간',
+          name: 'genre'
+      },
+      {
+          header: '강의실',
+          name: 'genre'
       }
+      
     ]
   });
+  
+  const grid2 = new tui.Grid({
+	    el: document.getElementById('grid2'),
+	    data: gridData,
+	    scrollX: false,
+	    scrollY: true,
+	    rowHeaders: ['checkbox'],
+	    columns: [
+	      {
+	        header: '훈련과정명',
+	        name: 'name'
+	      },
+	      {
+	        header: '학번',
+	        name: 'artist'
+	      },
+	      {
+	        header: '이름',
+	        name: 'type'
+	      },
+	      {
+	        header: '출석시수',
+	        name: 'release'
+	      },
+	      {
+	        header: 'Genre',
+	        name: 'genre'
+	      }
+	    ]
+	  });
+  
+  const grid3 = new tui.Grid({
+	    el: document.getElementById('grid3'),
+	    data: gridData,
+	    scrollX: false,
+	    scrollY: false,
+	    rowHeaders: ['checkbox'],
+	    columns: [
+	      {
+	        header: '강의일자',
+	        name: 'name'
+	      },
+	      {
+	        header: '교시',
+	        name: 'artist'
+	      },
+	      {
+	        header: '출결구분',
+	        name: 'type'
+	      }
+	    ]
+	  });
+	
+});
 
 </script>
 </head>
@@ -79,13 +195,12 @@ const grid = new tui.Grid({
 						<div style="width:30px;">
 						<img src="./image/joongang_logo.png" style="width:25px;">
 						</div>
-						<div style="width:200px; "> 
-							<h5 style="font-weight: bold; color:#565757;">강의출결관리</h5>
+						<div style="width:200px; height:30px;  "> 
+							<h5 style="font-weight: bold; color:#565757; line-height:35px;">강의출결관리</h5>
 						</div>
 					</div>
 					
-<!-- 					<hr> -->
-					<div style="width:100%; height:1px; background-color:#c1c2c2; margin:5px 0 13px 0;"></div>
+					<div class="mt-2 mb-1" style="width:100%; height:1px; background-color:#c1c2c2;"></div>
 					
 					<div class="mt-2 marginPadding0 position-relative" style="width:100%; height:31px;">
 						<div class="float-start" style="width:170px; height:auto; padding:0; ">
@@ -100,7 +215,7 @@ const grid = new tui.Grid({
 					</div>
 					
 					<div class="mt-2">
-						<div class="position-relative justify-content-center" style="display:flex; width:100%; height: 45px; padding:10px 0 10px 0; background-color:#eef4f8;">
+						<div class="position-relative justify-content-center" style="display:flex; width:100%; height: 45px; font-weight:bold; padding:10px 0 10px 0; background-color:#eef4f8;">
 							<div style="width:70px; height:25px; font-size:14px; text-align:right; line-height:25px; margin:0 10px 0 0;">
 								학년도
 							</div>
@@ -152,85 +267,8 @@ const grid = new tui.Grid({
 					</div>
 
 					<div style="width: 100%; height: 500px;">
-						<!-- <div id="grid"></div> -->
-						<table class="table table-sm mt-2" style="text-align:center; font-size:14px;">
-							<thead style="background-color: lightgray;">
-								<tr>
-									<th><input type="checkbox"></th>
-									<th>훈련과정명</th>
-									<th>과목코드</th>
-									<th>이수구분</th>
-									<th>과목명</th>
-									<th>수강인원</th>
-									<th>담당강사</th>
-									<th>총 훈련일수</th>
-									<th>강의시간</th>
-									<th>강의실</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td><input type="checkbox"> </td>
-									<td>JAVA 풀스택 어쩌구</td>
-									<td>123456</td>
-									<td>필수</td>
-									<td>HTML</td>
-									<td>23</td>
-									<td>강사1</td>
-									<td>52</td>
-									<td>화1,2,3 목1,2,3</td>
-									<td>401호</td>
-								</tr>
-								<tr>
-									<td><input type="checkbox"> </td>
-									<td>JAVA 풀스택 어쩌구</td>
-									<td>123456</td>
-									<td>필수</td>
-									<td>HTML</td>
-									<td>23</td>
-									<td>강사1</td>
-									<td>52</td>
-									<td>화1,2,3 목1,2,3</td>
-									<td>401호</td>
-								</tr>
-								<tr>
-									<td><input type="checkbox"> </td>
-									<td>JAVA 풀스택 어쩌구</td>
-									<td>123456</td>
-									<td>필수</td>
-									<td>HTML</td>
-									<td>23</td>
-									<td>강사1</td>
-									<td>52</td>
-									<td>화1,2,3 목1,2,3</td>
-									<td>401호</td>
-								</tr>
-								<tr>
-									<td><input type="checkbox"> </td>
-									<td>JAVA 풀스택 어쩌구</td>
-									<td>123456</td>
-									<td>필수</td>
-									<td>HTML</td>
-									<td>23</td>
-									<td>강사1</td>
-									<td>52</td>
-									<td>화1,2,3 목1,2,3</td>
-									<td>401호</td>
-								</tr>
-								<tr>
-									<td><input type="checkbox"> </td>
-									<td>JAVA 풀스택 어쩌구</td>
-									<td>123456</td>
-									<td>필수</td>
-									<td>HTML</td>
-									<td>23</td>
-									<td>강사1</td>
-									<td>52</td>
-									<td>화1,2,3 목1,2,3</td>
-									<td>401호</td>
-								</tr>
-							</tbody>
-						</table>
+					<!-- 강의목록 그리드 -->
+						<div class="mt-2" id="grid"></div>
 						<div class="mt-3 position-relative" style="display:flex;">
 							<div style=" width:75%; height:400px; margin-right:15px;">
 								<div class="position-relative"  style="display:flex; width:100%; height:27px;">
@@ -243,57 +281,9 @@ const grid = new tui.Grid({
 										00건이 조회되었습니다.
 									</div>
 								</div>
-								<div>
-									<table class="mt-2 table table-sm" style="width:100%; text-align:center; font-size:14px;">
-										<thead style="background-color: lightgray;">
-											<tr>
-												<th>훈련과정명</th>
-												<th>학번</th>
-												<th>이름</th>
-												<th>출석시수</th>
-												<th>결석시수</th>
-												<th>01.03</th>
-												<th>01.05</th>
-												<th>01.10</th>
-												<th>01.12</th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr>
-												<td>JAVA 풀스택 어쩌구</td>
-												<td>123456</td>
-												<td>학생1</td>
-												<td>46</td>
-												<td>0</td>
-												<td></td>
-												<td></td>
-												<td></td>
-												<td></td>
-											</tr>
-											<tr>
-												<td>JAVA 풀스택 어쩌구</td>
-												<td>019392</td>
-												<td>학생2</td>
-												<td>42</td>
-												<td>4</td>
-												<td></td>
-												<td>/</td>
-												<td>/</td>
-												<td></td>
-											</tr>
-											<tr>
-												<td>JAVA 풀스택 어쩌구</td>
-												<td>113345</td>
-												<td>학생3</td>
-												<td>44</td>
-												<td>2</td>
-												<td></td>
-												<td></td>
-												<td></td>
-												<td>/</td>
-											</tr>
-										</tbody>
-									</table>
+								<div class="mt-2" style="width:100%; text-align:center; font-size:14px;">
+								<!-- 출석정보 그리드 -->
+									<div id="grid2"></div>
 								</div>
 							</div>
 							<div style=" width:25%; height:400px;">
@@ -306,34 +296,15 @@ const grid = new tui.Grid({
 										<button type="button" class="btn btn-secondary" style="height:27px; font-size:13px; padding:0 10px;">출결저장</button>
 									</div>
 								</div>
-								<div class="mt-2 position-relative"  style="display:flex; width:100%; height:28px; line-height:27px; padding:0; font-weight:bold; font-size:14px; border: solid 1px; background-color: lightgray;">
+								<div class="mt-2 position-relative"  style="display:flex; width:100%; height:30px; line-height:27px; padding:0; font-weight:bold; font-size:14px; border: solid 1px; background-color: lightgray;">
 									<div style="width:50px; text-align:center;">학번</div>
 									<div style="width:150px; text-align:center;"></div>
 									<div style="width:50px; text-align:center;">이름</div>
 									<div style="width:150px; text-align:center;"></div>
 								</div>
-								<div>
-									<table class="mt-2 table table-sm" style="width:100%; text-align:center; font-size:14px;">
-										<thead style="background-color: lightgray;">
-											<tr>
-												<th>강의일자</th>
-												<th>교시</th>
-												<th>출결구분</th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr>
-												<td>23.01.03</td>
-												<td>1</td>
-												<td>출석</td>
-											</tr>
-											<tr>
-												<td>23.01.03</td>
-												<td>2</td>
-												<td>출석</td>
-											</tr>
-										</tbody>
-									</table>
+								<div class="mt-2" style="width:100%; text-align:center; font-size:14px;">
+									<!-- 개인출결 그리드 -->
+									<div id="grid3"></div>
 								</div>
 							</div>
 						</div>
