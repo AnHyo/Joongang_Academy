@@ -25,33 +25,85 @@
 
 
 $(function() {
-	var code_search = $("#code_search").val();
-	var clsData = {
+	var dataSource = {
 			api: {
-				readData: { url: 'code/codeRead.jsp', method: 'GET' },
-				updateData: { url: 'code/codeUpdate.jsp', method: 'POST' }
+				  readData: { url: '/api/readData', method: 'GET' },
+				  createData: { url: '/api/createData', method: 'POST' },
+				  updateData: { url: '/api/updateData', method: 'PUT' },
+				  modifyData: { url: '/api/modifyData', method: 'PUT' },//저장버튼(수정,삭제, 추가)
+				  deleteData: { url: '/api/deleteData', method: 'DELETE' }
 			}
 		};
-	//grid 클릭시
-	  $(document).on('click', 'td', function() {
-	    //alert("클릭"); //ok
-	     var rowKey = $(this).attr('data-row-key'); //0(번째)
-	     //alert(rowKey); //ok
-	     var columnKey = $(this).attr('data-column-name'); //CD_NM
-	     var CD_CLSFValue = grid.getValue(rowKey, 'CD_CLSF'); //td값
-	     alert('Clicked CD_CLSF value:' + CD_CLSFValue); //0번째의 CD_CLSF값 //0000
-	  }); 
-	       
+	
+	//검색버튼
+	$("#search_btn").click(function(){
+	var code_search = $("#code_search").val();
+		alert(code_search);//ok
+		$.post({
+			url : "/codeListAjax",
+			dataType : "json",
+			cache : false,
+			data: {"code_search" : code_search}
+		}).done(function(data) {
+	  	  grid.resetData(data.list);
+	  	  
+		}).fail(function() {
+			alert("문제가 발생했습니다.");
+		});
+		
+	});
+	
+	//grid1 전체리스트     
 	$.post({
 		url : "/codeListAjax",
 		dataType : "json"
- 		//data: "CD_CLSFValue" : CD_CLSFValue
 	}).done(function(data) {
   	  grid.resetData(data.list);
 	}).fail(function() {
 		alert("문제가 발생했습니다.");
 	});
 	
+	//td 클릭
+	$(document).on('click', 'td', function() {
+     var rowKey = $(this).attr('data-row-key'); //0(번째)
+     //var columnKey = $(this).attr('data-column-name'); //CD_NM
+     var CD_CLSFValue = grid.getValue(rowKey, 'CD_CLSF'); //td값
+     //alert('Clicked CD_CLSF value:' + CD_CLSFValue); //0번째의 CD_CLSF값 //0000
+     
+	 	$.post({
+			url : "/codeListAjax2",
+			dataType : "json",
+	 		data: {"CD_CLSFValue" : CD_CLSFValue}
+		}).done(function(data) {
+	  	  grid2.resetData(data.detaillist);
+		}).fail(function() {
+			alert("문제가 발생했습니다!");
+		});
+    });  
+	
+	//td 재클릭
+	$("td").change(function(){
+	   var rowKey = $(this).attr('data-row-key'); //0(번째)
+	     //var columnKey = $(this).attr('data-column-name'); //CD_NM
+	     var CD_CLSFValue = grid.getValue(rowKey, 'CD_CLSF'); //td값
+	     //alert('Clicked CD_CLSF value:' + CD_CLSFValue); //0번째의 CD_CLSF값 //0000
+	     
+		 	$.post({
+				url : "/codeListAjax2",
+				dataType : "json",
+		 		data: {"CD_CLSFValue" : CD_CLSFValue}
+			}).done(function(data) {
+		  	  grid2.resetData(data.detaillist);
+			}).fail(function() {
+			alert("문제가 발생했습니다!");
+		});
+	});
+	
+	//행추가
+	/* $("#add_btn").click(function(){
+		alelrt("클릭");
+		grid.request('createDate');
+	}); */
 	
 	const Grid = tui.Grid;
     Grid.applyTheme('clean');
@@ -60,34 +112,57 @@ $(function() {
 		el : document.getElementById('grid'),
 		scrollX : false,
 		scrollY : true,
-		bodyHeight: 240,
+		bodyHeight: 200,
+		data: dataSource,
 		rowHeaders : [ 'checkbox' ],
 		columns : [ 
 		{
 			header : '코드분류',
 			name : 'CD_CLSF',
+			width: 100,
+			align : 'center',
 			editor: 'text'
 		}, {
 			header : '코드',
 			name : 'CD',
+			width: 100,
+			align : 'center',
 			editor: 'text'
 		}, {
 			header : '코드명',
 			name : 'CD_NM',
+			width: 250,
+			align : 'center',
 			editor: 'text'
 		}, {
 			header : '코드사용여부',
-			name : 'CD_USE_YN'
+			name : 'CD_USE_YN',
+			width: 100,
+			align : 'center',
+			copyOptions:{
+				 useListItemText: true
+			},formatter: 'listItemText',
+	          editor: {
+	              type: 'radio',
+	              options: {
+	                listItems: [
+	                  { text: 'Y', value: '0010' },
+	                  { text: 'N', value: '0020' }
+	                ]
+	              }
+	            }
 		}, {
 			header : '코드설명',
 			name : 'CD_EXPLN',
+			align : 'center',
 			editor: 'text'
 		}, {
 			header : '코드정렬일련번호',
 			name : 'CD_SORT_SN',
+			width: 120,
+			align : 'center',
 			editor: 'text'
-		} ],
-		data: clsData
+		} ]
 	});
 	
 	//양식
@@ -98,67 +173,54 @@ $(function() {
 		bodyHeight: 200,
 		rowHeaders : [ 'checkbox' ],
 		columns : [ 
-		{
-			header : '코드분류',
-			name : 'CD_CLSF'
-		}, {
-			header : '코드',
-			name : 'CD',
-		}, {
-			header : '코드명',
-			name : 'CD_NM'
-		}, {
-			header : '코드사용여부',
-			name : 'CD_USE_YN'
-		}, {
-			header : '코드설명',
-			name : 'CD_EXPLN',
-		}, {
-			header : '코드정렬일련번호',
-			name : 'CD_SORT_SN',
-		} ]
-	});
-	
-	
-	  /*  	$.post({
-			url : "/codeListAjax2",
-			dataType : "json"
-	// 		data: "code_search" : code_search
-		}).done(function(data) {
-	  	  grid.resetData(data.list);
-		}).fail(function() {
-			alert("문제가 발생했습니다.");
-		});
-		const Grid = tui.Grid;
-	    Grid.applyTheme('clean');
-       
-		var grid2 = new tui.Grid({
-			el : document.getElementById('grid2'),
-			scrollX : false,
-			scrollY : true,
-			bodyHeight: 200,
-			rowHeaders : [ 'checkbox' ],
-			columns : [ 
 			{
 				header : '코드분류',
-				name : 'CD_CLSF'
+				name : 'CD_CLSF',
+				width: 100,
+				align : 'center',
+				editor: 'text'
 			}, {
 				header : '코드',
 				name : 'CD',
+				width: 100,
+				align : 'center',
+				editor: 'text'
 			}, {
 				header : '코드명',
-				name : 'CD_NM'
+				name : 'CD_NM',
+				width: 250,
+				align : 'center',
+				editor: 'text'
 			}, {
 				header : '코드사용여부',
-				name : 'CD_USE_YN'
+				name : 'CD_USE_YN',
+				width: 100,
+				align : 'center',
+				copyOptions:{
+					 useListItemText: true
+				},formatter: 'listItemText',
+		          editor: {
+		              type: 'radio',
+		              options: {
+		                listItems: [
+		                  { text: 'Y', value: '0010' },
+		                  { text: 'N', value: '0020' }
+		                ]
+		              }
+		            }
 			}, {
 				header : '코드설명',
 				name : 'CD_EXPLN',
+				align : 'center',
+				editor: 'text'
 			}, {
 				header : '코드정렬일련번호',
 				name : 'CD_SORT_SN',
-			} ]
-		}); */
+				width: 120,
+				align : 'center',
+				editor: 'text'
+			} ],
+	});
 
 });
 
@@ -175,9 +237,9 @@ button {
 }
 </style>
 <body class="sb-nav-fixed">
-	<%@include file="./bar/topbar.jsp"%>
+	<%@include file="../bar/topbar.jsp"%>
 	<div id="layoutSidenav">
-		<%@include file="./bar/sidebar.jsp"%>
+		<%@include file="../bar/sidebar.jsp"%>
 		<div id="layoutSidenav_content">
 			<main>
 				<div class="container-fluid px-4">
@@ -188,7 +250,7 @@ button {
 							<div style="float:left;"><h6 class="mt-3 fw-bolder">코드구분</h6></div>
 					<div class="d-flex justify-content-end pb-1 mb-2 mt-2">
 						<!-- 검색 -->
-						<form action="/code" name="searchForm" onsubmit="return false" method="get">
+<!-- 						<form action="/code" name="searchForm" onsubmit="return false" method="get"> -->
 							<div class="input-group"
 								style="width: calc(20%); margin-right: 10px; float: left;">
 								<input class="form-control form-control-sm" type="text" name="code_search" id="code_search"
@@ -198,10 +260,10 @@ button {
 									<i class="fas fa-search"></i>
 								</button>
 							</div>
-						</form>
+<!-- 						</form> -->
 						<!-- 버튼 -->
 						<div>
-							<button type="button" class="btn btn-secondary btn-sm">신규</button>
+							<button type="button" class="btn btn-secondary btn-sm" onclick="grid.request('createData')" id="add_btn">신규</button>
 							<button type="button" class="btn btn-secondary btn-sm">삭제</button>
 							<button type="button" class="btn btn-secondary btn-sm" onclick="grid.request('updateData')">저장</button>
 						</div>
@@ -226,7 +288,7 @@ button {
 
 				</div>
 			</main>
-			<%@include file="./bar/footer.jsp"%>
+			<%@include file="../bar/footer.jsp"%>
 		</div>
 	</div>
 	<script

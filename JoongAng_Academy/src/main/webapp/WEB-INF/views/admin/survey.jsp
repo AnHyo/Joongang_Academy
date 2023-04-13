@@ -21,9 +21,36 @@
 <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
 <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
 <script type="text/javascript">
-	$(function() {
+$(function() {
+	var dataSource = {
+			api: {
+				  readData: { url: '/api/readData', method: 'GET' },
+				  createData: { url: '/api/createData', method: 'POST' },
+				  updateData: { url: '/api/updateData', method: 'PUT' },
+				  modifyData: { url: '/api/modifyData', method: 'PUT' },//저장버튼(수정,삭제, 추가)
+				  deleteData: { url: '/api/deleteData', method: 'DELETE' }
+			}
+		};
+	//검색버튼
+	$("#search_btn").click(function(){
+	var survey_search = $("#survey_search").val();
+		alert(survey_search);
 		$.post({
-			url : "/codeListAjax",
+			url : "/surveyListAjax",
+			dataType : "json",
+			cache : false,
+			data: {"survey_search" : survey_search}
+		}).done(function(data) {
+	  	  grid.resetData(data.list);
+	  	  
+		}).fail(function() {
+			alert("문제가 발생했습니다.");
+		});
+		
+	});
+	
+		$.post({
+			url : "/surveyListAjax",
 			dataType : "json"
 
 		}).done(function(data) {
@@ -42,16 +69,16 @@
 			rowHeaders : [ 'checkbox' ],
 			columns : [ {
 				header : '설문번호',
-				name : 'CD_CLSF'
+				name : 'DGSTFN_NO'
 			}, {
 				header : '설문명',
-				name : 'CD',
+				name : 'DGSTFN_TITLE',
 			}, {
-				header : '교육과정',
-				name : 'CD_NM'
+				header : '훈련과정',
+				name : 'CRCLM_NM'
 			}, {
 				header : '등록일자',
-				name : 'CD_USE_YN',
+				name : 'DGSTFN_YMD',
 				editor: {
 					type: 'datePicker',
 					options: {
@@ -60,17 +87,97 @@
 				}
 			}, {
 				header : '설문시작일',
-				name : 'CD_EXPLN',
+				name : 'DGSTFN_SDATE',
 			}, {
 				header : '설문종료일',
-				name : 'CD_SORT_SN',
+				name : 'DGSTFN_FDATE',
 			}, {
 				header : '년도',
-				name : 'CD_SORT_SN',
+				name : 'CRCLM_YEAR',
 			}, {
 				header : '분기',
-				name : 'CD_SORT_SN'
+				name : 'CRCLM_HALF'
 			} ]
+		});
+		
+		//surveyview
+		var grid2 = new tui.Grid({
+			el : document.getElementById('grid2'),
+			scrollX : false,
+			scrollY : true,
+			bodyHeight: 150,
+			rowHeaders : [ 'checkbox' ],
+			columns : [ 
+				{
+					header : '문항번호',
+					name : 'QITEM_CD',
+					width: 100,
+					align : 'center',
+					editor: 'text'
+				}, {
+					header : '문항명',
+					name : 'DGST_CN',
+					width: 700,
+					align : 'center',
+					editor: 'text'
+				}, {
+					header : '답변방식',
+					name : 'DGSTFN_ANS_T',
+					width: 200,
+					align : 'center',
+					copyOptions:{
+						 useListItemText: true
+					},formatter: 'listItemText',
+			          editor: {
+			              type: 'radio',
+			              options: {
+			                listItems: [
+			                  { text: '주관식', value: '0010' },
+			                  { text: '객관식', value: '0020' }
+			                ]
+			              }
+			            }
+				}, {
+					header : '답변허용갯수',
+					name : 'DGSTFN_ANS_N',
+					width: 100,
+					align : 'center',
+					editor: 'text'
+				}],
+		});
+		
+		//applinfoview
+		var grid3 = new tui.Grid({
+			el : document.getElementById('grid3'),
+			scrollX : false,
+			scrollY : true,
+			bodyHeight: 150,
+			rowHeaders : [ 'checkbox' ],
+			columns : [ 
+				{
+					header : '사용자번호',
+					name : 'USER_NO',
+					width: 100,
+					align : 'center',
+					editor: 'text'
+				}, {
+					header : '성명',
+					name : 'KORN_FLNM',
+					width: 700,
+					align : 'center',
+					editor: 'text'
+				}, {
+					header : '훈련과정',
+					name : 'CRCLM_NM',
+					width: 200,
+					align : 'center'
+				}, {
+					header : '휴대전화',
+					name : 'TELNO',
+					width: 100,
+					align : 'center',
+					editor: 'text'
+				}],
 		});
 
 	});
@@ -80,9 +187,9 @@ ml-10 { margin-left: 10px;}
 </style>
 </head>
 <body class="sb-nav-fixed">
-	<%@include file="./bar/topbar.jsp"%>
+	<%@include file="../bar/topbar.jsp"%>
 	<div id="layoutSidenav">
-		<%@include file="./bar/sidebar.jsp"%>
+		<%@include file="../bar/sidebar.jsp"%>
 
 		<div id="layoutSidenav_content">
 			<main>
@@ -93,7 +200,7 @@ ml-10 { margin-left: 10px;}
 					<hr style="height: 4px;" class="m-0 mb-1">
 					<div class="d-flex justify-content-end pb-1 mb-2 mt-2">
 						<div>
-							<button type="button" class="btn btn-secondary btn-sm">조회</button>
+							<button type="button" class="btn btn-secondary btn-sm" id="search_btn">조회</button>
 							<button type="button" class="btn btn-secondary btn-sm">신규</button>
 							<button type="button" class="btn btn-secondary btn-sm">삭제</button>
 							<button type="button" class="btn btn-secondary btn-sm">저장</button>
@@ -111,14 +218,11 @@ ml-10 { margin-left: 10px;}
 									<option>하반기</option>
 								</select>
 							</div>
+							<!-- 검색 -->
 							<div class="input-group "
-								style="width: calc(15%); margin-left: 10px; float: left;">
-								<input class="form-control form-control-sm" "type="text"
-									placeholder="설문명(번호)" aria-describedby="btnNavbarSearch" />
-								<button class="btn btn-secondary btn-sm" id="btnNavbarSearch"
-									type="button">
-									<i class="fas fa-search"></i>
-								</button>
+								style="width: calc(15%); margin-left: 10px; float: left;">설문명(번호)
+								<input class="form-control form-control-sm" type="text" name="survey_search" id="survey_search"
+									placeholder="설문명(번호)" aria-describedby="btnNavbarSearch" style="margin-left: 10px;"/>
 							</div>
 
 							<div class="input-group "
@@ -130,22 +234,28 @@ ml-10 { margin-left: 10px;}
 								</select>
 							</div>
 						</div>
-					</div>
-					<!-- 상단 끝 -->
+					</div> <!-- 상단 끝 -->
+					
+					<!-- 설문정보 -->
 					<h6 class="mt-3 fw-bolder">설문정보</h6>
 					<div>
 						<div id="grid"></div>
 					</div>
 
+					<!-- tab -->
 					<div class="mt-3">
-						<ul class="nav nav-tabs">
-							<li class="nav-item"><a class="nav-link active" href="#">기본정보</a>
-							</li>
-							<li class="nav-item"><a class="nav-link active" href="#">문항정보</a>
-							</li>
-							<li class="nav-item"><a class="nav-link active" href="#">참석자정보</a>
-							</li>
-							<div class="mb-5"
+					<nav>
+					  <div class="nav nav-tabs" id="nav-tab" role="tablist">
+					    <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">기본정보</button>
+					    <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">문항정보</button>
+					    <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">참석자정보</button>
+					  </div>
+					</nav>	
+						<!--기본정보 -->
+						<div class="tab-content" id="nav-tabContent">
+						  <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+							<!--기본정보 -->
+							<div class="mb-5" id="tab1"
 								style="width: 100%; background-color: #F3FAFE; height: 420px; border: 1px solid #c0c0c0; position: relative;">
 								<table
 									style="width: 90%; position: absolute; top: 50%; transform: translateY(-50%) translateX(5%);">
@@ -188,24 +298,33 @@ ml-10 { margin-left: 10px;}
 										<td style="text-align: right;">설문명</td>
 										<td><input type="text" class="form-control form-control-sm" style="margin-left: 10px;"></td>
 									</tr>
-									
 									<tr>
 										<td style="text-align: right; float:top;">안내문구</td>
 										<td colspan="3"><textarea class="form-control"
 												style="height: 200px; resize: none; margin-left: 10px;"></textarea></td>
 									</tr>
-
 								</table>
 							</div>
-
+							</div>
+						  <!-- 문항정보 -->
+						  <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+							  <div>
+								<div id="grid2"></div>
+							  </div>
+						  </div>
+						  <!-- 참석자정보 -->
+						  <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
+							  <div>
+								<div id="grid3"></div>
+							  </div>
+						  </div>
 							
-						</ul>
-
 					</div>
 
 				</div>
+				</div>
 			</main>
-			<%@include file="./bar/footer.jsp"%>
+			<%@include file="../bar/footer.jsp"%>
 		</div>
 	</div>
 	<script

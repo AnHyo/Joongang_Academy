@@ -3,6 +3,9 @@ package com.joongAng.academy.controller;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,42 +27,34 @@ public class CodeController {
 	@GetMapping("/code")
 	public String code() {
 		
-		return "code";
+		return "/admin/code";
 	}
 	
+	//전체리스트 + 검색
 	@ResponseBody
 	@PostMapping(value = "/codeListAjax", produces = "application/json;charset=UTF-8")
-	public String codeListAjax(@RequestParam(value="code_search", required=false) String code_search,
-								@RequestParam(value="CD_CLSFValue", required=false) String CD_CLSFValue
-			) {
+	public String codeListAjax(@RequestParam(value="code_search", required=false) String code_search) {
 		JSONObject json = new JSONObject();
-		List<Map<String, Object>> list = codeService.list(); 
+		List<Map<String, Object>> list = codeService.list(code_search); 
 		JSONArray listJ = new JSONArray(list);
 		json.put("list", listJ);
 		return json.toString();
 	}
 	
+	//디테일리스트
 	@ResponseBody
 	@PostMapping(value = "/codeListAjax2", produces = "application/json;charset=UTF-8")
-	public String codeListAjax2() {
+	public String codeListAjax2(HttpServletRequest request) {
 		JSONObject json = new JSONObject();
-		List<Map<String, Object>> detaillist = codeService.detaillist(); 
+		String CD_CLSFValue = request.getParameter("CD_CLSFValue");
+		//System.err.println(CD_CLSFValue); //ok
+		//파라미터 값 1개여서 Map에 굳이 put안하고 바로 List에 넣기
+		List<Map<String, Object>> detaillist = codeService.detaillist(CD_CLSFValue); 
 		JSONArray listJ = new JSONArray(detaillist);
-		json.put("list", listJ);
+		json.put("detaillist", listJ);
+		
+		//System.err.println(detaillist); //ok
 		return json.toString();
 	}
-	
-//	@ResponseBody
-//	@PostMapping(value = "/codeSeachAjax", produces = "application/json;charset=UTF-8")
-//	public String codeSeachAjax(@RequestParam("code_search") String code_search) {
-//		JSONObject json = new JSONObject();
-//		Map<String, Object> map = new HashMap<String, Object>();
-//		map.put("code_search", code_search);
-//		
-//		List<Map<String, Object>> searchlist = codeService.searchlist();
-//		JSONArray listJ = new JSONArray(searchlist);
-//		json.put("list", listJ);
-//		return json.toString();
-//	}
 	
 }
