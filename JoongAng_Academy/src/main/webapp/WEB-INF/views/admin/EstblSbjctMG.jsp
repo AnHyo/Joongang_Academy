@@ -129,6 +129,7 @@
 				return false;
 			}else{
 				console.log(grid.getRow(ev.rowKey));
+				$("#wow").text(grid.getValue(ev.rowKey,'CRCLM_CD'));
 			}
 		});
 	});
@@ -173,7 +174,7 @@
 						<div id="grid" class="mb-3" style="width: 100%;"></div>
 					</div>
 					<div>
-						<div class="" style="background-color:#F3FAFE; width:100%; height:300px;">
+						<div style="background-color:#F3FAFE; width:100%; height:300px;">
 						
 						</div>
 					</div>
