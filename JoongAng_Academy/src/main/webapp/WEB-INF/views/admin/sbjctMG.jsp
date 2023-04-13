@@ -23,6 +23,7 @@
 
 <script>
 	$(function() {
+		//우클릭, 드래그 방지(그리드 X)
 		function fn_control_mouse(){
 			$(document).bind("contextmenu", function(e){
 				return false;
@@ -34,186 +35,8 @@
 				return false;
 			});
 		}
-		fn_control_mouse();
-		
-		$("#searchbtn").click(function() {
-			$.post({
-				url : "/listAjax",
-				dataType : "json"
-
-			}).done(function(data) {
-				grid.resetData(data.list);
-				let selectedRowKey = null;
-				grid.on('focusChange', (ev) => {
-					  grid.setSelectionRange({
-					    start: [ev.rowKey, 0],
-					    end: [ev.rowKey, grid.getColumns().length]
-					  });
-				});
-				grid.on('click', () => {
-					const rowKey = grid.getFocusedCell().rowKey
-					var obj = grid.getRow(rowKey);
-					var keys = Object.values(obj);
-					var sbjno = keys[0];
-					var sbjnm = keys[1];
-					var sbjex = keys[2];
-					var eduhr = keys[3];
-					var useyn = keys[4];
-					var delyn = keys[5];
-					$(".sbjnm").attr("disabled",false);
-					$(".sbjhr").attr("disabled",false);
-					$(".sbjex").attr("disabled",false);
-					$(".delU").attr("disabled",false);
-					$(".useU").attr("disabled",false);
-					
-					$(".sbjno").val(sbjno);
-					$(".sbjnm").val(sbjnm);
-					$(".sbjhr").val(eduhr);
-					$(".sbjex").val(sbjex);
-					if(useyn == 'Y'){
-						$("input:radio[name ='useU']:input[value='Y']").attr("checked", true);
-					} else if(useyn == 'N'){
-						$("input:radio[name ='useU']:input[value='N']").attr("checked", true);
-					}
-					if(delyn == 'Y'){
-						$("input:radio[name ='delU']:input[value='Y']").attr("checked", true);
-					} else if(delyn == 'N'){
-						$("input:radio[name ='delU']:input[value='N']").attr("checked", true);
-					}
-					
-					$("#updatebtn").click(function(){
-						
-						var sbjnmv = $(".sbjnm").val();
-						var sbjhrv = $(".sbjhr").val();
-						var sbjexv = $(".sbjex").val();
-						var useUv = $("input[name=useU]:checked").val();
-						var delUv = $("input[name=delU]:checked").val();
-						var rowcnt = grid.getRowCount();
-						if(confirm("저장하시겠습니까?")){
-						if(sbjno == null){
-							$.post({
-								url : "/addsbjAjax",
-								data: {
-									"rowcnt" : rowcnt,
-									"SBJCT_NM" :sbjnmv,
-									"SBJCT_EXPLN":sbjexv,
-									"EDU_HR":sbjhrv,
-									"USE_YN":useUv
-								},
-								dataType : "json"
-
-							}).done(function(data) {
-								if(data.result == 1){
-									alert("저장되었습니다.");
-									grid.resetData(data.list);
-									var sbjnm = $(".sbjnm").val("");
-									var sbjhr = $(".sbjhr").val("");
-									var sbjex = $(".sbjex").val("");
-									var useU = $("input[name=useU]").prop("checked", false);
-									$(".sbjnm").attr("disabled",true);
-									$(".sbjhr").attr("disabled",true);
-									$(".sbjex").attr("disabled",true);
-									$(".useU").attr("disabled",true);
-									$(".delU").attr("disabled",true);
-								}
-							}).fail(function() {
-								alert("문제가 발생했습니다.");
-							});		
-							}else if(sbjno != null){
-								$.post({
-									url : "/updatesbjAjax",
-									data: {
-										"SBJCT_NO" : sbjno,
-										"SBJCT_NM" :sbjnmv,
-										"SBJCT_EXPLN":sbjexv,
-										"EDU_HR":sbjhrv,
-										"USE_YN":useUv,
-										"DEL_YN":delUv,
-									},
-									dataType : "json"
-
-								}).done(function(data) {
-									if(data.result == 1){
-										alert("저장되었습니다.2");
-										grid.resetData(data.list);
-										$(".sbjnm").val("");
-										$(".sbjhr").val("");
-										$(".sbjex").val("");
-										$("input[name=useU]").prop("checked", false);
-										$("input[name=delU]").prop("checked", false);
-										$(".sbjnm").attr("disabled",true);
-										$(".sbjhr").attr("disabled",true);
-										$(".sbjex").attr("disabled",true);
-										$(".useU").attr("disabled",true);
-										$(".delU").attr("disabled",true);
-									}
-								}).fail(function() {
-									alert("문제가 발생했습니다.");
-								});	
-							}
-						}
-				});
-					
-					
-					
-				});
-				$("#addbtn").removeClass("disabled");
-				$("#updatebtn").removeClass("disabled");
-				$("#delbtn").removeClass("disabled");
-				$("#addbtn").click(function(){
-					$("#addbtn").addClass("disabled");
-					$(".sbjnm").attr("disabled",false);
-					$(".sbjhr").attr("disabled",false);
-					$(".sbjex").attr("disabled",false);
-					$(".useU").attr("disabled",false);
-					
-					grid.appendRow(data.list,{
-						focus : true
-					});
-					
-				});
-				
-			
-		
-			$("#delbtn").click(function(){
-				const rowKey = grid.getFocusedCell().rowKey
-				var obj = grid.getRow(rowKey);
-				var keys = Object.values(obj);
-				var sbjno= keys[0];
-				alert(keys[0]);
-				if(confirm("삭제하시겠습니까?")){
-					$.post({
-						url : "/delsbjAjax",
-						data: {
-							"rowcnt" : sbjno
-						},
-						dataType : "json"
-
-					}).done(function(data) {
-						if(data.result == 1){
-							alert("삭제되었습니다.");
-							grid.resetData(data.list);
-							var sbjnm = $(".sbjnm").val("");
-							var sbjhr = $(".sbjhr").val("");
-							var sbjex = $(".sbjex").val("");
-							var useU = $("input[name=useU]").prop("checked", false);
-							$(".sbjnm").attr("disabled",true);
-							$(".sbjhr").attr("disabled",true);
-							$(".sbjex").attr("disabled",true);
-							$(".useU").attr("disabled",true);
-							$(".delU").attr("disabled",true);
-						}
-					}).fail(function() {
-						alert("문제가 발생했습니다.");
-					});		
-				}
-			});
-			}).fail(function() {
-				alert("문제가 발생했습니다.");
-			});
-
-		});
-
+		fn_control_mouse();		
+	
 		const Grid = tui.Grid;
 		
 		Grid.applyTheme('clean', { 
@@ -223,7 +46,7 @@
 				    }
 				  }
 				});
-	
+
 	
 
 		
@@ -238,45 +61,349 @@
 				header : '과목코드',
 				name : 'SBJCT_NO',
 				align : 'center',
-				width:200
+				width:200,
+				sortable: true,
+			    sortingType: 'desc'
 			
 			}, {
 				header : '과목명',
 				name : 'SBJCT_NM',
 				align : 'center',
-				width:280
+				width:280,
+				sortable: true,
+			    sortingType: 'desc'
 			}, {
 				header : '과목설명',
 				name : 'SBJCT_EXPLN',
-				width:800
+				width:760
 			}, {
 				header : '총 강의시간',
 				name : 'EDU_HR',
 				align : 'center',
-				width:100,
+				width:140,
 				formatter({value}) {
 					var hr = value;
 				    if(value != null){
-					return hr+'분' ;
+					return hr+'시간' ;
 				    }
-				}
+				},
+				sortable: true,
+			    sortingType: 'desc'
 			}, {
 				header : '사용여부',
 				name : 'USE_YN',
 				align : 'center',
-				width:100
+				width:100,
+				sortable: true,
+			    sortingType: 'desc'
 			}, {
 				header : '삭제여부',
 				name : 'DEL_YN',
 				width:100,
-				align : 'center'
+				align : 'center',
+				sortable: true,
+			    sortingType: 'desc'
 				
 			} ],
 			selectionUnit: 'row'
 			
 		});
+		// cell 클릭시
+		grid.on('click', () => {
+			const rowKey = grid.getFocusedCell().rowKey
+			var obj = grid.getRow(rowKey);
+			var keys = Object.values(obj);
+			var sbjno = keys[0];
+			var sbjnm = keys[1];
+			var sbjex = keys[2];
+			var eduhr = keys[3];
+			var useyn = keys[4];
+			var delyn = keys[5];
+			if(sbjno != "[object Object]"){
+			$(".sbjnm").attr("disabled",false);
+			$(".sbjhr").attr("disabled",false);
+			$(".sbjex").attr("disabled",false);
+			$(".delU").attr("disabled",false);
+			$(".useU").attr("disabled",false);
+			
+			$("#sbjno").val(sbjno);
+			$(".sbjno").val(sbjno);
+			$(".sbjnm").val(sbjnm);
+			$(".sbjhr").val(eduhr);
+			$(".sbjex").val(sbjex);
+			if(useyn == 'Y'){
+				$("input:radio[name ='useU']:input[value='Y']").prop("checked", true);
+			} else if(useyn == 'N'){
+				$("input:radio[name ='useU']:input[value='N']").prop("checked", true);
+			}
+			if(delyn == 'Y'){
+				$("input:radio[name ='delU']:input[value='Y']").prop("checked", true);
+			} else if(delyn == 'N'){
+				$("input:radio[name ='delU']:input[value='N']").prop("checked", true);
+			}
+			} else {
+				$("#sbjno").val("");
+				$(".sbjno").val("");
+				$(".sbjnm").val("");
+				$(".sbjhr").val("");
+				$(".sbjex").val("");
+				$("input[name=useU]").prop("checked", false);
+				$("input[name=delU]").prop("checked", false);
+				$(".delU").attr("disabled",true);
+			}
+		}); //grid click
+		
+		var list = "";
+		var searchnm = "";
+		var searchuse = "";
+		var searchdel = "";
+		
+		
+		//조회 버튼
+		$("#searchbtn").click(function() {
+		 searchnm = $.trim($("#searchnm").val());
+		 $("#searchnm").val(searchnm);
+		 searchuse = $("input[name=searchuse]:checked").val();
+		 searchdel = $("input[name=searchdel]:checked").val();
+			
+			$.post({
+				url : "/listAjax",
+				data : {
+					"searchnm" : searchnm,
+					"searchuse" : searchuse,
+					"searchdel" : searchdel
+				},
+				dataType : "json"
 
-	});
+			}).done(function(data) {
+				list = data.list;
+				grid.resetData(list);
+				let selectedRowKey = null;
+				// cell 하나 클릭시 한 줄 전체 범위 지정
+				grid.on('focusChange', (ev) => {
+					  grid.setSelectionRange({
+					    start: [ev.rowKey, 0],
+					    end: [ev.rowKey, grid.getColumns().length]
+					  });
+				});
+				$("#addbtn").removeClass("disabled");
+				$("#updatebtn").removeClass("disabled");
+				$("#delbtn").removeClass("disabled");
+				$("#searchNM").val(searchnm);
+				$("#searchUSE").val(searchuse);
+				$("#searchDEL").val(searchdel);
+				$("#sbjno").val("");
+				$(".sbjno").val("");
+				$(".sbjnm").val("");
+				$(".sbjhr").val("");
+				$(".sbjex").val("");
+				$("input[name=useU]").prop("checked", false);
+				$("input[name=delU]").prop("checked", false);
+				$(".sbjnm").attr("disabled",true);
+				$(".sbjhr").attr("disabled",true);
+				$(".sbjex").attr("disabled",true);
+				$(".useU").attr("disabled",true);
+				$(".delU").attr("disabled",true);
+				
+				
+			}).fail(function() {
+				alert("문제가 발생했습니다.");
+			});
+
+		});
+
+		// 신규 버튼
+		$("#addbtn").click(function(){
+			var searchNM = $.trim($("#searchNM").val());
+			var searchUSE = $("#searchUSE").val();
+			var searchDEL = $("#searchDEL").val();
+			grid.appendRow(list,{
+				focus : true
+			}); // appendRow end
+			$("#addbtn").addClass("disabled");
+			$("#sbjno").val("");
+			$(".sbjno").val("");
+			$(".sbjnm").val("");
+			$(".sbjhr").val("");
+			$(".sbjex").val("");
+			$("input[name=useU]").prop("checked", false);
+			$("input[name=delU]").prop("checked", false);
+			$(".sbjnm").attr("disabled",false);
+			$(".sbjhr").attr("disabled",false);
+			$(".sbjex").attr("disabled",false);
+			$(".useU").attr("disabled",false);
+			$(".delU").attr("disabled",true);
+		
+		}); // addbtn end
+		
+		// 저장 버튼 (신규저장/ 수정저장)
+		$("#updatebtn").click(function(){
+				const rowKey = grid.getFocusedCell().rowKey
+				var sbjnov = $.trim($("#sbjno").val());
+				var sbjnmv = $.trim($(".sbjnm").val());
+				var sbjhrv = $.trim($(".sbjhr").val());
+				var sbjexv = $.trim($(".sbjex").val());
+				var useUv = $("input[name=useU]:checked").val();
+				var delUv = $("input[name=delU]:checked").val();
+				var searchNM = $.trim($("#searchNM").val());
+				var searchUSE = $("#searchUSE").val();
+				var searchDEL = $("#searchDEL").val();
+				
+				
+				if(sbjnmv == ""){
+					alert("과목명을 입력하세요");
+					return false;
+				}
+				if(sbjexv == ""){
+					alert("과목설명을 입력하세요");
+					return false;
+				}
+				if(sbjhrv == "" || isNaN(sbjhrv)){
+					alert("총 강의시간을 올바르게 입력하세요");
+					return false;
+				}
+				if(useUv == ""){
+					alert("사용여부를 선택하세요");
+					return false;
+				}
+				
+				
+				if(sbjnov == ""){
+					if(confirm("(신규)저장하시겠습니까?")){
+					$.post({
+						url : "/addsbjAjax",
+						data: {
+							"SBJCT_NM" :sbjnmv,
+							"SBJCT_EXPLN":sbjexv,
+							"EDU_HR":sbjhrv,
+							"USE_YN":useUv,
+							"searchnm" : searchNM,
+							"searchuse" : searchUSE,
+							"searchdel" : searchDEL
+						},
+						dataType : "json"
+
+					}).done(function(data) {
+						if(data.result == 1){
+							alert("(신규)저장되었습니다.");
+							grid.resetData(data.list);
+							$("#sbjno").val("");
+							$(".sbjno").val("");
+							$(".sbjnm").val("");
+							$(".sbjhr").val("");
+							$(".sbjex").val("");
+							$("input[name=useU]").prop("checked", false);
+							$(".sbjnm").attr("disabled",true);
+							$(".sbjhr").attr("disabled",true);
+							$(".sbjex").attr("disabled",true);
+							$(".useU").attr("disabled",true);
+							$(".delU").attr("disabled",true);
+							$("#addbtn").removeClass("disabled");
+							
+							// 신규 저장 후 focus
+							grid.focus(rowKey);
+						}
+					}).fail(function() {
+						alert("문제가 발생했습니다.");
+					});	
+		
+					}// confirm /
+					} else if(sbjnov != ""){
+						if(confirm("(수정)저장하시겠습니까?2")){
+							$.post({
+								url : "/updatesbjAjax",
+								data: {
+									"SBJCT_NO" : sbjnov,
+									"SBJCT_NM" :sbjnmv,
+									"SBJCT_EXPLN":sbjexv,
+									"EDU_HR":sbjhrv,
+									"USE_YN":useUv,
+									"DEL_YN":delUv,
+									"searchnm" : searchNM,
+									"searchuse" : searchUSE,
+									"searchdel" : searchDEL
+								},
+								dataType : "json"
+
+							}).done(function(data) {
+								if(data.result == 1){
+									alert("(수정)저장되었습니다.");
+									grid.resetData(data.list);
+									$("#sbjno").val("");
+									$(".sbjno").val("");
+									$(".sbjnm").val("");
+									$(".sbjhr").val("");
+									$(".sbjex").val("");
+									$("input[name=useU]").prop("checked", false);
+									$("input[name=delU]").prop("checked", false);
+									$(".sbjnm").attr("disabled",true);
+									$(".sbjhr").attr("disabled",true);
+									$(".sbjex").attr("disabled",true);
+									$(".useU").attr("disabled",true);
+									$(".delU").attr("disabled",true);
+									$("#addbtn").removeClass("disabled");
+									// 수정 저장 후 focus
+									grid.focus(rowKey);
+								}
+							}).fail(function() {
+								alert("문제가 발생했습니다.");
+							});	
+							
+						}
+					
+					}
+				
+				}); //updatebtn click
+			
+		
+		
+			
+			$("#delbtn").click(function(){
+				const rowKey = grid.getFocusedCell().rowKey
+				var obj = grid.getRow(rowKey);
+				var keys = Object.values(obj);
+				var sbjno= keys[0];
+				if(sbjno != "[object Object]"){
+				if(confirm("삭제하시겠습니까?")){
+					$.post({
+						url : "/delsbjAjax",
+						data: {
+							"rowcnt" : sbjno,
+							"searchnm" : searchNM,
+							"searchuse" : searchUSE,
+							"searchdel" : searchDEL
+						},
+						dataType : "json"
+
+					}).done(function(data) {
+						if(data.result == 1){
+							alert("삭제되었습니다.");
+							grid.resetData(data.list);
+							$(".sbjno").val("");
+							$(".sbjnm").val("");
+							$(".sbjhr").val("");
+							$(".sbjex").val("");
+							$("input[name=useU]").prop("checked", false);
+							$("input[name=delU]").prop("checked", false);
+							$(".sbjnm").attr("disabled",true);
+							$(".sbjhr").attr("disabled",true);
+							$(".sbjex").attr("disabled",true);
+							$(".useU").attr("disabled",true);
+							$(".delU").attr("disabled",true);
+							$("#addbtn").removeClass("disabled");
+							// 삭제 후 focus
+							grid.focus(rowKey);
+						}
+					}).fail(function() {
+						alert("문제가 발생했습니다.");
+					});		
+					}
+				} else{
+					alert("정보가 없습니다.");
+				}
+			}); //delbtn end
+	
+	}); //function end
 </script>
 </head>
 
@@ -308,51 +435,69 @@
 					<!-- 검색 -->
 					<div class="mb-2 d-flex justify-content-center">
 						<div class="row"
-							style="width: 100%; height: 60px; background-color: #F3FAFE;">
-							<div class="col-2"></div>
+							style="width: 100%; height: 60px; background-color: #F3FAFE; border: 1px solid #c0c0c0;">
+
+							<input type="hidden" id="searchNM"> <input type="hidden"
+								id="searchUSE"> <input type="hidden" id="searchDEL">
 							<div class="col-4" style="height: 100%;">
 								<div class="row">
 									<div class="col-6 fw-bolder d-flex justify-content-end"
 										style="line-height: 60px;">과목명</div>
 									<div class="col-6 mt-2 py-1 ">
-										<input type="text" class="form-control">
+										<input type="text" class="form-control" id="searchnm">
 									</div>
 								</div>
 							</div>
-							<div class="col-4" style="height: 100%;">
+							<div class="col-8" style="height: 100%;">
 								<div class="row">
-									<div class="col-3 fw-bolder d-flex justify-content-end"
+									<div class="col-2 fw-bolder d-flex justify-content-end"
 										style="line-height: 60px;">사용여부</div>
 									<div class="col-3 mt-3 py-1">
 										<div class="row">
-											<div class="col-6">
-												<input type="radio" class="form-check-input" name="use"
-													id="use1" style="cursor: pointer;"> <label
-													for="use1" class="ml-1 text-center form-check-label"
+											<div class="col-4">
+												<input type="radio" class="form-check-input"
+													name="searchuse" id="use1" style="cursor: pointer;"
+													checked="checked" value=""> <label for="use1"
+													class="ml-1 text-center form-check-label"
+													style="cursor: pointer;">&nbsp;전체</label>
+											</div>
+											<div class="col-3">
+												<input type="radio" class="form-check-input"
+													name="searchuse" id="use2" style="cursor: pointer;"
+													value="Y"> <label for="use2"
+													class="ml-1 text-center form-check-label"
 													style="cursor: pointer;">&nbsp;Y</label>
 											</div>
-											<div class="col-6">
-												<input type="radio" class="form-check-input" name="use"
-													id="use2" style="cursor: pointer;"> <label
-													for="use2" class="form-check-label"
-													style="cursor: pointer;">&nbsp;N</label>
+											<div class="col-3">
+												<input type="radio" class="form-check-input"
+													name="searchuse" id="use3" style="cursor: pointer;"
+													value="N"> <label for="use3"
+													class="form-check-label" style="cursor: pointer;">&nbsp;N</label>
 											</div>
 										</div>
 									</div>
-									<div class="col-3 fw-bolder d-flex justify-content-end"
+									<div class="col-2 fw-bolder d-flex justify-content-end"
 										style="line-height: 60px;">삭제여부</div>
 									<div class="col-3 mt-3 py-1">
 										<div class="row">
-											<div class="col-6">
-												<input type="radio" style="cursor: pointer;"
-													class="form-check-input" name="del" id="del1"> <label
-													for="del1" style="cursor: pointer;"
-													class="ml-1 text-center">&nbsp;Y</label>
+											<div class="col-4">
+												<input type="radio" class="form-check-input"
+													name="searchdel" id="del1" style="cursor: pointer;"
+													checked="checked" value=""> <label for="del1"
+													class="ml-1 text-center form-check-label"
+													style="cursor: pointer;">&nbsp;전체</label>
 											</div>
-											<div class="col-6">
+											<div class="col-3">
 												<input type="radio" style="cursor: pointer;"
-													class="form-check-input" name="del" id="del2"> <label
-													for="del2" style="cursor: pointer;">&nbsp;N</label>
+													class="form-check-input" name="searchdel" id="del2"
+													value="Y"> <label for="del2"
+													style="cursor: pointer;" class="ml-1 text-center">&nbsp;Y</label>
+											</div>
+											<div class="col-3">
+												<input type="radio" style="cursor: pointer;"
+													class="form-check-input" name="searchdel" id="del3"
+													value="N"> <label for="del3"
+													style="cursor: pointer;">&nbsp;N</label>
 											</div>
 										</div>
 									</div>
@@ -361,21 +506,26 @@
 
 						</div>
 					</div>
-
-					<div id="grid" class="mb-3" style="width: 100%;"></div>
+					<div class="float-start "
+						style="width: 10px; height: 27px; background-color: #498c5f; margin-right: 10px;"></div>
+					<h6 class="mt-2 fw-bolder" style="vertical-align: -5px;">과목</h6>
+					<div id="grid" class="mb-3" style=" width: 100%;"></div>
 
 
 					<hr style="height: 4px;" class="mb-2">
-
+					<div class="float-start"
+						style="width: 10px; height: 27px; background-color: #498c5f; margin-right: 10px;"></div>
+					<h6 class="mt-2 fw-bolder">과목정보</h6>
 
 					<div class="mb-3"
-						style="width: 100%; height: 350px; background-color: #F3FAFE;">
+						style="width: 100%; height: 350px; background-color: #F3FAFE; border: 1px solid #c0c0c0;">
 						<div class="row" style="width: 100%;">
 							<div class="col-1"></div>
 							<div class="col-3 fw-bolder d-flex justify-content-end"
 								style="line-height: 60px;">과목코드</div>
 							<div class="col-2 mt-2 py-1">
 								<input type="text" class="form-control col-6 sbjno"
+									disabled="disabled"> <input type="hidden" id="sbjno"
 									disabled="disabled">
 							</div>
 						</div>
@@ -414,7 +564,9 @@
 								style="line-height: 60px;">총 강의시간</div>
 							<div class="col-2 mt-2 py-1">
 								<input type="number" class="form-control sbjhr"
-									disabled="disabled" step="30">
+									disabled="disabled" step="10"
+									onKeyup="this.value=this.value.replace(/[^-0-9]/g,'');"
+									max="160">
 							</div>
 							<div class="col-2 fw-bolder d-flex justify-content-end"
 								style="line-height: 60px;">삭제여부</div>

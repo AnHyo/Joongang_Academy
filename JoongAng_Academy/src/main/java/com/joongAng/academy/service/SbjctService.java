@@ -14,8 +14,8 @@ public class SbjctService {
 	@Autowired
 	private SbjctDAO sbjctDAO;
 	
-	public List<Map<String, Object>> list() {
-		return sbjctDAO.list();
+	public List<Map<String, Object>> list(Map<String, Object> search) {
+		return sbjctDAO.list(search);
 	}
 
 	public int addsbj(Map<String, Object> map) {
