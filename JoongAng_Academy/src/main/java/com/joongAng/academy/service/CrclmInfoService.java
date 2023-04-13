@@ -23,8 +23,19 @@ public class CrclmInfoService {
 		
 		return crclmInfoDAO.saveCrclmAjax(paramap);
 	}
+
+	public List<Map<String, Object>> crclmNameList() {
+		return crclmInfoDAO.crclmNameList();
+	}
+
+	public int newCrclmAjax(Map<String, String> paramap) {
+		return crclmInfoDAO.newCrclmAjax(paramap);
+	}
+
+	public List<Map<String, Object>> saveAfter() {
+		return crclmInfoDAO.saveAfter();
+	}
 	
 	
-	//무슨일일까...?....?
 
 }

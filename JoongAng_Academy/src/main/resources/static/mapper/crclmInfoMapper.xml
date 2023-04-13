@@ -2,6 +2,15 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.joongAng.academy.dao.CrclmInfoDAO">
+	
+	
+	<!--훈련과정명 셀렉트뽑아오기 -->
+	<select id="crclmNameList" resultType="Hashmap">
+		SELECT CD_NM, CD
+		FROM CODE_INFO
+		WHERE CD_CLSF =0002;
+	</select>
+
 	<select id="listCrclmAjax" resultType="HashMap" parameterType="Hashmap">
 		SELECT * FROM crclmListView
 		WHERE 1=1
@@ -23,6 +32,7 @@
 		
 	</select>
 	
+	<!--수정  -->
 	<update id="saveCrclmAjax" parameterType="Hashmap">
 		UPDATE CRCLM_INFO set
 		CRCLM_YEAR =#{cyear},
@@ -31,8 +41,40 @@
 		EDU_COST =#{ecost},
 		EDU_BGNG_YMD =#{bgYMD},
 		EDU_END_YMD =#{endYMD},
-		CRCLM_SCHDL_CD =#{schedule}
+		CRCLM_SCHDL_CD =#{schedule},
+		EDU_FNSH_YN =#{efnYN},
+		EDU_NOPE =#{epeople}
 		WHERE CRCLM_NO=#{cno}
 	</update>
-	<!--수정  -->
+	<!--신규  -->
+	<insert id="newCrclmAjax"  parameterType="Hashmap">
+		INSERT INTO CRCLM_INFO SET
+		RPRS_INSTR_NO =(SELECT INSTR_NO  FROM INSTR_INFO WHERE KORN_FLNM =#{instrname} ),
+		CRCLM_YEAR =#{cyear},
+		CRCLM_HALF =#{chalf},
+		EDU_CN =#{econtent},
+		EDU_COST =#{ecost},
+		EDU_BGNG_YMD =#{bgYMD},
+		EDU_END_YMD =#{endYMD},
+		EDU_FNSH_YN =#{efnYN},
+		EDU_NOPE =#{epeople},
+		CRCLM_CD =#{ccd},
+		CRCLM_NM =#{crname},
+		CRCLM_SCHDL_CD =#{schedule}
+		
+	</insert>
+	
+	<select id="saveAfter" resultType="HashMap">
+		SELECT * FROM crclmListView
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 </mapper>

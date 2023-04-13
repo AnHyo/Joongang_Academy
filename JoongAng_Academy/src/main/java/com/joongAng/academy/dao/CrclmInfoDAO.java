@@ -10,8 +10,13 @@ import org.springframework.stereotype.Repository;
 @Mapper
 public interface CrclmInfoDAO {
 
-	List<Map<String, Object>> listCrclmAjax(Map<String, String> paramap);
+	public List<Map<String, Object>> listCrclmAjax(Map<String, String> paramap);
 
-	int saveCrclmAjax(Map<String, String> paramap);
-	//수정
+	public int saveCrclmAjax(Map<String, String> paramap);	
+
+	public List<Map<String, Object>> crclmNameList();
+
+	public int newCrclmAjax(Map<String, String> paramap);
+
+	public List<Map<String, Object>> saveAfter();
 }
