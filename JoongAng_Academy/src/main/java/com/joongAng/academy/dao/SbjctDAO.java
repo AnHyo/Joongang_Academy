@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 @Mapper
 public interface SbjctDAO {
 
-	public List<Map<String, Object>> list();
+	public List<Map<String, Object>> list(Map<String, Object> search);
 
 	public int addsbj(Map<String, Object> map);
 
