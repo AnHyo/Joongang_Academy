@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.joongAng.academy.dao.StudentRecordDAO">
+
+<select id="studentInfo" resultType="HashMap">
+	SELECT * FROM applinfoview
+	WHERE FNL_PASS_YN = 'Y'
+	<if test="department != ''">
+	AND CRCLM_CD = #{department }
+	</if>
+	<if test="status != ''">
+	AND REG_CD = #{status }
+	</if>
+	<if test="year != ''">
+	AND (CRCLM_YEAR LIKE CONCAT('%',#{year },'%'))
+	</if>
+	<if test="turn != ''">
+	AND CRCLM_HALF = #{turn }
+	</if>
+	<if test="nameAndNum != ''">
+	AND (APPL_NO LIKE CONCAT('%',#{nameAndNum },'%') or KORN_FLNM LIKE CONCAT('%',#{nameAndNum },'%'))
+	</if>
+	<if test="gender != ''">
+	AND GENDER_CD = #{gender }
+	</if>
+</select>
+
+<select id="depInfo" resultType="StudentRecordDTO">
+	SELECT * 
+	FROM crclmsearchview
+	<if test="depsearchs != null">
+	WHERE (CRCLM_CD LIKE CONCAT('%',#{depsearchs },'%') or
+	CRCLM_CD_NAME LIKE CONCAT('%',#{depsearchs },'%')or
+	CRCLM_YEAR LIKE CONCAT('%',#{depsearchs },'%') or 
+	CRCLM_HALF LIKE CONCAT('%',#{depsearchs },'%'))
+	</if>
+</select>
+
+</mapper>
