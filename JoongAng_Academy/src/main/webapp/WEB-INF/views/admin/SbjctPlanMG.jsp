@@ -31,7 +31,6 @@
 			scrollX : false,
 			scrollY : true,
 			bodyHeight : 200,
-			rowHeaders : [ 'checkbox' ],
 			columns : [ {
 				header : "연도",
 				name : 'CRCLM_YEAR'
@@ -128,30 +127,59 @@
 			if(ev.rowKey == null){
 				return false;
 			}else{
-				console.log(grid.getRow(ev.rowKey));
-				$("#a").val(grid.getValue(ev.rowKey,"CRCLM_YEAR"));
-				$("#b").val(grid.getValue(ev.rowKey,"CRCLM_HALF"));
-				$("#c").val(grid.getValue(ev.rowKey,"CRCLM_CD"));
-				$("#d").val(grid.getValue(ev.rowKey,"SBJCT_NO"));
-				$("#e").val(grid.getValue(ev.rowKey,"SBJCT_NM"));
-				$("#f").val(grid.getValue(ev.rowKey,"SBJCT_EXPLN"));
-				$("#g").val(grid.getValue(ev.rowKey,"EDU_HR"));
-				$("#h").val(grid.getValue(ev.rowKey,"SBJCT_PLAN_YN"));
-				$("#i").val(grid.getValue(ev.rowKey,"ROOM_NO"));
-				$("#a").attr("disabled","true");
-				$("#b").attr("disabled","true");
-				$("#c").attr("disabled","true");
+				var crc = grid.getValue(ev.rowKey,'CRCLM_CD');
+				var year = grid.getValue(ev.rowKey,'CRCLM_YEAR');
+				var hlf = grid.getValue(ev.rowKey,'CRCLM_HALF');
+				var sbj = grid.getValue(ev.rowKey,'SBJCT_NO');
+				$.post({
+					url : "/estPlan",
+					data : {
+						crc : crc,
+						year : year,
+						hlf : hlf,
+						sbj : sbj
+					},
+					dataType : "json"
+				}).done(function(data) {
+					$("#crc").val(crc);
+					$("#year").val(year);
+					$("#hlf").val(hlf);
+					$("#sbj").val(sbj);
+					$("#a").val(data.subjectPlan.SBJCT_TRGT);
+					$("#b").val(data.subjectPlan.SBJCT_CN);
+					$("#c").val(data.subjectPlan.CRS_BOOK);
+				}).fail(function() {
+					alert("문제가 발생했습니다.");
+				});
 			}
 		});
-		$("#insertBtn").click(function(){
-			
-		});
+
 		$("#saveBtn").click(function(){
-			
-		});
-		$("#deleteBtn").click(function(){
-			var checkedRows = grid.getCheckedRows();
-			console.log(checkedRows);
+			var crc = $("#crc").val();
+			var year = $("#year").val();
+			var hlf = $("#hlf").val();
+			var sbj = $("#sbj").val();
+			var trgt = $("#a").val();
+			var cn = $("#b").val();
+			var book = $("#c").val();
+			console.log(crc,year,hlf,sbj);
+			$.post({
+				url : "/estPlanSave",
+				data : {
+					crc : crc,
+					year : year,
+					hlf : hlf,
+					sbj : sbj,
+					trgt : trgt,
+					cn : cn,
+					book : book
+				},
+				dataType : "json"
+			}).done(function(data) {
+				alert("저장했다");
+			}).fail(function() {
+				alert("문제가 발생했습니다.");
+			});
 		});
 	});
 </script>
@@ -167,9 +195,9 @@
 					
 				</div>
 				<div class="container-fluid px-4">
-					<h1 class="mt-4">개설교과목관리</h1>
+					<h1 class="mt-4">강의계획서관리</h1>
 					<ol class="breadcrumb mb-4">
-						<li class="breadcrumb-item active">Established Subject
+						<li class="breadcrumb-item active">Subject Plan
 							Management</li>
 					</ol>
 					<div class="row">
@@ -189,51 +217,34 @@
 							</select>
 						</div>
 						<button class="btn btn-primary col-md-1" id="searchBtn">조회</button>
-						<button class="btn btn-info col-md-1" id="insertBtn">신규</button>
 						<button class="btn btn-secondary col-md-1" id="saveBtn">저장</button>
-						<button class="btn btn-danger col-md-1" id="deleteBtn">삭제</button>
 						<div id="grid" class="mb-3" style="width: 100%;"></div>
 					</div>
 					<div>
 						<div style="background-color:#F3FAFE; width:100%; height:300px;">
 							<form>
+							<input type="text" id="crc" readonly>
+							<input type="text" id="year" readonly>
+							<input type="text" id="hlf" readonly>
+							<input type="text" id="sbj" readonly>
 							<div class="form-group row">
-							<label for="a" class="col-sm-2 col-form-label">연도</label>
+							<label for="a" class="col-sm-2 col-form-label">강의목표</label>
 							<input id="a" type="text" class="form-control">
 							</div>
 							<div class="form-group row">
-							<label for="b" class="col-sm-2 col-form-label">반기</label>
+							<label for="b" class="col-sm-2 col-form-label">강의내용</label>
 							<input id="b" type="text" class="form-control">
 							</div>
 							<div class="form-group row">
-							<label for="c" class="col-sm-2 col-form-label">교육과정</label>
+							<label for="c" class="col-sm-2 col-form-label">교재</label>
 							<input id="c" type="text" class="form-control">
 							</div>
-							<div class="form-group">
-							<label for="d" class="col-sm-2 col-form-label">과목번호</label>
-							<input id="d" type="text" class="form-control">
-							</div>
-							<div class="form-group">
-							<label for="e" class="col-sm-2 col-form-label">과목명</label>
-							<input id="e" type="text" class="form-control">
-							</div>
-							<div class="form-group">
-							<label for="f" class="col-sm-2 col-form-label">과목설명</label>
-							<input id="f" type="text" class="form-control">
-							</div>
-							<div class="form-group">
-							<label for="g" class="col-sm-2 col-form-label">총강의시간</label>
-							<input id="g" type="text" class="form-control">
-							</div>
-							<div class="form-group">
-							<label for="h" class="col-sm-2 col-form-label">강의계획서작성여부</label>
-							<input id="h" type="text" class="form-control">
-							</div>
-							<div class="form-group">
-							<label for="i" class="col-sm-2 col-form-label">강의실</label>
-							<input id="i" type="text" class="form-control">
-							</div>
 							</form>
+						</div>
+						<div>
+							<c:forEach items="${detailList }" var="d">
+								${d.DTL_NO }
+							</c:forEach>
 						</div>
 					</div>
 					</div>
