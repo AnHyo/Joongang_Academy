@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.joongAng.academy.dao.StdntNumberDAO">
+	<select id="getCrclmList" resultType="HashMap">
+		SELECT CRCLM_NM as crclm_name, EDU_NOPE as person_no  
+		FROM CRCLM_INFO
+		WHERE CRCLM_YEAR = #{year } and CRCLM_HALF = #{half };
+	</select>
+</mapper>
