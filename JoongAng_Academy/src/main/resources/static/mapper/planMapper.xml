@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.joongAng.academy.dao.SubjectPlanDAO">
+
+	<select id="getPlan" parameterType="HashMap" resultType="HashMap">
+		SELECT * FROM SBJCT_PLAN
+		WHERE CodeFind('0002',CRCLM_CD) = #{crc} 
+			AND CRCLM_YEAR = #{year} 
+			AND CodeFind('0018',CRCLM_HALF) = #{hlf} 
+			AND SBJCT_NO = #{sbj} 
+	</select>
+	<select id="getPlanDetail" parameterType="HashMap" resultType="HashMap">
+		SELECT * FROM SBJCT_PLAN_DTL
+		WHERE CodeFind('0002',CRCLM_CD) = #{crc} 
+			AND CRCLM_YEAR = #{year} 
+			AND CodeFind('0018',CRCLM_HALF) = #{hlf} 
+			AND SBJCT_NO = #{sbj} 
+	</select>
+	<update id="savePlan" parameterType="HashMap">
+		UPDATE SBJCT_PLAN
+		SET
+		SBJCT_TRGT = #{trgt}
+		,SBJCT_CN = #{cn}
+		,CRS_BOOK = #{book}
+		WHERE CodeFind('0002',CRCLM_CD) = #{crc} 
+			AND CRCLM_YEAR = #{year} 
+			AND CodeFind('0018',CRCLM_HALF) = #{hlf} 
+			AND SBJCT_NO = #{sbj} 
+	</update>
+</mapper>
