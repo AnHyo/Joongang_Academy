@@ -14,12 +14,12 @@ public class CodeService {
 		@Autowired
 		private CodeDAO codeDAO;
 		
-		public List<Map<String, Object>> list() {
-			return codeDAO.list();
+		public List<Map<String, Object>> list(String code_search) {
+			return codeDAO.list(code_search);
 		}
 
-		public List<Map<String, Object>> detaillist() {
-			return codeDAO.detaillist();
+		public List<Map<String, Object>> detaillist(String CD_CLSFValue) {
+			return codeDAO.detaillist(CD_CLSFValue);
 		}
 
 }

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.joongAng.academy.dao.SurveyDAO">
+	
+	
+	<select id="list" parameterType="HashMap" resultType="HashMap"> 
+		SELECT * FROM surveyview
+		<if test="survey_search !=null and survey_search!=''">
+			WHERE DGSTFN_NO LIKE CONCAT('%',#{survey_search},'%') OR
+			DGSTFN_TITLE LIKE CONCAT('%',#{survey_search},'%')
+		</if>
+	</select>	
+</mapper>
