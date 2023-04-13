@@ -1,14 +1,14 @@
 $(function(){
-		$(".stuSearch").click(function(){
-			let department = $("#department").val();
+	
+		
+		$("#stuSearch").click(function(){
+			let department = $(".department-code").text();
 			let status = $("select[name=status]").val();
-			let year = $("#year").val();
+			let year = $.trim($("#year").val());
 			let turn = $("select[name=turn]").val();
-			let nameAndNum = $("#nameAndNum").val();
+			let nameAndNum = $.trim($("#nameAndNum").val());
 			let gender = $("select[name=gender]").val();
-			//alert(department + "  ::  " + status + " :: " + year + " :: " + turn);
-			//alert(nameAndNum + " :: " + gender);
-			
+		
 			$.post({
 				url : "/studentSearch",
 				data:{
@@ -22,64 +22,38 @@ $(function(){
 				cache : false,
 				dataType : "json"
 			}).done(function(data){
+				var result = data.list;
+				//alert(result[0].ZIP);
+				grid.resetData(result);
+				let selectedRowKey = null;
+				grid.on('focusChange', (ev) => {
+					  grid.setSelectionRange({
+					    start: [ev.rowKey, 0],
+					    end: [ev.rowKey, grid.getColumns().length]
+					  });
+				});
 				
-				
+			}).fail(function() {
+				alert("문제가 발생했습니다.");
 			});
 			
 		});
 		
+	var Grid = tui.Grid;
 		
-		 var gridData = [
-		      {
-		    	  id: '0000909',
-		        name: 'Beautiful Lies',
-		        artist: 'Birdy',
-		        birth: '2016.03.26',
-		        gender: '여자',
-		        age: '28',
-		        tel: '010-2223-4445',
-		        eTel: '010-2223-4495',
-		        status:'훈련중',
-		        depCode:'0204930',
-		        depName: '자바(JAVA)기반 풀스택 개발자 취업과정',
-		        eduYear: '2022',
-		        turn: '상반기',
-		        email:'stu001@gmail.com',
-		        postNum:'16502',
-		        add:'경기도 어딘가 좋은동 좋은아파트 102동 102호'
-		      },
-		      {
-		        name: 'X',
-		        artist: 'Ed Sheeran',
-		        birth: '2014.06.24',
-		        type: 'Deluxe',
-		        genre: 'Pop',
-		        _attributes: {
-		          disabled: true // A current row is disabled
-		        }
-		      },
-		      {
-		        name: '25',
-		        artist: 'Adele',
-		        birth: '2015.11.20',
-		        type: 'EP',
-		        genre: 'Pop',
-		        _attributes: {
-		          className: {
-		            // Add class name on each columns
-		            column: {
-		              type: ['blue'],
-		              genre: ['blue']
-		            }
-		          }
-		        }
-		      }
-		    ];
+		Grid.applyTheme('clean', { 
+			  row: { 
+				    hover: { 
+				      background: '#e9ecef' 
+				    }
+				  }
+				});
+		
+	
 		
 		var grid = new tui.Grid({
 		      el: document.getElementById('grid'),
-		      data: gridData,
-		      bodyHeight: 500,
+		      bodyHeight: 420,
 		      scrollX: true,
 		      scrollY: true,
 		      contextMenu: null,
@@ -87,96 +61,98 @@ $(function(){
 		      columns: [
 		        {
 		          header: '학번',
-		          name: 'id',
+		          name: 'APPL_NO',
 		          width:150,
 		          align:'center'
 		        },
 		        {
 		          header: '이름',
-		          name: 'name',
+		          name: 'KORN_FLNM',
 		          width:120,
 		          align:'center'
 		        },
 		        {
 		          header: '생년월일',
-		          name: 'birth',
+		          name: 'USER_BRDT',
 		          width:120,
 		          align:'center'
 		        },
 		        {
 		          header: '성별',
-		          name: 'gender',
+		          name: 'GENDER_CD_NAME',
 		          width:100,
 		          align:'center'
 		        },
 		       
 				{
 					header : '나이',
-					name : 'age',
+					name : 'AGE',
 					width:100,
 			        align:'center'
 				}, 
 				{
 					header : '연락처',
-					name : 'tel',
+					name : 'TELNO',
 					width:150,
 				    align:'center'
 				},
 				{
 					header : '비상연락처',
-					name : 'eTel',
+					name : 'REL_TELNO',
 					width:150,
 				    align:'center'
 				}, 
 				{
 					header : '학적상태',
-					name : 'status',
+					name : 'REG_CD_NAME',
 					width:100,
 				    align:'center'
 				},
 				{
 					header : '학과코드',
-					name : 'depCode',
+					name : 'CRCLM_CD',
 					width:120,
 				    align:'center'
 				},
 				{
 					header : '소속학과명',
-					name : 'depName',
-					width:280,
+					name : 'CRCLM_CD_NAME',
+					width:350,
 				    align:'center'
 				},
 				{
 					header : '교육년도',
-					name : 'eduYear',
+					name : 'CRCLM_YEAR',
 					width:120,
 				    align:'center'
 				},
 				{
-					header : '교육회차',
-					name : 'turn',
-					width:100,
+					header : '교육반기',
+					name : 'CRCLM_HALF_NAME',
+					width:120,
 				    align:'center'
 				},
 				{
 					header : 'Email',
-					name : 'email',
+					name : 'EML_ADDR',
 					width:160,
 				    align:'center'
 				},
 				{
 					header : '우편번호',
-					name : 'postNum',
+					name : 'ZIP',
 					width:120,
 				    align:'center'
 				},
 				{
 					header : '주소',
-					name : 'add',
-					width:300,
+					name : 'ADDR',
+					width:380,
 				    align:'center'
 				}
-				]
+				],
+			selectionUnit: 'row'
+			
 			});
 		 
 			 
