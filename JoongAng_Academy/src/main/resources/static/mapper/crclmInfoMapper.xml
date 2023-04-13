@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.joongAng.academy.dao.CrclmInfoDAO">
+	<select id="listCrclmAjax" resultType="HashMap" parameterType="Hashmap">
+		SELECT * FROM crclmListView
+		WHERE 1=1
+		<if test="insname != null">
+			AND KORN_FLNM LIKE CONCAT('%',#{insname},'%');		
+		</if>
+		<if test="crclmname != null">
+			AND EDU_CN LIKE CONCAT('%',#{crclmname},'%');		
+		</if>
+		<if test="year != null and year !=''">
+			AND CRCLM_YEAR = #{year}
+		</if>
+		<if test="half != null and  half !=''">
+			AND CRCLM_HALF = #{half}
+		</if>
+		<if test="radioval != null and  radioval !=''">
+			AND CRCLM_SCHDL_CD =#{radioval}                                                                                                                                          
+		</if>
+		
+	</select>
+	
+	<update id="saveCrclmAjax" parameterType="Hashmap">
+		UPDATE CRCLM_INFO set
+		CRCLM_YEAR =#{cyear},
+		CRCLM_HALF =#{chalf},
+		EDU_CN =#{econtent},
+		EDU_COST =#{ecost},
+		EDU_BGNG_YMD =#{bgYMD},
+		EDU_END_YMD =#{endYMD},
+		CRCLM_SCHDL_CD =#{schedule}
+		WHERE CRCLM_NO=#{cno}
+	</update>
+	<!--수정  -->
+</mapper>
