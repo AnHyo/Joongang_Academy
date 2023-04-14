@@ -3,7 +3,7 @@
 
 <mapper namespace="com.joongAng.academy.dao.EstablishedSubjectDAO">
 	<select id="estList" parameterType="HashMap" resultType="HashMap">
-		SELECT CRCLM_YEAR, CodeFind('0018',CRCLM_HALF) AS CRCLM_HALF, CodeFind('0002',CRCLM_CD) AS CRCLM_CD, SBJCT_NO, SBJCT_NM, SBJCT_EXPLN, EDU_HR, SBJCT_PLAN_YN, ROOM_NO FROM ESTBL_SBJCT
+		SELECT CRCLM_YEAR,CRCLM_HALF, CodeFind('0018',CRCLM_HALF) AS HALF,CRCLM_CD, CodeFind('0002',CRCLM_CD) AS CRCLM_NM, SBJCT_NO, SBJCT_NM, SBJCT_EXPLN, EDU_HR, SBJCT_PLAN_YN, ROOM_NO FROM ESTBL_SBJCT
 		WHERE CRCLM_CD = #{crc}
         <if test="year != ''">
 			AND CRCLM_YEAR = #{year}
@@ -22,4 +22,14 @@
 		WHERE CRCLM_CD = #{crc}
 		GROUP BY CRCLM_YEAR
 	</select>
+	<select id="estRoomList" resultType="HashMap">
+		SELECT * FROM ROOM_INFO
+	</select>
+	
+	<insert id="estSave" parameterType="HashMap">
+		INSERT INTO ESTBL_SBJCT (CRCLM_YEAR,CRCLM_HALF,CRCLM_CD,SBJCT_NO,SBJCT_NM,SBJCT_EXPLN,EDU_HR,ROOM_NO)
+		VALUES (#{year},#{hlf},#{crc},#{sbjcd},#{sbjnm},#{sbjxp},#{hrs},#{room})
+		ON DUPLICATE KEY UPDATE
+			ROOM_NO = #{room}
+	</insert>
 </mapper>

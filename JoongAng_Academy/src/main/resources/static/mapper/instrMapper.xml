@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.joongAng.academy.dao.InstructorDAO">
+	<select id="insList" parameterType="HashMap" resultType="HashMap">
+		SELECT INSTR_NO,KORN_FLNM,USER_BRDT,EML_ADDR,TELNO,ZIP,ADDR,DADDR,CodeFind('0011',GENDER_CD) AS GENDER_CD,USER_NO,ENDST_NO FROM INSTR_INFO
+		<if test="name != ''">
+			WHERE KORN_FLNM LIKE CONCAT('%', #{name }, '%')
+		</if>
+	</select>
+</mapper>
