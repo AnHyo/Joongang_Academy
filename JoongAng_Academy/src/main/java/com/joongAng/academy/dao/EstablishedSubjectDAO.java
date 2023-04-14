@@ -18,4 +18,8 @@ public interface EstablishedSubjectDAO {
 	public List<Map<String, Object>> estCodeList(String division);
 
 	public List<Map<String, Object>> estYearList(String crc);
+
+	public List<Map<String, Object>> estRoomList();
+
+	public int estSave(Map<String, Object> map);
 }

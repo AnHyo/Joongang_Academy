@@ -35,12 +35,24 @@
 			columns : [ {
 				header : "연도",
 				name : 'CRCLM_YEAR'
-			}, {
+			}, 
+			{
+				header : "반기코드",
+				name : 'CRCLM_HALF',
+				hidden : true
+			}, 
+			{
 				header : "반기",
-				name : 'CRCLM_HALF'
-			}, {
+				name : 'HALF'
+			}, 
+			{
+				header : "교육과정코드",
+				name : 'CRCLM_CD',
+				hidden : true
+			},
+			{
 				header : "교육과정",
-				name : 'CRCLM_CD'
+				name : 'CRCLM_NM'
 			}, {
 				header : "과목번호",
 				name : 'SBJCT_NO'
@@ -71,6 +83,19 @@
 				name = element.CD_NM;
 				optionHTML = "<option value="+code+">" + name + "</option>";
 				$("#crclmSelect").append(optionHTML);
+				$("#c").append(optionHTML);
+			})
+		}).fail(function() {
+			alert("문제가 발생했습니다.");
+		});
+		$.post({
+			url : "/estRoomList",
+			dataType : "json"
+		}).done(function(data) {
+			$.each(data.estRoomList, function(index, element) {
+				room = element.ROOM_NO;
+				optionHTML = "<option value="+room+">" + room + "</option>";
+				$("#i").append(optionHTML);
 			})
 		}).fail(function() {
 			alert("문제가 발생했습니다.");
@@ -101,6 +126,8 @@
 		});
 		$("#halfSelect").append("<option value='0010'>상반기</option>");
 		$("#halfSelect").append("<option value='0020'>하반기</option>");
+		$("#b").append("<option value='0010'>상반기</option>");
+		$("#b").append("<option value='0020'>하반기</option>");
 		$("#searchBtn").click(function() {
 			var crc = $("#crclmSelect").val();
 			var year = $("#yearSelect").val();
@@ -119,6 +146,36 @@
 					dataType : "json"
 				}).done(function(data) {
 					grid.resetData(data.estList);
+					$("#a").attr("disabled",true);
+					$("#b").attr("disabled",true);
+					$("#c").attr("disabled",true);
+					$("#d").attr("disabled",true);
+					$("#e").attr("disabled",true);
+					$("#f").attr("disabled",true);
+					$("#g").attr("disabled",true);
+					$("#i").attr("disabled",true);
+					grid.on('click', function(ev){
+						if(ev.rowKey == null){
+							return false;
+						}else{
+							console.log(grid.getRow(ev.rowKey));
+							$("#a").val(grid.getValue(ev.rowKey,"CRCLM_YEAR"));
+							$("#b").val(grid.getValue(ev.rowKey,"CRCLM_HALF"));
+							$("#c").val(grid.getValue(ev.rowKey,"CRCLM_CD"));
+							$("#d").val(grid.getValue(ev.rowKey,"SBJCT_NO"));
+							$("#e").val(grid.getValue(ev.rowKey,"SBJCT_NM"));
+							$("#f").val(grid.getValue(ev.rowKey,"SBJCT_EXPLN"));
+							$("#g").val(grid.getValue(ev.rowKey,"EDU_HR"));
+							var h = grid.getValue(ev.rowKey,"SBJCT_PLAN_YN");
+							if(h=='Y') {
+								$("#h").attr("checked",true);
+							}
+							if(h=='N') {
+								$("#h").attr("checked",false);
+							}
+							$("#i").val(grid.getValue(ev.rowKey,"ROOM_NO"));
+						}
+					});
 				}).fail(function() {
 					alert("문제가 발생했습니다.");
 				});
@@ -136,22 +193,103 @@
 				$("#e").val(grid.getValue(ev.rowKey,"SBJCT_NM"));
 				$("#f").val(grid.getValue(ev.rowKey,"SBJCT_EXPLN"));
 				$("#g").val(grid.getValue(ev.rowKey,"EDU_HR"));
-				$("#h").val(grid.getValue(ev.rowKey,"SBJCT_PLAN_YN"));
+				var h = grid.getValue(ev.rowKey,"SBJCT_PLAN_YN");
+				if(h=='Y') {
+					$("#h").attr("checked",true);
+				}
+				if(h=='N') {
+					$("#h").attr("checked",false);
+				}
 				$("#i").val(grid.getValue(ev.rowKey,"ROOM_NO"));
-				$("#a").attr("disabled","true");
-				$("#b").attr("disabled","true");
-				$("#c").attr("disabled","true");
 			}
 		});
 		$("#insertBtn").click(function(){
-			
+			$("#insertBtn").attr("disabled",true);
+			grid.off('click');
+			$("#a").attr("disabled",false);
+			$("#b").attr("disabled",false);
+			$("#c").attr("disabled",false);
+			$("#d").attr("disabled",false);
+			$("#e").attr("disabled",false);
+			$("#f").attr("disabled",false);
+			$("#g").attr("disabled",false);
+			$("#i").attr("disabled",false);
 		});
 		$("#saveBtn").click(function(){
-			
+			year = $("#a").val();
+			hlf = $("#b").val();
+			crc = $("#c").val();
+			sbjcd = $("#d").val();
+			sbjnm = $("#e").val();
+			sbjxp = $("#f").val();
+			hrs = $("#g").val();
+			room = $("#i").val();
+			$.post({
+				url : "/estSaveAjax",
+				data : {
+					crc : crc,
+					year : year,
+					hlf : hlf,
+					sbjcd : sbjcd,
+					sbjnm : sbjnm,
+					sbjxp : sbjxp,
+					hrs : hrs,
+					room : room
+				},
+				dataType : "json"
+			}).done(function(data) {
+				alert("saved");
+				$("#a").attr("disabled",true);
+				$("#b").attr("disabled",true);
+				$("#c").attr("disabled",true);
+				$("#d").attr("disabled",true);
+				$("#e").attr("disabled",true);
+				$("#f").attr("disabled",true);
+				$("#g").attr("disabled",true);
+				$("#i").attr("disabled",true);
+				grid.on('click', function(ev){
+					if(ev.rowKey == null){
+						return false;
+					}else{
+						console.log(grid.getRow(ev.rowKey));
+						$("#a").val(grid.getValue(ev.rowKey,"CRCLM_YEAR"));
+						$("#b").val(grid.getValue(ev.rowKey,"CRCLM_HALF"));
+						$("#c").val(grid.getValue(ev.rowKey,"CRCLM_CD"));
+						$("#d").val(grid.getValue(ev.rowKey,"SBJCT_NO"));
+						$("#e").val(grid.getValue(ev.rowKey,"SBJCT_NM"));
+						$("#f").val(grid.getValue(ev.rowKey,"SBJCT_EXPLN"));
+						$("#g").val(grid.getValue(ev.rowKey,"EDU_HR"));
+						var h = grid.getValue(ev.rowKey,"SBJCT_PLAN_YN");
+						if(h=='Y') {
+							$("#h").attr("checked",true);
+						}
+						if(h=='N') {
+							$("#h").attr("checked",false);
+						}
+						$("#i").val(grid.getValue(ev.rowKey,"ROOM_NO"));
+					}
+				});
+			}).fail(function() {
+				alert("문제가 발생했습니다.");
+			});
 		});
 		$("#deleteBtn").click(function(){
 			var checkedRows = grid.getCheckedRows();
 			console.log(checkedRows);
+			$.each(checkedRows, function(index, row){
+				$.post({
+					url : "/estDelete",
+					contentType : "application/json",
+					data : {
+						checkedRows : checkedRows
+					},
+					dataType : "json"
+				}).done(function(data) {
+					console.log("success");
+				}).fail(function() {
+					alert("문제가 발생했습니다.");
+				});
+			})
 		});
 	});
 </script>
@@ -197,41 +335,47 @@
 					<div>
 						<div style="background-color:#F3FAFE; width:100%; height:300px;">
 							<form>
-							<div class="form-group row">
-							<label for="a" class="col-sm-2 col-form-label">연도</label>
-							<input id="a" type="text" class="form-control">
-							</div>
-							<div class="form-group row">
-							<label for="b" class="col-sm-2 col-form-label">반기</label>
-							<input id="b" type="text" class="form-control">
-							</div>
-							<div class="form-group row">
+							<div class="form-group">
 							<label for="c" class="col-sm-2 col-form-label">교육과정</label>
-							<input id="c" type="text" class="form-control">
+							<select id="c" disabled>
+								<option></option>
+							</select>
+							</div>
+							<div class="form-group">
+							<label for="a" class="col-sm-2 col-form-label">연도</label>
+							<input id="a" type="text" disabled>
+							</div>
+							<div class="form-group">
+							<label for="b" class="col-sm-2 col-form-label">반기</label>
+							<select id="b" disabled>
+								<option></option>
+							</select>
 							</div>
 							<div class="form-group">
 							<label for="d" class="col-sm-2 col-form-label">과목번호</label>
-							<input id="d" type="text" class="form-control">
+							<input id="d" type="text" disabled>
 							</div>
 							<div class="form-group">
 							<label for="e" class="col-sm-2 col-form-label">과목명</label>
-							<input id="e" type="text" class="form-control">
+							<input id="e" type="text" disabled>
 							</div>
 							<div class="form-group">
 							<label for="f" class="col-sm-2 col-form-label">과목설명</label>
-							<input id="f" type="text" class="form-control">
+							<input id="f" type="text" disabled>
 							</div>
 							<div class="form-group">
 							<label for="g" class="col-sm-2 col-form-label">총강의시간</label>
-							<input id="g" type="text" class="form-control">
+							<input id="g" type="text" disabled>
 							</div>
 							<div class="form-group">
 							<label for="h" class="col-sm-2 col-form-label">강의계획서작성여부</label>
-							<input id="h" type="text" class="form-control">
+							<input id="h" type="checkbox" disabled>
 							</div>
 							<div class="form-group">
 							<label for="i" class="col-sm-2 col-form-label">강의실</label>
-							<input id="i" type="text" class="form-control">
+							<select id="i">
+								<option></option>
+							</select>
 							</div>
 							</form>
 						</div>
@@ -239,7 +383,7 @@
 					</div>
 				<div class="container-fluid"></div>
 			</main>
-			<%@include file="../bar/footer.jsp"%>
+<%-- 			<%@include file="../bar/footer.jsp"%> --%>
 		</div>
 	</div>
 	<script

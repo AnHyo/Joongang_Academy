@@ -33,5 +33,15 @@ public class EstablishedSubjectService {
 		// TODO Auto-generated method stub
 		return estDAO.estYearList(crc);
 	}
+
+	public List<Map<String, Object>> estRoomList() {
+		// TODO Auto-generated method stub
+		return estDAO.estRoomList();
+	}
+
+	public int estSave(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return estDAO.estSave(map);
+	}
 	
 }
