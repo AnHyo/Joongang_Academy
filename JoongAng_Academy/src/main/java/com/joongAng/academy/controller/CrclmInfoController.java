@@ -22,6 +22,7 @@ public class CrclmInfoController {
 	@GetMapping("/crclmInfo")
 	public ModelAndView crclmInfo() {
 		ModelAndView mv = new ModelAndView("admin/crclmInfo");
+		//훈련과정정보 - 훈련과정명 select
 		List<Map<String, Object>> list = crclmInfoService.crclmNameList();
 		mv.addObject("crclmName", list);
 		
@@ -36,6 +37,8 @@ public class CrclmInfoController {
 		JSONObject json = new JSONObject();
 		List<Map<String, Object>> list = crclmInfoService.listCrclmAjax(paramap);
 		json.put("listCrclm", list);
+		System.err.println(paramap);
+		
 		
 		return json.toString();
 	}
@@ -46,10 +49,22 @@ public class CrclmInfoController {
 	public String newCrclmAjax(@RequestParam Map<String, String> paramap) {
 		
 		JSONObject json  = new JSONObject();
-		int result = crclmInfoService.newCrclmAjax(paramap);
-		List<Map<String, Object>> list = crclmInfoService.saveAfter();
-		json.put("saveResult", result);
-		json.put("saveAfter", list);
+		//db에 중복갯수 검사
+		int ck = crclmInfoService.checkCrclmAjax(paramap);
+		
+		System.err.println("같은 갯수 :"+ck);
+		if(ck!=1) {
+			int result = crclmInfoService.newCrclmAjax(paramap);
+			List<Map<String, Object>> list2 = crclmInfoService.listCrclmAjax(paramap);
+			
+			json.put("saveResult", result);
+			json.put("saveAfter", list2);
+			
+		}else {
+			 json.put("ck","dup");
+		}
+		//List<Map<String, Object>> list = crclmInfoService.saveAfter();
+		//json.put("saveAfter", list);
 		
 		return json.toString();
 	}
@@ -62,9 +77,12 @@ public class CrclmInfoController {
 		
 		JSONObject json = new JSONObject();
 		int result = crclmInfoService.saveCrclmAjax(paramap);
-		List<Map<String, Object>> list = crclmInfoService.saveAfter();
+		//List<Map<String, Object>> list = crclmInfoService.saveAfter();
+		List<Map<String, Object>> list2 = crclmInfoService.listCrclmAjax(paramap);
+
 		json.put("updateResult", result);
-		json.put("saveAfter", list);
+		//json.put("saveAfter", list);
+		json.put("updateAfter", list2);
 
 		return json.toString();
 	}
