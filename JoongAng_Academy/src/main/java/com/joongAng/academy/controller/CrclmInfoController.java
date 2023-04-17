@@ -37,7 +37,7 @@ public class CrclmInfoController {
 		JSONObject json = new JSONObject();
 		List<Map<String, Object>> list = crclmInfoService.listCrclmAjax(paramap);
 		json.put("listCrclm", list);
-		System.err.println(paramap);
+		//System.err.println(paramap);
 		
 		
 		return json.toString();
@@ -88,6 +88,19 @@ public class CrclmInfoController {
 	}
 
 	
+	//강사명 검색모달
+	@ResponseBody
+	@PostMapping(value="/instrSearchM" ,produces = "application/json;charset=UTF-8")
+	public String instrSearchM(@RequestParam Map<String, String> paramap) {
+		//System.err.println(paramap);
+		JSONObject json = new JSONObject();
+		
+		List<Map<String, Object>> list2 = crclmInfoService.instrSearchM(paramap);
+		//System.err.println(list2);
+		json.put("list2", list2);
+		
+		return json.toString();
+	}
 	
 	
 	

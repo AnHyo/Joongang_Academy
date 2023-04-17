@@ -21,4 +21,6 @@ public interface CrclmInfoDAO {
 	public List<Map<String, Object>> saveAfter();
 
 	public int checkCrclmAjax(Map<String, String> paramap);
+
+	public List<Map<String, Object>> instrSearchM(Map<String, String> paramap);
 }
