@@ -16,5 +16,10 @@ public interface CodeDAO {
 
 	List<Map<String, Object>> detaillist(String CD_CLSFValue);
 
+	int code_create(Map<String, Object> map);
+
+	boolean isCodeExist(Map<String, Object> map);
+
+	int code_update(Map<String, Object> map);
 
 }

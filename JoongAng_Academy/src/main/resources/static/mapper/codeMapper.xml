@@ -11,8 +11,37 @@
 		</if>
 	</select>	
 	
+	<select id="isCodeExist" parameterType="HashMap" resultType="Boolean"> 
+		SELECT COUNT(*) > 0 
+		FROM CODE_INFO
+		WHERE CD_CLSF = #{CD_CLSF}
+		AND CD = #{CD}
+	</select>
+	
 	<select id="detaillist" parameterType="HashMap" resultType="HashMap"> 
 		SELECT * FROM CODE_INFO
 		WHERE CD_CLSF = #{CD_CLSFValue}
 	</select>	
+	
+	<insert id="code_create" parameterType="HashMap">
+		INSERT INTO CODE_INFO
+		SET
+		CD_CLSF = #{CD_CLSF},
+		CD = #{CD},
+		CD_NM = #{CD_NM},
+		CD_USE_YN = #{CD_USE_YN},
+		CD_EXPLN=#{CD_EXPLN},
+		CD_SORT_SN=#{CD_SORT_SN}
+	</insert>
+	
+	<update id="code_update" parameterType="HashMap">
+		UPDATE CODE_INFO SET
+		CD_CLSF = #{CD_CLSF},
+		CD = #{CD},
+		CD_NM = #{CD_NM},
+		CD_USE_YN = #{CD_USE_YN},
+		CD_EXPLN=#{CD_EXPLN},
+		CD_SORT_SN=#{CD_SORT_SN}
+		WHERE CD_CLSF = #{old_CD_CLSF}
+	</update>	
 </mapper>
