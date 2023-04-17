@@ -22,17 +22,18 @@
 <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
 <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js"
 	crossorigin="anonymous"></script>
-	<style>
+<style>
 	.tui-grid-cell {
   font-size: 14px;
 }
-	
-	</style>
+.selected1 {
+    background-color: pink;
+}
+</style>
 <script>
 	$(function() {
 		$('#inputYear, .cyear').attr('maxlength', '4');
 		$('#inputYear, .cyear').attr('minlength', '4');
-		//$('.bgYMD, .endYMD').attr('maxlength', '8');
 
 		//공백제거
 		$("input").on("input", function() {
@@ -61,7 +62,7 @@
 		});
 
 		var listCrclm = "";
-		//상단 - 조회 버튼
+		// 조회 버튼
 		$("#listBtn").click(function() {
 			//버튼 활성화
 			$("#newBtn").prop('disabled', false);
@@ -104,6 +105,13 @@
 					}
 				}
 			});
+			
+			grid.on('focusChange', (ev) => {
+				  grid.setSelectionRange({
+				    start: [ev.rowKey, 0],
+				    end: [ev.rowKey, grid.getColumns().length ]
+				  });
+			});
 
 			// 그리드 클릭후 조회 버튼 다시 누를경우 
 			// 정보 지우고 비활성화
@@ -120,6 +128,7 @@
 			$(".schedule").val('');
 			$(".efnYN").val('');
 			$(".epeople").val('');
+			$("#instrNo").val('');
 			$(".chalf").prop('disabled', true);
 			$(".ccd").prop('disabled', true);
 			$(".crclmNameList").prop('disabled', true);
@@ -199,6 +208,11 @@
 				header : '모집인원',
 				name : 'EDU_NOPE',
 				align : 'center',
+				formatter({value}) {
+				    if(value != null){
+					return value+'명' ;
+				    }
+				}
 			}, {
 				header : '과정현황',
 				name : 'CRCLM_SCHDL_CD',
@@ -233,15 +247,17 @@
 			} ]
 
 		});//grid
+	
+	
 		
-
-		//상단 - 신규버튼
+		//신규 버튼
 		$("#newBtn").click(function() {
 			//$(".cyear").prop('readonly', false); //입력가능
 			$(this).prop('disabled', true);
 
 			grid.appendRow(listCrclm, {
-				focus : true
+				focus : true,
+				
 			}); // appendRow end
 
 			//사용자 입력칸 입력가능
@@ -261,6 +277,7 @@
 
 			$(".econtent").prop('disabled', false);
 			$(".ccd").prop('disabled', true);
+			$("#instrNo").prop('disabled', true);
 			$(".econtent").val("");
 			$(".econtent").prop('placeholder', '내용을 입력해주세요.');
 
@@ -274,7 +291,6 @@
 				
 			
 			//시작일 종료일 (date)
-
 			$(".bgYMD").attr('min',year+'-01-01');	
 			//$(".bgYMD").attr('max',year+'-12-31');	
 			$(".bgYMD").on("blur", function() {
@@ -303,25 +319,132 @@
 			
 			
 			
+			//대표강사 선택
+				// -- 교육과정 모달창 검색값 가져가기
+				 $("#btnInstrSearch").off().click(function(){
+					var iname = $(".instrname").val();
+					if(iname != ""){
+						$("#dep_Search_text").val(iname);
+						$('#depShow').click();
+						$("#instrModal").modal("show");
+						
+					} else {
+						$("#instrModal").modal("show");
+					}
+						
+					
+				});
+				
+				//모달 띄울때 그리드 새로고침
+				$('#instrModal').on('shown.bs.modal', function(e) {
+					grid2.refreshLayout();
+				})
+				
+				//교육과정 검색
+					$(document).on("click",'#depShow', function(){
+						$("#depChoose").attr("disabled", false);
+						var instrSearchName = $("#dep_Search_text").val();
+						//alert(instrSearchName);
+						
+						$.post({
+							url : "/instrSearchM",
+							data:{
+								"iname" : instrSearchName
+							},
+							cache : false,
+							dataType : "json"
+						}).done(function(data){
+							grid2.refreshLayout();
+							var result2 = data.list2;
+							grid2.resetData(result2);
+							let selectedRowKey = null;
+							grid2.on('focusChange', (ev) => {
+								  grid2.setSelectionRange({
+								    start: [ev.rowKey, 0],
+								    end: [ev.rowKey, grid2.getColumns().length]
+								  });						
+							});
+							grid2.on('click', () => {
+								const rowKey = grid2.getFocusedCell().rowKey;
+								var obj = grid2.getRow(rowKey);
+								var keys = Object.values(obj);
+								var inNo = keys[0];
+								var inName = keys[1];
+								
+								$("#depChoose").off().on("click",function(){
+									//alert(keys);
+									//여기
+									$("#instrNo").val(inNo);
+									$(".instrname").val(inName);
+									$("#instrModal").modal("hide");
+
+								});
+							});
+							
+						}).fail(function() {
+							alert("문제가 발생했습니다.");
+						});
+			
+					});// 모달 
+					
+					
+					
+				//화면 끌 경우 초기화
+				$('#instrModal').on('hidden.bs.modal', function(e) {
+				    	$("#dep_Search_text").val('');
+						$("#depChoose").attr("disabled", true);
+						$("#searchGrid").find('td').empty();
+						grid2.off('click');
+				});
+
+				
+				
+				
+			var Grid = tui.Grid;
+				
+				Grid.applyTheme('clean', { 
+					  row: { 
+						    hover: { 
+						      background: '#e9ecef' 
+						    }
+						  }
+						});
+				
+			
+				
+				var grid2 = new tui.Grid({
+				      el: document.getElementById('searchGrid'),
+				      bodyHeight: 350,
+				      scrollX: true,
+				      scrollY: true,
+				      contextMenu: null,
+				      rowHeaders: ['checkbox'],
+				      columns: [
+				        {
+				          header: '강사코드',
+				          name: 'INSTR_NO',
+				          width:200,
+				          align:'center'
+				        },
+				        {
+				          header: '강사명',
+				          name: 'KORN_FLNM',
+				          width:350,
+				          align:'center'
+				        },
+				        
+						],
+					selectionUnit: 'row'
+					
+					});
+					
+			//});
+			
 
 		});//신규버튼
 
-		/* var newRow = { // 새로 추가할 행의 데이터
-		CRCLM_CD: '',
-		CRCLM_NM: '',
-		CRCLM_HALF: '',
-		EDU_BGNG_YMD: '',
-		EDU_END_YMD: '',
-		KORN_FLNM: '',
-		EDU_NOPE: '',
-		CRCLM_SCHDL_CD: '',
-		EDU_FNSH_YN: ''
-		};
-		grid.appendRow(newRow); // 새로운 행 추가
-		grid.focus(); // 새로운 행으로 포커스 이동 */
-
 		//grid 행 클릭시    	
-		grid.on('click', function(ev) {
+	/* 	grid.on('click', function(ev) {
 			
 			var rowKey = ev.rowKey; // 클릭한 행의 키값
 			var rowData = grid.getRow(rowKey); // 클릭한 행의 데이터
@@ -347,7 +470,8 @@
 			var chalf = rowData.CRCLM_HALF; // 상/하반기
 			var crclmname = rowData.CRCLM_NM; // 과정명
 			var econtent = rowData.EDU_CN; // 훈련내용
-			var ecost = rowData.EDU_COST; // 훈련비용
+			var ecost1 = rowData.EDU_COST; // 훈련비용
+			var ecost = Number(ecost1.replace(/[^0-9.-]+/g,"")).toLocaleString();
 			var efnYN = rowData.EDU_FNSH_YN; // 종료여부
 			var schedule = rowData.CRCLM_SCHDL_CD; // 과정현황
 			var instrname = rowData.KORN_FLNM; //강사명
@@ -369,12 +493,12 @@
 			$(".crclmNameSet").val(crclmname);
 			$(".bgYMD").val(bgYMD);
 			$(".endYMD").val(endYMD);
-			$(".ecost").val(ecost);
+			$(".ecost").val(ecost+"원");
 			$(".econtent").val(econtent);
 			$(".instrname").val(instrname);
 			$(".schedule").val(schedule);
 			$(".efnYN").val(efnYN);
-			$(".epeople").val(epeople);
+			$(".epeople").val(epeople+"명");
 			
 			//$(".bgYMD").attr('min',year+'-01-01');	
 			//$(".bgYMD").attr('max',year+'-12-31');	
@@ -400,11 +524,227 @@
 					alert("잘못된 날짜 형식입니다.");
 			    	$(".endYMD").val("");
 				}
-			 });
+			 }); 
 			
 
-		});
-		//상단 - 저장버튼 (수정용 , 신규용 나눠야함)
+		}); */
+		
+		// 그리드 클릭시
+		grid.on('click', () => {
+			//사용자 입력칸 입력가능
+			const inputTags = $("tbody input");
+			inputTags.each(function() {
+				$(this).prop('disabled', false);
+			});
+			const inputTags1 = $("tbody select");
+			inputTags1.each(function() {
+				$(this).prop('disabled', false);
+			});
+
+			$(".econtent").prop('disabled', false);
+			$(".ccd").prop('disabled', true);
+			$(".cyear").prop('disabled', true);
+			$("#instrNo").prop('disabled', true);
+
+			
+			
+			const rowKey = grid.getFocusedCell().rowKey
+			var obj = grid.getRow(rowKey);
+			var keys = Object.values(obj);
+			
+			var ccd = keys[0];
+			var crclmname = keys[1];
+			var chalf = keys[2];
+			var bgYMD1 = keys[3];
+			var endYMD1 = keys[4];
+			var instrname = keys[5];
+			var epeople = keys[6];
+			var schedule = keys[7];
+			var efnYN = keys[8];
+			var instrno = keys[9];
+			var ecost = keys[10];
+			var econtent = keys[11];
+			var cyear = keys[12];
+			var crclmNo = keys[14]; //db상 crclm_no
+		
+			
+			//날짜 포맷 (YYYY-MM-DD 형태)
+			var bgYMD = bgYMD1.replace(/^(\d{4})(\d{2})(\d{2})$/, "$1-$2-$3");
+			var endYMD = endYMD1.replace(/^(\d{4})(\d{2})(\d{2})$/, "$1-$2-$3");
+
+			$(".cno").val(crclmNo);
+			$(".cyear").val(cyear);
+			$(".chalf").val(chalf);
+			$(".ccd").val(ccd);
+			$(".crclmNameList").val(ccd);
+			$(".crclmNameSet").val(crclmname);
+			$(".bgYMD").val(bgYMD);
+			$(".endYMD").val(endYMD);
+			$(".ecost").val(ecost+"원");
+			$(".econtent").val(econtent);
+			$(".instrname").val(instrname);
+			$(".schedule").val(schedule);
+			$(".efnYN").val(efnYN);
+			$(".epeople").val(epeople+"명");
+			$("#instrNo").val(instrno);
+			
+			$(".bgYMD").on("blur", function() {
+				var  begin = $(".bgYMD").val();
+				$(".endYMD").attr('min',begin);	
+				if(begin.length > 10){
+					alert("잘못된 날짜 형식입니다.");
+			    	$(".bgYMD").val("");
+				}
+			});
+				
+			$(".endYMD").on("blur", function() {
+				var  begin = $(".bgYMD").val();
+				var  end = $(".endYMD").val();
+			
+			  	if (end < begin) {
+			    	alert("종료일이 시작일보다 이전입니다.");
+			    	$(".endYMD").val("");
+			    
+				  }
+			  	if(end.length > 10){
+					alert("잘못된 날짜 형식입니다.");
+			    	$(".endYMD").val("");
+				}
+			 }); 
+			
+
+			 //대표강사 선택
+				// -- 교육과정 모달창 검색값 가져가기
+				 $("#btnInstrSearch").off().click(function(){
+					var iname = $(".instrname").val();
+					if(iname != ""){
+						$("#dep_Search_text").val(iname);
+						$('#depShow').click();
+						$("#instrModal").modal("show");
+						
+					} else {
+						$("#instrModal").modal("show");
+					}
+						
+					
+				});
+				
+				//모달 띄울때 그리드 새로고침
+				$('#instrModal').on('shown.bs.modal', function(e) {
+					grid3.refreshLayout();
+					
+				})
+				
+				//교육과정 검색
+					$(document).on("click",'#depShow', function(){
+						$("#depChoose").attr("disabled", false);
+						var instrSearchName = $("#dep_Search_text").val();
+						//alert(instrSearchName);
+						
+						$.post({
+							url : "/instrSearchM",
+							data:{
+								"iname" : instrSearchName
+							},
+							cache : false,
+							dataType : "json"
+						}).done(function(data){
+							grid3.refreshLayout();
+							var result3 = data.list2;
+							grid3.resetData(result3);
+							let selectedRowKey = null;
+							grid3.on('focusChange', (ev) => {
+								  grid3.setSelectionRange({
+								    start: [ev.rowKey, 0],
+								    end: [ev.rowKey, grid3.getColumns().length]
+								  });						
+							});
+							grid3.on('click', () => {
+								const rowKey = grid3.getFocusedCell().rowKey;
+								var obj = grid3.getRow(rowKey);
+								var keys = Object.values(obj);
+								var inNo = keys[0];
+								var inName = keys[1];
+								
+								$("#depChoose").off().on("click",function(){
+									//alert(keys);
+									//여기
+									$("#instrNo").val(inNo);
+									$(".instrname").val(inName);
+									$("#instrModal").modal("hide");
+
+								});
+							});
+							
+						}).fail(function() {
+							alert("문제가 발생했습니다.");
+						});
+			
+					});// 모달 
+					
+					
+					
+				//화면 끌 경우 초기화
+				$('#instrModal').on('hidden.bs.modal', function(e) {
+				    	$("#dep_Search_text").val('');
+						$("#depChoose").attr("disabled", true);
+						$("#searchGrid").empty();
+						grid3.off('click');
+				});
+
+				
+				
+				
+			var Grid = tui.Grid;
+				
+				Grid.applyTheme('clean', { 
+					  row: { 
+						    hover: { 
+						      background: '#e9ecef' 
+						    }
+						  }
+						});
+				
+			
+				
+				var grid3 = new tui.Grid({
+				      el: document.getElementById('searchGrid'),
+				      bodyHeight: 350,
+				      scrollX: true,
+				      scrollY: true,
+				      contextMenu: null,
+				      rowHeaders: ['checkbox'],
+				      columns: [
+				        {
+				          header: '강사코드',
+				          name: 'INSTR_NO',
+				          width:200,
+				          align:'center'
+				        },
+				        {
+				          header: '강사명',
+				          name: 'KORN_FLNM',
+				          width:350,
+				          align:'center'
+				        },
+				        
+						],
+					selectionUnit: 'row'
+					
+					});
+					 
+			
+			
+			
+			
+			
+			
+			
+			
+		}); //grid click
+		
+		
+		//저장버튼 
 		$("#saveBtn").click(
 				function() {
 					const rowKey = grid.getFocusedCell().rowKey
@@ -413,7 +753,8 @@
 					var chalf = $(".chalf").val();
 					//var bgYMD = $(".bgYMD").val();
 					//var endYMD = $(".endYMD").val();
-					var ecost = $(".ecost").val();
+					var ecost1 = $(".ecost").val();
+					var ecost = ecost1.replace("원", "");
 					var econtent = $(".econtent").val();
 					var instrname = $(".instrname").val();
 					var schedule = $(".schedule").val();
@@ -465,19 +806,27 @@
 						alert('시작일과 종료일은 8글자 입니다.');
 						return false;
 					}
-
+					
+					var instrNo= $("#instrNo").val();
+					if(instrNo==''){
+						alert('강사명은 검색 후 선택하셔야합니다.');
+						return false;
+					}
+					
+				
 					if (cno == "") {
 						$.post({
 							url : "/newCrclmAjax",
 							cache : false,
 							data : {
+								"year":year,
 								"cyear" : cyear,
 								"bgYMD" : bgYMD,
 								"chalf" : chalf,
 								"endYMD" : endYMD,
 								"ecost" : ecost,
 								"econtent" : econtent,
-								"instrname" : instrname,
+								"instrname" : instrNo,
 								"schedule" : schedule,
 								"efnYN" : efnYN,
 								"epeople" : epeople,
@@ -491,13 +840,11 @@
 								alert("이미 존재하는 교육훈련과정 입니다.")
 								return false;
 							} else {
+								if(data.saveResult==1){
 								alert("저장이 완료되었습니다.");
-								//grid.resetData(data.saveAfter);
-								$('#grid').setSelection(rowKey, true);
+								grid.resetData(data.saveAfter);
 								grid.focus(rowKey);
-								//var savedRowIndex = data.saveAfter.length - 1;
-								//$('#grid').setSelection(savedRowIndex, true);
-								//grid.focus(savedRowIndex);
+								}
 							}
 
 						}).fail(function(xhr, status, errorThrown) {
@@ -517,7 +864,7 @@
 								"endYMD" : endYMD,
 								"ecost" : ecost,
 								"econtent" : econtent,
-								"instrname" : instrname,
+								"instrname" : instrNo,
 								"schedule" : schedule,
 								"efnYN" : efnYN,
 								"epeople" : epeople,
@@ -541,6 +888,9 @@
 					}//else
 
 				});//저장버튼
+				
+				
+			
 
 	});//func
 </script>
@@ -640,7 +990,7 @@
 										<div class="input-group"
 											style="display: flex; flex-wrap: wrap;">
 											<input type="text" class="form-control form-control-sm ccd"
-												style="width: calc(20%); flex-grow: 1;"
+												style="width: calc(20%);"
 												aria-describedby="sel" readonly disabled="disabled">
 											<select class="form-select form-select-sm crclmNameList"
 												disabled="disabled" id="sel" style="width: calc(80%);">
@@ -654,16 +1004,6 @@
 									<td class="col-4" colspan="5"><input type="text"
 										class="form-control form-control-sm  crclmNameSet "
 										disabled="disabled"></td>
-
-									<%-- <td class="col-1" style="text-align:right;">훈련과정명</td>
-					 				<td class="col-4" colspan='3'>
-									<select class="form-select form-select-sm crclmNameList" disabled="disabled">
-										<option value="">선택</option>
-										<c:forEach items="${crclmName}" var ="cn">
-											<option value="${cn.CD }">${cn.CD_NM}</option>
-										</c:forEach>
-									</select>
-									</td>  --%>
 								</tr>
 								<tr style="height: 50px">
 									<td style="text-align: right;">상/하반기</td>
@@ -676,11 +1016,15 @@
 
 									<td style="text-align: right;">대표강사명</td>
 									<td colspan="2">
-										<div class="input-group ">
+										<div class="input-group "style="display: flex; flex-wrap: wrap;">
+										<input type="text" class="form-control form-control-sm "
+												style="width: calc(30%); "id="instrNo"
+												aria-describedby="sel" readonly disabled="disabled">
 											<input class="form-control form-control-sm instrname"
-												type="text" placeholder="강사명"
-												aria-describedby="btnNavbarSearch" disabled="disabled" />
-											<button class="btn btn-secondary btn-sm" type="button">
+												type="text" placeholder="강사명"  style="width: calc(55%)"
+												 disabled="disabled" />
+											<button class="btn btn-secondary btn-sm" type="button" id="btnInstrSearch" 
+											style="width: calc(15%); ">
 												<i class="fas fa-search"></i>
 											</button>
 										</div>
@@ -737,11 +1081,12 @@
 
 					</div>
 
+			<%@ include file="./crclmInstrModal.jsp"%>
 				</div>
 			</main>
-			<%@include file="../bar/footer.jsp"%>
 		</div>
 	</div>
+			<%@include file="../bar/footer.jsp"%>
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
 		crossorigin="anonymous"></script>

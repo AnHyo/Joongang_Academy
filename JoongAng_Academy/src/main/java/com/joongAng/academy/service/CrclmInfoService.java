@@ -40,6 +40,10 @@ public class CrclmInfoService {
 		// TODO Auto-generated method stub
 		return crclmInfoDAO.checkCrclmAjax(paramap);
 	}
+
+	public List<Map<String, Object>> instrSearchM(Map<String, String> paramap) {
+		return crclmInfoDAO.instrSearchM(paramap);
+	}
 	
 	
 

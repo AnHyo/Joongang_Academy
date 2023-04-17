@@ -32,6 +32,7 @@
 	<!--수정  -->
 	<update id="saveCrclmAjax" parameterType="Hashmap">
 		UPDATE CRCLM_INFO set
+		RPRS_INSTR_NO =#{instrname},
 		CRCLM_YEAR =#{cyear},
 		CRCLM_HALF =#{chalf},
 		EDU_CN =#{econtent},
@@ -47,7 +48,7 @@
 	<!--신규  -->
 	<insert id="newCrclmAjax"  parameterType="Hashmap">
 		INSERT INTO CRCLM_INFO SET
-		RPRS_INSTR_NO =(SELECT INSTR_NO  FROM INSTR_INFO WHERE KORN_FLNM =#{instrname} ),
+		RPRS_INSTR_NO =#{instrname},
 		CRCLM_YEAR =#{cyear},
 		CRCLM_HALF =#{chalf},
 		EDU_CN =#{econtent},
@@ -64,6 +65,7 @@
 	
 	<select id="saveAfter" resultType="HashMap">
 		SELECT * FROM crclmListView
+		WHERE CRCLM_YEAR =#{cyear}
 	</select>
 	
 	<select id="checkCrclmAjax" resultType="Integer" parameterType="Hashmap"> 
@@ -71,6 +73,17 @@
 		WHERE CRCLM_CD = #{ccd} AND  CRCLM_YEAR = #{cyear} AND CRCLM_HALF = #{chalf};	
 	</select>
 	
+	
+	<!-- 강사명모달 -->
+	<select id="instrSearchM" parameterType="Hashmap" resultType="Hashmap">
+		SELECT INSTR_NO,KORN_FLNM
+		FROM INSTR_INFO
+		<where>
+			<if test="iname != null and  iname !=''">
+			AND KORN_FLNM LIKE CONCAT('%',#{iname},'%')	
+			</if>
+		</where>
+	</select>
 	
 	
 	
