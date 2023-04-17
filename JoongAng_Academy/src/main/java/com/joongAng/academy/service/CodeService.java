@@ -22,4 +22,16 @@ public class CodeService {
 			return codeDAO.detaillist(CD_CLSFValue);
 		}
 
+		public int code_create(Map<String, Object> map) {
+			return codeDAO.code_create(map);
+		}
+
+		public boolean isCodeExist(Map<String, Object> map) {
+			return codeDAO.isCodeExist(map);
+		}
+
+		public int code_update(Map<String, Object> map) {
+			return codeDAO.code_update(map);
+		}
+
 }
