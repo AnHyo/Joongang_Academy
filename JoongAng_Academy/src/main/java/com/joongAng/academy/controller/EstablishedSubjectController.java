@@ -59,6 +59,17 @@ public class EstablishedSubjectController {
 		json.put("estSubjectList", estSubjectListJ);
 		return json.toString();
 	}
+	
+	@ResponseBody
+	@PostMapping(value = "/estInstructorListAjax", produces = "application/json;charset=UTF-8")
+	public String estInstructorListAjax(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		Map<String,Object> map = new HashMap<String, Object>();
+		List<Map<String, Object>> estInstructorList = estService.estInstructorList(map); 
+		JSONArray estInstructorListJ = new JSONArray(estInstructorList);
+		json.put("estInstructorList", estInstructorListJ);
+		return json.toString();
+	}
 
 	@ResponseBody
 	@PostMapping(value = "/estCrclmList", produces = "application/json;charset=UTF-8")
@@ -127,7 +138,25 @@ public class EstablishedSubjectController {
 		}
 		int resultSave = estService.estSave(map);
 		int resultPlan = estService.estPlan(map);
+		int resultInst = estService.estInst(map);
 		json.put("result", resultSave);
+		return json.toString();
+	}
+	@ResponseBody
+	@PostMapping(value = "/estInstrAjax", produces = "application/json;charset=UTF-8")
+	public String estInstrAjax(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		Map<String, String[]> reqmap = request.getParameterMap();
+		Map<String,Object> map = new HashMap<String, Object>();
+		for (String key : reqmap.keySet()) {
+			String[] values = reqmap.get(key);
+			for (String value : values) {
+				System.out.println(key + " = " + value);
+				map.put(key.toString(), value);
+			}
+		}
+		Map<String,Object> instr = estService.estGetInstr(map);
+		json.put("instr", instr);
 		return json.toString();
 	}
 	

@@ -23,6 +23,7 @@
 		SBJCT_TRGT = #{trgt}
 		,SBJCT_CN = #{cn}
 		,CRS_BOOK = #{book}
+		,SBJCT_MTHD_CD = #{method}
 		WHERE CodeFind('0002',CRCLM_CD) = #{crc} 
 			AND CRCLM_YEAR = #{year} 
 			AND CodeFind('0018',CRCLM_HALF) = #{hlf} 

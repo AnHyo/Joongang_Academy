@@ -28,4 +28,10 @@ public interface EstablishedSubjectDAO {
 	public int estDelete(Map<String, Object> map);
 
 	public int estPlan(Map<String, Object> map);
+
+	public List<Map<String, Object>> estInstructorList(Map<String, Object> map);
+
+	public int estInst(Map<String, Object> map);
+
+	public Map<String, Object> estGetInstr(Map<String, Object> map);
 }

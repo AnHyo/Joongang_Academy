@@ -57,5 +57,20 @@ public class EstablishedSubjectService {
 		// TODO Auto-generated method stub
 		return estDAO.estPlan(map);
 	}
+
+	public List<Map<String, Object>> estInstructorList(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return estDAO.estInstructorList(map);
+	}
+
+	public int estInst(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return estDAO.estInst(map);
+	}
+
+	public Map<String, Object> estGetInstr(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return estDAO.estGetInstr(map);
+	}
 	
 }

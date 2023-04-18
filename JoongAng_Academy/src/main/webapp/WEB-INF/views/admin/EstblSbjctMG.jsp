@@ -252,6 +252,22 @@
 				$("#j").attr("disabled",false);
 				$("#k").attr("disabled",false);
 				$("#insertBtn").attr("disabled",false);
+				$.post({
+					url : "/estInstrAjax",
+					data : {
+						crc : grid.getValue(ev.rowKey,"CRCLM_CD"),
+						year : grid.getValue(ev.rowKey,"CRCLM_YEAR"),
+						hlf : grid.getValue(ev.rowKey,"CRCLM_HALF"),
+						sbjno : grid.getValue(ev.rowKey,"SBJCT_NO")
+					},
+					dataType : "json"
+				}).done(function(data) {
+					$("#m").val(data.instr.KORN_FLNM);
+					$("#n").val(data.instr.INSTR_NO);
+					console.log(data.instr.KORN_FLNM,data.instr.INSTR_NO);
+				}).fail(function() {
+					alert("문제가 발생했습니다.");
+				});
 
 			}
 		};
@@ -298,6 +314,9 @@
 			room = $("#i").val();
 			startHour = $("#j").val();
 			endHour = $("#k").val();
+			kornm = $("m").val();
+			insno = $("#n").val();
+			
 			$.post({
 				url : "/estSaveAjax",
 				data : {
@@ -310,7 +329,9 @@
 					hrs : hrs,
 					room : room,
 					startHour : startHour,
-					endHour : endHour
+					endHour : endHour,
+					kornm : kornm,
+					insno : insno
 				},
 				dataType : "json"
 			}).done(function(data) {
@@ -379,15 +400,40 @@
 		        align:'center'
 			} ]
 		});
+// 		강사선택 그리드
+		var insgrid = new tui.Grid({
+			el : document.getElementById("instructorGrid"),
+			scrollX : true,
+			scrollY : true,
+			bodyHeight : 300,
+			rowHeaders : [ 'checkbox' ],
+			columns : [ {
+				header : "강사번호",
+				name : 'INSTR_NO',
+				align:'center'
+			}, {
+				header : "강사명",
+				name : 'KORN_FLNM',
+				align:'center'
+			} ]
+		});
 		
 // 		과목검색모달
 		$("#subjectSearchBtn").click(function(){
 			$("#estSubjectModal").modal("show");
 		});
+// 		강사검색모달
+		$("#instructorSearchBtn").click(function(){
+			$("#estInstructorModal").modal("show");
+		});
 		
 // 		모달띄울때새로고침
 		$("#estSubjectModal").on('shown.bs.modal', function(e) {
 			subgrid.refreshLayout();
+		});
+// 		모달띄울때새로고침
+		$("#estInstructorModal").on('shown.bs.modal', function(e) {
+			insgrid.refreshLayout();
 		});
 		
 // 		과목검색모달 내 조회버튼
@@ -398,6 +444,18 @@
 			}).done(function(data) {
 				subgrid.refreshLayout();
 				subgrid.resetData(data.estSubjectList);
+			}).fail(function() {
+				alert("문제가 발생했습니다.");
+			});
+		});
+// 		강사검색모달 내 조회버튼
+		$("#estInsShow").click(function(){
+			$.post({
+				url : "/estInstructorListAjax",
+				dataType : "json"
+			}).done(function(data) {
+				insgrid.refreshLayout();
+				insgrid.resetData(data.estInstructorList);
 			}).fail(function() {
 				alert("문제가 발생했습니다.");
 			});
@@ -417,6 +475,19 @@
 				console.log(sbjno,sbjnm,sbjxp,hrs);
 			}
 		});
+
+		// 		모달내에서 선택된 값을 임시저장
+		var insno,kornm;
+		insgrid.on('click', function(ev){
+			if(ev.rowKey == null){
+				return false;
+			}else{
+				$("#estInsChoose").attr("disabled",false);
+				insno = insgrid.getValue(ev.rowKey,'INSTR_NO');
+				kornm = insgrid.getValue(ev.rowKey,'KORN_FLNM');
+				console.log(insno,kornm);
+			}
+		});
 		
 		
 // 		모달 내에서 선택된 값을 메인 입력창에 입력한다
@@ -431,6 +502,15 @@
 			sbjnm="";
 			sbjxp="";
 			hrs="";
+		});
+// 		모달 내에서 선택된 값을 메인 입력창에 입력한다
+		$("#estInsChoose").click(function(ev){
+			$("#m").val(kornm);
+			$("#n").val(insno);
+			$("#estInsChoose").attr("disabled",true);
+			$("#estInstructorModal").modal("hide");
+			insno="";
+			kornm="";
 		});
 		
 // 		강의시간코드에 기반하여 목록생성
@@ -473,7 +553,9 @@
 				alert("문제가 발생했습니다.");
 			});
 		});
-
+		
+		
+		
 	});
 </script>
 <style>
@@ -566,7 +648,11 @@
 							<select id="k" disabled>
 								<option value="">선택</option>
 							</select>
-
+							
+							<label for="m" class="col-form-label">담당강사</label>
+							<input id="m" type="text" disabled>
+							<button type="button" id="instructorSearchBtn">검색</button>
+							<input id="n" type="hidden">
 							</div>
 							</form>
 						</div>
@@ -611,6 +697,51 @@
 									</div>
 									<div class="table-responsive" style="margin-top: 5px;">
 										<div id="subjectGrid"></div>
+									</div>
+
+								</div>
+								<!-- <div class="modal-footer"></div> -->
+							</div>
+						</div>
+					</div>
+				<!-- 강사 검색모달  -->
+					<div class="modal fade" id="estInstructorModal" tabindex="-1"
+						role="dialog" data-bs-backdrop="static"
+						aria-labelledby="exampleModalLabel" aria-hidden="true">
+						<div class="modal-dialog modal-lg" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="exampleModalLabel">
+										<b>과목검색</b>
+									</h5>
+									<button type="button" class="btn-close" data-bs-dismiss="modal"
+										aria-label="Close"></button>
+								</div>
+								<div class="modal-body">
+									<div class="mb-4 w-100" style="height: 18px;">
+										<button type="button" class="btn btn-sm btn-secondary float-end" style="margin-left: 5px;" id="estInsClose" data-bs-dismiss="modal" aria-label="Close">닫기</button>
+										<button type="button" class="btn btn-sm btn-secondary float-end" style="margin-left: 5px;" id="estInsChoose"  disabled="disabled">선택</button>
+										<button type="button" class="btn btn-sm btn-secondary float-end" style="margin-left: 5px;" id="estInsShow">조회</button>
+									</div>
+									
+									<div class="p-1 mb-4 border container-fluid" style="background-color: #F3FAFE">
+									 <div class="row">	
+										<span class="col-2 text-center ta font-set">강사</span>
+										  <div class="col-10" style="padding-bottom: 3.5px; padding-top: 3.5px; margin-left: -13px;">
+											<div class="input-group input-group-sm">
+												<input type="text" class="form-control form-control-sm dep_Search_text" placeholder="검색어을 입력하세요"
+													name="dep_Search_text" id="dep_Search_text" aria-describedby="basic-addon3">
+											</div>
+										   </div>	
+										</div>	
+									
+									</div>
+									<div class="head">
+										<div class="float-start" style="width: 10px; height: 27px; background-color: #498c5f;"></div>
+										<div class="fw-border" style="font-size: 17px; margin-left: 15px; padding-top: 2px;">강사 정보</div>
+									</div>
+									<div class="table-responsive" style="margin-top: 5px;">
+										<div id="instructorGrid"></div>
 									</div>
 
 								</div>
