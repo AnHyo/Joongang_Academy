@@ -16,4 +16,6 @@ public interface SubjectPlanDAO {
 
 	List<Map<String, Object>> getPlanDetail(Map<String, Object> map);
 
+	int estOn(Map<String, Object> map);
+
 }

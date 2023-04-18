@@ -22,4 +22,10 @@ public interface EstablishedSubjectDAO {
 	public List<Map<String, Object>> estRoomList();
 
 	public int estSave(Map<String, Object> map);
+
+	public List<Map<String, Object>> estSubjectList(Map<String, Object> map);
+
+	public int estDelete(Map<String, Object> map);
+
+	public int estPlan(Map<String, Object> map);
 }

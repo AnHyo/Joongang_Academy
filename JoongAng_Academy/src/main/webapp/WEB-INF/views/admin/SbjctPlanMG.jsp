@@ -34,12 +34,24 @@
 			columns : [ {
 				header : "연도",
 				name : 'CRCLM_YEAR'
-			}, {
+			}, 
+			{
+				header : "반기코드",
+				name : 'CRCLM_HALF',
+				hidden : true
+			}, 
+			{
 				header : "반기",
-				name : 'CRCLM_HALF'
-			}, {
+				name : 'HALF'
+			}, 
+			{
+				header : "교육과정코드",
+				name : 'CRCLM_CD',
+				hidden : true
+			},
+			{
 				header : "교육과정",
-				name : 'CRCLM_CD'
+				name : 'CRCLM_NM'
 			}, {
 				header : "과목번호",
 				name : 'SBJCT_NO'
@@ -127,9 +139,9 @@
 			if(ev.rowKey == null){
 				return false;
 			}else{
-				var crc = grid.getValue(ev.rowKey,'CRCLM_CD');
+				var crc = grid.getValue(ev.rowKey,'CRCLM_NM');
 				var year = grid.getValue(ev.rowKey,'CRCLM_YEAR');
-				var hlf = grid.getValue(ev.rowKey,'CRCLM_HALF');
+				var hlf = grid.getValue(ev.rowKey,'HALF');
 				var sbj = grid.getValue(ev.rowKey,'SBJCT_NO');
 				$.post({
 					url : "/estPlan",
@@ -148,12 +160,29 @@
 					$("#a").val(data.subjectPlan.SBJCT_TRGT);
 					$("#b").val(data.subjectPlan.SBJCT_CN);
 					$("#c").val(data.subjectPlan.CRS_BOOK);
+					$("#l").val(data.subjectPlan.SBJCT_MTHD_CD);
 				}).fail(function() {
 					alert("문제가 발생했습니다.");
 				});
 			}
 		});
 
+// 		강의방법코드에 기반하여 목록 생성
+		$.post({
+			url : "/estMethodList",
+			dataType : "json"
+		}).done(function(data) {
+			var code, name, optionHTML;
+			$.each(data.estMethodList, function(index, element) {
+				code = element.CD;
+				name = element.CD_NM;
+				optionHTML = "<option value="+code+">" + name + "</option>";
+				$("#l").append(optionHTML);
+			})
+		}).fail(function() {
+			alert("문제가 발생했습니다.");
+		});
+		
 		$("#saveBtn").click(function(){
 			var crc = $("#crc").val();
 			var year = $("#year").val();
@@ -162,6 +191,7 @@
 			var trgt = $("#a").val();
 			var cn = $("#b").val();
 			var book = $("#c").val();
+			var method = $("#l").val();
 			console.log(crc,year,hlf,sbj);
 			$.post({
 				url : "/estPlanSave",
@@ -172,7 +202,8 @@
 					sbj : sbj,
 					trgt : trgt,
 					cn : cn,
-					book : book
+					book : book,
+					method : method
 				},
 				dataType : "json"
 			}).done(function(data) {
@@ -227,6 +258,10 @@
 							<input type="text" id="year" readonly>
 							<input type="text" id="hlf" readonly>
 							<input type="text" id="sbj" readonly>
+							<label for="l" class="col-form-label">강의방법</label>
+							<select id="l">
+								<option value="">선택</option>
+							</select>
 							<div class="form-group row">
 							<label for="a" class="col-sm-2 col-form-label">강의목표</label>
 							<input id="a" type="text" class="form-control">

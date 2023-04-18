@@ -83,8 +83,9 @@ public class SubjectPlanController {
 		map.put("trgt",trgt);
 		map.put("cn",cn);
 		map.put("book",book);
-		int result = planService.savePlan(map);
-		json.put("result", result);
+		int resultPlan = planService.savePlan(map);
+		int resultEstOn = planService.estOn(map);
+		json.put("result", resultPlan);
 		return json.toString();
 	}
 }

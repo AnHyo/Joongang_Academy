@@ -40,8 +40,22 @@ public class EstablishedSubjectService {
 	}
 
 	public int estSave(Map<String, Object> map) {
-		// TODO Auto-generated method stub
 		return estDAO.estSave(map);
+	}
+
+	public List<Map<String, Object>> estSubjectList(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return estDAO.estSubjectList(map);
+	}
+
+	public int estDelete(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return estDAO.estDelete(map);
+	}
+
+	public int estPlan(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return estDAO.estPlan(map);
 	}
 	
 }

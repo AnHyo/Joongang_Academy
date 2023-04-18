@@ -25,11 +25,18 @@
 	<select id="estRoomList" resultType="HashMap">
 		SELECT * FROM ROOM_INFO
 	</select>
+	<select id="estSubjectList" parameterType="HashMap" resultType="HashMap">
+		SELECT * FROM SBJCT_INFO WHERE USE_YN = 'Y'
+	</select>
 	
 	<insert id="estSave" parameterType="HashMap">
 		INSERT INTO ESTBL_SBJCT (CRCLM_YEAR,CRCLM_HALF,CRCLM_CD,SBJCT_NO,SBJCT_NM,SBJCT_EXPLN,EDU_HR,ROOM_NO)
 		VALUES (#{year},#{hlf},#{crc},#{sbjcd},#{sbjnm},#{sbjxp},#{hrs},#{room})
 		ON DUPLICATE KEY UPDATE
 			ROOM_NO = #{room}
+	</insert>
+	<insert id="estPlan" parameterType="HashMap">
+		INSERT IGNORE INTO SBJCT_PLAN (CRCLM_YEAR,CRCLM_HALF,CRCLM_CD,SBJCT_NO)
+		VALUES (#{year},#{hlf},#{crc},#{sbjcd})
 	</insert>
 </mapper>
