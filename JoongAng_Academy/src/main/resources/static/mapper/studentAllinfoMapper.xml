@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.joongAng.academy.dao.StudentAllInfoDAO">
+
+<select id="studentstatus" resultType="StudentAllInfoDTO" parameterType="StudentAllInfoDTO">
+	SELECT CD , CD_NM
+	FROM CODE_INFO
+	WHERE CD_CLSF = '0008'
+</select>
+
+<select id="relationship" resultType="StudentAllInfoDTO" parameterType="StudentAllInfoDTO">
+	SELECT CD , CD_NM
+	FROM CODE_INFO
+	WHERE CD_CLSF = '0005'
+</select>
+
+<select id="studentSearch" resultType="HashMap">
+	SELECT *
+	FROM applinfoview
+	WHERE (KORN_FLNM LIKE CONCAT('%',#{numName },'%') or STDNT_NO LIKE CONCAT('%',#{numName },'%'))
+	<if test="courseNum != ''">
+	AND CRCLM_CD = #{courseNum }
+	</if>
+	<if test="statusA != ''">
+	AND REG_CD = #{statusA }
+	</if>
+</select>
+
+<select id="studentDeInfo" resultType="StudentAllInfoDTO">
+	SELECT *
+	FROM APPL_INFO
+	WHERE STDNT_NO = #{student_ID }
+</select>
+
+<select id="studentDetail" resultType="StudentAllInfoDTO">
+	SELECT *
+	FROM applinfoview
+	WHERE STDNT_NO = #{student_ID }
+</select>
+
+<update id="studentUpdate" parameterType="HashMap">
+	UPDATE APPL_INFO SET
+	TELNO = #{telinfo },
+	REL_TELNO = #{etelinfo },
+	REL_CD = #{relationinfo },
+	EML_ADDR = #{emailinfo },
+	ZIP = #{postinfo },
+	ADDR = #{addrinfo },
+	DADDR = #{addrdeinfo }
+	WHERE STDNT_NO=#{studentID }
+</update>
+
+</mapper>
