@@ -28,4 +28,13 @@
 			AND CodeFind('0018',CRCLM_HALF) = #{hlf} 
 			AND SBJCT_NO = #{sbj} 
 	</update>
+	<update id="estOn" parameterType="HashMap">
+		UPDATE ESTBL_SBJCT
+		SET
+		SBJCT_PLAN_YN = 'Y'
+		WHERE CodeFind('0002',CRCLM_CD) = #{crc} 
+			AND CRCLM_YEAR = #{year} 
+			AND CodeFind('0018',CRCLM_HALF) = #{hlf} 
+			AND SBJCT_NO = #{sbj} 
+	</update>
 </mapper>

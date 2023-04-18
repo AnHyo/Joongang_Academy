@@ -49,6 +49,16 @@ public class EstablishedSubjectController {
 		json.put("estList", estListJ);
 		return json.toString();
 	}
+	@ResponseBody
+	@PostMapping(value = "/estSubjectListAjax", produces = "application/json;charset=UTF-8")
+	public String estSubjectListAjax(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		Map<String,Object> map = new HashMap<String, Object>();
+		List<Map<String, Object>> estSubjectList = estService.estSubjectList(map); 
+		JSONArray estSubjectListJ = new JSONArray(estSubjectList);
+		json.put("estSubjectList", estSubjectListJ);
+		return json.toString();
+	}
 
 	@ResponseBody
 	@PostMapping(value = "/estCrclmList", produces = "application/json;charset=UTF-8")
@@ -58,6 +68,27 @@ public class EstablishedSubjectController {
 		List<Map<String, Object>> estCrcList = estService.estCodeList(division); 
 		JSONArray estCrcListJ = new JSONArray(estCrcList);
 		json.put("estCrcList", estCrcListJ);
+		return json.toString();
+	}
+
+	@ResponseBody
+	@PostMapping(value = "/estHourList", produces = "application/json;charset=UTF-8")
+	public String estHourList() {
+		JSONObject json = new JSONObject();
+		String division = "교시구분";
+		List<Map<String, Object>> estHourList = estService.estCodeList(division); 
+		JSONArray estHourListJ = new JSONArray(estHourList);
+		json.put("estHourList", estHourListJ);
+		return json.toString();
+	}
+	@ResponseBody
+	@PostMapping(value = "/estMethodList", produces = "application/json;charset=UTF-8")
+	public String estMethodList() {
+		JSONObject json = new JSONObject();
+		String division = "강의방법";
+		List<Map<String, Object>> estMethodList = estService.estCodeList(division); 
+		JSONArray estMethodListJ = new JSONArray(estMethodList);
+		json.put("estMethodList", estMethodListJ);
 		return json.toString();
 	}
 
@@ -85,34 +116,36 @@ public class EstablishedSubjectController {
 	@PostMapping(value = "/estSaveAjax", produces = "application/json;charset=UTF-8")
 	public String estSaveAjax(HttpServletRequest request) {
 		JSONObject json = new JSONObject();
-		String crc = request.getParameter("crc");
-		String year = request.getParameter("year");
-		String hlf = request.getParameter("hlf");
-		String sbjcd = request.getParameter("sbjcd");
-		String sbjnm = request.getParameter("sbjnm");
-		String sbjxp = request.getParameter("sbjxp");
-		String hrs = request.getParameter("hrs");
-		String room = request.getParameter("room");
+		Map<String, String[]> reqmap = request.getParameterMap();
 		Map<String,Object> map = new HashMap<String, Object>();
-		map.put("crc", crc);
-		map.put("year", year);
-		map.put("hlf", hlf);
-		map.put("sbjcd", sbjcd);
-		map.put("sbjnm", sbjnm);
-		map.put("sbjxp", sbjxp);
-		map.put("hrs", hrs);
-		map.put("room", room);
-		int result = estService.estSave(map);
-		json.put("result", result);
+		for (String key : reqmap.keySet()) {
+		      String[] values = reqmap.get(key);
+		      for (String value : values) {
+		        System.out.println(key + " = " + value);
+		        map.put(key.toString(), value);
+		      }
+		}
+		int resultSave = estService.estSave(map);
+		int resultPlan = estService.estPlan(map);
+		json.put("result", resultSave);
 		return json.toString();
 	}
 	
 	@ResponseBody
 	@PostMapping(value = "/estDelete", produces = "application/json;charset=UTF-8")
-	public String estDelete(HttpServletRequest request, @RequestBody List<Map<String,Object>> checkedRows) {
+	public String estDelete(HttpServletRequest request) {
 		JSONObject json = new JSONObject();
-		System.out.println(checkedRows.toString());
-//		json.put("estRoomList", row);
+		String crc = request.getParameter("crc");
+		String year = request.getParameter("year");
+		String hlf = request.getParameter("hlf");
+		String sbjno= request.getParameter("sbjno");
+		Map<String,Object> map = new HashMap<String, Object>();
+		map.put("crc", crc);
+		map.put("year", year);
+		map.put("hlf", hlf);
+		map.put("sbjno", sbjno);
+		System.out.println(map);
+		int result = estService.estDelete(map);
 		return json.toString();
 	}
 }
