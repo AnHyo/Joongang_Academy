@@ -37,7 +37,8 @@
 					aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
 					<nav class="sb-sidenav-menu-nested nav">
 						<a class="nav-link" href="layout-static.html">학적부여관리</a> 
-						<a class="nav-link" href="layout-sidenav-light.html">학적부관리</a>
+						<a class="nav-link" href="studentallinfo">학적부관리</a>
+						<a class="nav-link" href="studentRecord">학생명단조회</a>
 					</nav>
 				</div>
 				<a class="nav-link collapsed" href="#" data-bs-toggle="collapse"
