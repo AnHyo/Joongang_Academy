@@ -35,6 +35,19 @@
 		$('#inputYear, .cyear').attr('maxlength', '4');
 		$('#inputYear, .cyear').attr('minlength', '4');
 
+		//엔터키
+		$("#inputYear").keydown(function(key) {
+        if (key.keyCode == 13) {
+            $("#listBtn").click();
+        }
+   		 });
+		$("#inputCrclmSearch").keydown(function(key) {
+        if (key.keyCode == 13) {
+            $("#listBtn").click();
+        }
+   		 });
+		
+		
 		//공백제거
 		$("input").on("input", function() {
 			var inputVal = $(this).val().trim();
@@ -566,11 +579,12 @@
 			var econtent = keys[11];
 			var cyear = keys[12];
 			var crclmNo = keys[14]; //db상 crclm_no
-		
+		//	console.log(keys);
 			
-			//날짜 포맷 (YYYY-MM-DD 형태)
-			var bgYMD = bgYMD1.replace(/^(\d{4})(\d{2})(\d{2})$/, "$1-$2-$3");
-			var endYMD = endYMD1.replace(/^(\d{4})(\d{2})(\d{2})$/, "$1-$2-$3");
+			 if(crclmNo != null){
+				//날짜 포맷 (YYYY-MM-DD 형태)
+				var bgYMD = bgYMD1.replace(/^(\d{4})(\d{2})(\d{2})$/, "$1-$2-$3");
+				var endYMD = endYMD1.replace(/^(\d{4})(\d{2})(\d{2})$/, "$1-$2-$3");
 
 			$(".cno").val(crclmNo);
 			$(".cyear").val(cyear);
@@ -587,6 +601,25 @@
 			$(".efnYN").val(efnYN);
 			$(".epeople").val(epeople+"명");
 			$("#instrNo").val(instrno);
+			} else{
+				var cyear = $("#inputYear").val();
+				$(".cno").val('');
+				$(".cyear").val(cyear);
+				$(".chalf").val('');
+				$(".ccd").val('');
+				$(".crclmNameList").val('');
+				$(".crclmNameSet").val('');
+				$(".bgYMD").val('');
+				$(".endYMD").val('');
+				$(".ecost").val('');
+				$(".econtent").val('');
+				$(".instrname").val('');
+				$(".schedule").val('');
+				$(".efnYN").val('');
+				$(".epeople").val('');
+				$("#instrNo").val('');
+				
+			}
 			
 			$(".bgYMD").on("blur", function() {
 				var  begin = $(".bgYMD").val();
@@ -595,7 +628,7 @@
 					alert("잘못된 날짜 형식입니다.");
 			    	$(".bgYMD").val("");
 				}
-			});
+			}); 
 				
 			$(".endYMD").on("blur", function() {
 				var  begin = $(".bgYMD").val();
@@ -732,7 +765,6 @@
 					selectionUnit: 'row'
 					
 					});
-					 
 			
 			
 			

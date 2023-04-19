@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+    
  <nav class="sb-topnav navbar navbar-expand navbar-dark bg-success">
             <!-- Navbar Brand-->
             <a class="navbar-brand ps-3" style="font-family: 'Noto Sans KR', sans-serif; font-weight: 500; font-size: 24px;" href="/index">중앙정보처리학원</a>
@@ -13,6 +14,8 @@
                 </div>
             </form>
             <!-- Navbar-->
+            <div style="color:white;">${sessionScope.username }님</div>
+            
             <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
@@ -20,7 +23,7 @@
                         <li><a class="dropdown-item" href="#!">Settings</a></li>
                         <li><a class="dropdown-item" href="#!">Activity Log</a></li>
                         <li><hr class="dropdown-divider" /></li>
-                        <li><a class="dropdown-item" href="#!">Logout</a></li>
+                        <li><a class="dropdown-item logout" href="/logout">로그아웃</a></li>
                     </ul>
                 </li>
             </ul>
