@@ -25,7 +25,6 @@ public class sbjctController {
 	
 	@GetMapping("/sbjctMG")
 	public String sbjctMG() {
-		
 		return "admin/sbjctMG";
 	}
 	
@@ -66,19 +65,11 @@ public class sbjctController {
 	}
 	@ResponseBody
 	@PostMapping(value = "/delsbjAjax", produces = "application/json;charset=UTF-8")
-	public String delsbjAjax(@RequestParam(name="rowcnt") int rowcnt,HttpServletRequest request ) {
+	public String delsbjAjax(@RequestParam Map<String, Object> map) {
 		JSONObject json = new JSONObject();
-		int result = sbjctService.delsbj(rowcnt); 
+		int result = sbjctService.delsbj(map); 
 		json.put("result", result);
-		Map<String, Object> search = new HashMap<String, Object>();
-		String searchnm = request.getParameter("searchnm");
-		String searchuse = request.getParameter("searchuse");
-		String searchdel = request.getParameter("searchdel");
-		search.put("searchnm",searchnm);
-		search.put("searchuse",searchuse);
-		search.put("searchdel",searchdel);
-		System.err.println(search);
-		List<Map<String, Object>> list = sbjctService.list(search); 
+		List<Map<String, Object>> list = sbjctService.list(map); 
 		JSONArray listJ = new JSONArray(list);
 		json.put("list", listJ);
 		return json.toString();
