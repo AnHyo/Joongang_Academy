@@ -33,6 +33,11 @@ public class SubjectPlanService {
 		// TODO Auto-generated method stub
 		return planDAO.estOn(map);
 	}
+
+	public int saveDetail(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return planDAO.saveDetail(map);
+	}
 	
 	
 }

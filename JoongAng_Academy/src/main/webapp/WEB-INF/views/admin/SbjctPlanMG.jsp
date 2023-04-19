@@ -33,7 +33,8 @@
 			bodyHeight : 200,
 			columns : [ {
 				header : "연도",
-				name : 'CRCLM_YEAR'
+				name : 'CRCLM_YEAR',
+				
 			}, 
 			{
 				header : "반기코드",
@@ -130,6 +131,7 @@
 					dataType : "json"
 				}).done(function(data) {
 					grid.resetData(data.estList);
+					grid.setAutoColumnWidth(true);
 				}).fail(function() {
 					alert("문제가 발생했습니다.");
 				});
@@ -161,6 +163,33 @@
 					$("#b").val(data.subjectPlan.SBJCT_CN);
 					$("#c").val(data.subjectPlan.CRS_BOOK);
 					$("#l").val(data.subjectPlan.SBJCT_MTHD_CD);
+				}).fail(function() {
+					alert("문제가 발생했습니다.");
+				});
+				
+				$.post({
+					url : "/estPlanDetail",
+					data : {
+						crc : crc,
+						year : year,
+						hlf : hlf,
+						sbj : sbj
+					},
+					dataType : "json"
+				}).done(function(data) {
+					
+					var appendHTML = "";
+					$.each(data.detailList, function(index, element) {
+						appendHTML += "<div>";
+						appendHTML += "<table class='table table-bordered'>";
+						appendHTML += "<tr class='table-info'>"  + "<td class='col-2'>강의제목</td> "+ "<td class='col-10'>" + element.LECT_TTL_NM + "</td> " + "</tr>";
+						appendHTML += "<tr class='table-info'>" + "<td class='col-2'>강의주제</td> " + "<td class='col-10'>" + element.LECT_TPC_NM + "</td> " + "</tr>";
+						appendHTML += "<tr class='table-info'>"  + "<td class='col-2'>강의내용</td> "+ "<td class='col-10'>" + element.LECT_CN + "</td> " + "</tr>";
+						appendHTML += "</table>"
+						appendHTML += "</div>";
+					});
+					$("#detailTable").html(appendHTML);
+					var detList = data.detailList;
 				}).fail(function() {
 					alert("문제가 발생했습니다.");
 				});
@@ -212,6 +241,33 @@
 				alert("문제가 발생했습니다.");
 			});
 		});
+		
+		$("#insDetail").click(function(){
+			var crc = $("#crc").val();
+			var year = $("#year").val();
+			var hlf = $("#hlf").val();
+			var sbj = $("#sbj").val();
+			var ttl = $("#d").val();
+			var tpc = $("#e").val();
+			var cn = $("#f").val();
+			$.post({
+				url : "/estDetailSave",
+				data : {
+					crc : crc,
+					year : year,
+					hlf : hlf,
+					sbj : sbj,
+					ttl : ttl,
+					tpc : tpc,
+					cn : cn
+				},
+				dataType : "json"
+			}).done(function(data) {
+				alert("저장했다");
+			}).fail(function() {
+				alert("문제가 발생했습니다.");
+			});
+		});
 	});
 </script>
 </head>
@@ -252,8 +308,8 @@
 						<div id="grid" class="mb-3" style="width: 100%;"></div>
 					</div>
 					<div>
-						<div style="background-color:#F3FAFE; width:100%; height:300px;">
-							<form>
+						<div style="background-color:#F3FAFE; width:100%; min-height:300px;">
+							<form id="subjectPlanMain">
 							<input type="text" id="crc" readonly>
 							<input type="text" id="year" readonly>
 							<input type="text" id="hlf" readonly>
@@ -263,23 +319,54 @@
 								<option value="">선택</option>
 							</select>
 							<div class="form-group row">
-							<label for="a" class="col-sm-2 col-form-label">강의목표</label>
-							<input id="a" type="text" class="form-control">
-							</div>
+								<label for="a" class="col-sm-2 col-form-label">강의목표</label>
+								<div class="col-sm-10">
+								<input id="a" type="text" class="form-control">
+								</div>					
+							</div>	
 							<div class="form-group row">
-							<label for="b" class="col-sm-2 col-form-label">강의내용</label>
-							<input id="b" type="text" class="form-control">
-							</div>
+								<label for="b" class="col-sm-2 col-form-label">강의내용</label>
+								<div class="col-sm-10">
+								<textarea id="b" class="form-control"></textarea>
+								</div>					
+							</div>	
 							<div class="form-group row">
-							<label for="c" class="col-sm-2 col-form-label">교재</label>
-							<input id="c" type="text" class="form-control">
+								<label for="c" class="col-sm-2 col-form-label">교재</label>
+								<div class="col-sm-10">
+								<input id="c" type="text" class="form-control">
+								</div>					
 							</div>
 							</form>
+							<hr>
+						<div id="detailZone">
+							<table id="detailTable" class="table table-bordered">
+							
+							</table>
 						</div>
+						<hr>
 						<div>
-							<c:forEach items="${detailList }" var="d">
-								${d.DTL_NO }
-							</c:forEach>
+							<form id="subjectPlanDetail">
+							<div class="form-group row">
+								<label for="d" class="col-sm-2 col-form-label">강의제목</label>
+								<div class="col-sm-10">
+								<input id="d" type="text" class="form-control">
+								</div>					
+							</div>		
+							<div class="form-group row">
+								<label for="e" class="col-sm-2 col-form-label">강의주제</label>
+								<div class="col-sm-10">
+								<input id="e" type="text" class="form-control">
+								</div>					
+							</div>		
+							<div class="form-group row">
+								<label for="f" class="col-sm-2 col-form-label">강의내용</label>
+								<div class="col-sm-10">
+								<input id="f" type="text" class="form-control">
+								</div>					
+							</div>		
+							<button type="button" id="insDetail">추가</button>						
+							</form>
+						</div>
 						</div>
 					</div>
 					</div>

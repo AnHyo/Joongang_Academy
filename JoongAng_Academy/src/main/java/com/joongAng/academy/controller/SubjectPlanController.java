@@ -82,4 +82,21 @@ public class SubjectPlanController {
 		json.put("result", resultPlan);
 		return json.toString();
 	}
+	@ResponseBody
+	@PostMapping(value = "/estDetailSave", produces = "application/json;charset=UTF-8")
+	public String estDetailSave(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		Map<String, String[]> reqmap = request.getParameterMap();
+		Map<String,Object> map = new HashMap<String, Object>();
+		for (String key : reqmap.keySet()) {
+			String[] values = reqmap.get(key);
+			for (String value : values) {
+				System.out.println(key + " = " + value);
+				map.put(key.toString(), value);
+			}
+		}
+		int resultDetail = planService.saveDetail(map);
+		json.put("result", resultDetail);
+		return json.toString();
+	}
 }

@@ -44,7 +44,8 @@
 			rowHeaders : [ 'checkbox' ],
 			columns : [ {
 				header : "연도",
-				name : 'CRCLM_YEAR'
+				name : 'CRCLM_YEAR',
+				sortable : true
 			}, 
 			{
 				header : "반기코드",
@@ -65,7 +66,8 @@
 				name : 'CRCLM_NM'
 			}, {
 				header : "과목번호",
-				name : 'SBJCT_NO'
+				name : 'SBJCT_NO',
+				sortable : true
 			}, {
 				header : "과목명",
 				name : 'SBJCT_NM'
@@ -80,7 +82,12 @@
 				name : 'SBJCT_PLAN_YN'
 			}, {
 				header : "강의실",
-				name : 'ROOM_NO'
+				name : 'ROOM_NO',
+				sortable : true
+			}, {
+				header : "필수과목여부",
+				name : 'ESNTL_YN',
+				sortable : true
 			} ],
 			selectionUnit: 'row' 
 		});
@@ -247,6 +254,14 @@
 				if(h=='N') {
 					$("#h").attr("checked",false);
 				}
+				var o = grid.getValue(ev.rowKey,"ESNTL_YN");
+				if(o=='Y') {
+					$("#o").attr("checked",true);
+				}
+				if(o=='N') {
+					$("#o").attr("checked",false);
+				}
+				$("#o").attr("disabled",false);
 				$("#i").val(grid.getValue(ev.rowKey,"ROOM_NO"));
 				$("#i").attr("disabled",false);
 				$("#j").attr("disabled",false);
@@ -299,6 +314,7 @@
 			$("#f").val("");
 			$("#g").val("");
 			$("#h").attr("checked",false);
+			$("#o").attr("checked",false);
 			$("#i").val("");
 		});
 		
@@ -314,8 +330,9 @@
 			room = $("#i").val();
 			startHour = $("#j").val();
 			endHour = $("#k").val();
-			kornm = $("m").val();
+			kornm = $("#m").val();
 			insno = $("#n").val();
+			esntl = $("#o").val();
 			
 			$.post({
 				url : "/estSaveAjax",
@@ -331,7 +348,8 @@
 					startHour : startHour,
 					endHour : endHour,
 					kornm : kornm,
-					insno : insno
+					insno : insno,
+					esntl : esntl
 				},
 				dataType : "json"
 			}).done(function(data) {
@@ -634,6 +652,8 @@
 							<div class="form-group">
 							<label for="h" class="col-form-label">강의계획서작성여부</label>
 							<input id="h" type="checkbox" disabled>
+							<label for="o" class="col-form-label">필수과목여부</label>
+							<input id="o" type="checkbox" value="Y" disabled>
 							<label for="i" class="col-form-label">강의실</label>
 							<select id="i" disabled>
 								<option></option>

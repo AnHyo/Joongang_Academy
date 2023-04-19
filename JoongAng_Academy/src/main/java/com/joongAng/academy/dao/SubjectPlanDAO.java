@@ -18,4 +18,6 @@ public interface SubjectPlanDAO {
 
 	int estOn(Map<String, Object> map);
 
+	int saveDetail(Map<String, Object> map);
+
 }

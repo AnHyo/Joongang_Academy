@@ -29,6 +29,16 @@
 			AND CodeFind('0018',CRCLM_HALF) = #{hlf} 
 			AND SBJCT_NO = #{sbj} 
 	</update>
+
+	<insert id="saveDetail" parameterType="HashMap">
+		<selectKey resultType="Integer" keyProperty="detailCount" order="BEFORE">
+        SELECT COUNT(*) FROM SBJCT_PLAN_DTL WHERE CRCLM_YEAR=#{year} AND CRCLM_HALF=CodeFindRev('0018',#{hlf}) AND CRCLM_CD=CodeFindRev('0002',#{crc}) AND SBJCT_NO=#{sbj}
+    	</selectKey>   
+		INSERT INTO SBJCT_PLAN_DTL (CRCLM_YEAR,CRCLM_HALF,CRCLM_CD,SBJCT_NO,DTL_NO,LECT_TTL_NM,LECT_TPC_NM,LECT_CN)
+		VALUES (#{year},CodeFindRev('0018',#{hlf}),CodeFindRev('0002',#{crc}),#{sbj},
+		#{detailCount}+1
+		,#{ttl},#{tpc},#{cn})		
+	</insert>
 	<update id="estOn" parameterType="HashMap">
 		UPDATE ESTBL_SBJCT
 		SET
