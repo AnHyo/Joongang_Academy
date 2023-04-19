@@ -22,8 +22,8 @@ public class SbjctService {
 		return sbjctDAO.addsbj(map);
 	}
 
-	public int delsbj(int rowcnt) {
-		return sbjctDAO.delsbj(rowcnt);
+	public int delsbj(Map<String, Object> map) {
+		return sbjctDAO.delsbj(map);
 	}
 
 	public int updatesbj(Map<String, Object> map) {

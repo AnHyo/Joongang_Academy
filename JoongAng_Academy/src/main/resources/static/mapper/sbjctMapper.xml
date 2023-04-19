@@ -25,7 +25,7 @@
 		EDU_HR=#{EDU_HR}
 	</insert>
 
-	<update id="delsbj" parameterType="Integer">
+	<update id="delsbj" parameterType="HashMap">
 		UPDATE SBJCT_INFO SET
 		DEL_YN ='Y'
 		WHERE SBJCT_NO =#{rowcnt}

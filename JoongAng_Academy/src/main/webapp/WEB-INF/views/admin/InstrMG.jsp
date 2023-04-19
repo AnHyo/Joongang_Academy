@@ -146,49 +146,60 @@
 					<div>
 						<div style="background-color:#F3FAFE; width:100%; height:300px;">
 							<form>
-							<div class="form-group">
-							<label for="a" class="col-sm-2 col-form-label">강사번호</label>
-							<input id="a" type="text">
+							<div class="d-flex justify-content">
+							<div class="form-group col-3">
+							<label for="a" class="col-form-label col-4">강사번호</label>
+							<input id="a" type="text" disabled>
 							</div>
-							<div class="form-group">
-							<label for="b" class="col-sm-2 col-form-label">성명</label>
+							<div class="form-group col-3">
+							<label for="b" class="col-form-label col-4">성명</label>
 							<input id="b" type="text">
 							</div>
-							<div class="form-group">
-							<label for="c" class="col-sm-2 col-form-label">생년월일</label>
+							<div class="form-group col-3">
+							<label for="c" class="col-form-label col-4">생년월일</label>
 							<input id="c" type="text">
 							</div>
-							<div class="form-group">
-							<label for="d" class="col-sm-2 col-form-label">이메일</label>
+							</div>
+							
+							<div class="d-flex justify-content">
+							<div class="form-group col-3">
+							<label for="d" class="col-form-label col-4">이메일</label>
 							<input id="d" type="text">
 							</div>
-							<div class="form-group">
-							<label for="e" class="col-sm-2 col-form-label">연락처</label>
+							<div class="form-group col-3">
+							<label for="e" class="col-form-label col-4">연락처</label>
 							<input id="e" type="text">
 							</div>
-							<div class="form-group">
-							<label for="f" class="col-sm-2 col-form-label">우편번호</label>
-							<input id="f" type="text">
-							</div>
-							<div class="form-group">
-							<label for="g" class="col-sm-2 col-form-label">주소</label>
-							<input id="g" type="text">
-							</div>
-							<div class="form-group">
-							<label for="h" class="col-sm-2 col-form-label">상세주소</label>
-							<input id="h" type="text">
-							</div>
-							<div class="form-group">
-							<label for="i" class="col-sm-2 col-form-label">성별</label>
+							<div class="form-group col-3">
+							<label for="i" class="col-form-label col-4">성별</label>
 							<input id="i" type="text">
 							</div>
-							<div class="form-group">
-							<label for="j" class="col-sm-2 col-form-label">사용자번호</label>
-							<input id="j" type="text">
 							</div>
-							<div class="form-group">
-							<label for="k" class="col-sm-2 col-form-label">교육기관번호</label>
+							
+							<div class="d-flex justify-content">
+							<div class="form-group col-3">
+							<label for="f" class="col-form-label col-4">우편번호</label>
+							<input id="f" type="text">
+							</div>
+							<div class="form-group col-3">
+							<label for="g" class="col-form-label col-4">주소</label>
+							<input id="g" type="text">
+							</div>
+							<div class="form-group col-3">
+							<label for="h" class="col-form-label col-4">상세주소</label>
+							<input id="h" type="text">
+							</div>
+							</div>
+							
+							<div class="d-flex justify-content">
+							<div class="form-group col-3">
+							<label for="j" class="col-form-label col-4">사용자번호</label>
+							<input id="j" type="text" disabled>
+							</div>
+							<div class="form-group col-3">
+							<label for="k" class="col-form-label col-4">교육기관번호</label>
 							<input id="k" type="text">
+							</div>
 							</div>
 							</form>
 						</div>

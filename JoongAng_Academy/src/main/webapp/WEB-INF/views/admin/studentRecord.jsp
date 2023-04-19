@@ -39,6 +39,9 @@ display: block;
 	width: auto;
 	height: auto;
 }
+.tui-grid-cell {
+  font-size: 14px;
+}
 </style>
 <script type="text/javascript">
 
@@ -84,8 +87,15 @@ $(function(){
 	
 	var b = $('#nameAndNum').val().replace(/ /gi, '');
 	$('#nameAndNum').val(b);
-
 }
+
+// -- 교육과정 Input 변화시 코드 지우기
+$(function(){
+	$("#department").change(function(){
+		$("#inputGroup-sizing-sm").empty();
+	});
+
+});
 </script>
 <script src="js/student/student_list.js"></script>
 <script src="js/student/dep_search_modal.js"></script>

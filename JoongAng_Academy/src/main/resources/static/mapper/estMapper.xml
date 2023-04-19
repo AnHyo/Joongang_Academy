@@ -25,11 +25,36 @@
 	<select id="estRoomList" resultType="HashMap">
 		SELECT * FROM ROOM_INFO
 	</select>
+	<select id="estSubjectList" parameterType="HashMap" resultType="HashMap">
+		SELECT * FROM SBJCT_INFO WHERE DEL_YN = 'N'
+	</select>
+	<select id="estInstructorList" parameterType="HashMap" resultType="HashMap">
+		SELECT * FROM INSTR_INFO
+	</select>
+	<select id="estGetInstr" parameterType="HashMap" resultType="HashMap">
+		SELECT * FROM SBJCT_INSTR NATURAL JOIN INSTR_INFO
+		WHERE
+			CRCLM_CD = #{crc}
+			AND CRCLM_YEAR = #{year}
+			AND CRCLM_HALF = #{hlf}
+			AND SBJCT_NO = #{sbjno}
+	</select>
 	
 	<insert id="estSave" parameterType="HashMap">
 		INSERT INTO ESTBL_SBJCT (CRCLM_YEAR,CRCLM_HALF,CRCLM_CD,SBJCT_NO,SBJCT_NM,SBJCT_EXPLN,EDU_HR,ROOM_NO)
 		VALUES (#{year},#{hlf},#{crc},#{sbjcd},#{sbjnm},#{sbjxp},#{hrs},#{room})
 		ON DUPLICATE KEY UPDATE
 			ROOM_NO = #{room}
+	</insert>
+	<insert id="estPlan" parameterType="HashMap">
+		INSERT IGNORE INTO SBJCT_PLAN (CRCLM_YEAR,CRCLM_HALF,CRCLM_CD,SBJCT_NO)
+		VALUES (#{year},#{hlf},#{crc},#{sbjcd})
+	</insert>
+	<insert id="estInst" parameterType="HashMap">
+		INSERT INTO SBJCT_INSTR (CRCLM_YEAR,CRCLM_HALF,CRCLM_CD,SBJCT_NO,INSTR_NO,RPRS_INSTR_YN)
+		VALUES (#{year},#{hlf},#{crc},#{sbjcd},#{insno},(SELECT IF(COUNT(RPRS_INSTR_NO)>0,'Y','N') FROM CRCLM_INFO WHERE RPRS_INSTR_NO = #{insno}))
+		ON DUPLICATE KEY UPDATE
+			INSTR_NO = #{insno},
+			RPRS_INSTR_YN = (SELECT IF(COUNT(RPRS_INSTR_NO)>0,'Y','N') FROM CRCLM_INFO WHERE RPRS_INSTR_NO = #{insno})
 	</insert>
 </mapper>

@@ -23,6 +23,16 @@
 		SBJCT_TRGT = #{trgt}
 		,SBJCT_CN = #{cn}
 		,CRS_BOOK = #{book}
+		,SBJCT_MTHD_CD = #{method}
+		WHERE CodeFind('0002',CRCLM_CD) = #{crc} 
+			AND CRCLM_YEAR = #{year} 
+			AND CodeFind('0018',CRCLM_HALF) = #{hlf} 
+			AND SBJCT_NO = #{sbj} 
+	</update>
+	<update id="estOn" parameterType="HashMap">
+		UPDATE ESTBL_SBJCT
+		SET
+		SBJCT_PLAN_YN = 'Y'
 		WHERE CodeFind('0002',CRCLM_CD) = #{crc} 
 			AND CRCLM_YEAR = #{year} 
 			AND CodeFind('0018',CRCLM_HALF) = #{hlf} 
