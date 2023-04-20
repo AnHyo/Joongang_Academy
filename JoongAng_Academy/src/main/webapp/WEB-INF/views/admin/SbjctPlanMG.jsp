@@ -202,6 +202,12 @@
 					$("#b").val(data.subjectPlan.SBJCT_CN);
 					$("#c").val(data.subjectPlan.CRS_BOOK);
 					$("#l").val(data.subjectPlan.SBJCT_MTHD_CD);
+					console.log(data.subjectPlan);
+					if(data.subjectPlan.SBJCT_TRGT!=null){
+						$("#detailEnter").show(0);					
+					}else{
+						$("#detailEnter").hide(0);
+					}
 				}).fail(function() {
 					alert("문제가 발생했습니다.");
 				});
@@ -228,7 +234,7 @@
 						appendHTML += "</div>";
 					});
 					$("#detailTable").html(appendHTML);
-					$("#detailEnter").show(0);
+					
 				}).fail(function() {
 					alert("문제가 발생했습니다.");
 				});
