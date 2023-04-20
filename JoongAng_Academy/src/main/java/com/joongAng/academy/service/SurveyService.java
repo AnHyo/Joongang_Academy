@@ -14,8 +14,12 @@ public class SurveyService {
 	@Autowired
 	private SurveyDAO surveyDAO;
 	
-	public List<Map<String, Object>> list(String survey_search) {
-		return surveyDAO.list(survey_search);
+	public List<Map<String, Object>> list(Map<String, String> searchcmap) {
+		return surveyDAO.list(searchcmap);
 	}
+
+//	public List<Map<String, Object>> surveyList() {
+//		return surveyDAO.surveyList();
+//	}
 
 }

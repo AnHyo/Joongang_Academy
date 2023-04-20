@@ -11,12 +11,27 @@
 		</if>
 	</select>	
 	
+	<!--신규일때 체크 -->
 	<select id="isCodeExist" parameterType="HashMap" resultType="Boolean"> 
 		SELECT COUNT(*) > 0 
 		FROM CODE_INFO
-		WHERE CD_CLSF = #{CD_CLSF}
-		AND CD = #{CD}
+		WHERE CD_CLSF = #{CD_CLSF} AND CD = #{CD}
 	</select>
+	
+	<!-- 수정할때 체크 -->
+<!-- 	<select id="isCodeExist2" parameterType="java.util.List" resultType="Boolean"> 
+		SELECT COUNT(*) > 0 
+		FROM CODE_INFO
+		 <where> 
+			<foreach collection="list" item="item" separator=" OR "> 
+				( CD_CLSF = #{item.CD_CLSF} AND CD = #{item.CD}) 
+			</foreach> 
+		</where> 
+	</select> -->
+	
+	
+	
+	
 	
 	<select id="detaillist" parameterType="HashMap" resultType="HashMap"> 
 		SELECT * FROM CODE_INFO
@@ -34,14 +49,48 @@
 		CD_SORT_SN=#{CD_SORT_SN}
 	</insert>
 	
-	<update id="code_update" parameterType="HashMap">
-		UPDATE CODE_INFO SET
-		CD_CLSF = #{CD_CLSF},
-		CD = #{CD},
-		CD_NM = #{CD_NM},
-		CD_USE_YN = #{CD_USE_YN},
-		CD_EXPLN=#{CD_EXPLN},
-		CD_SORT_SN=#{CD_SORT_SN}
-		WHERE CD_CLSF = #{old_CD_CLSF}
-	</update>	
+	<update id="code_update" parameterType="java.util.List">
+   		UPDATE CODE_INFO SET
+        CD_NM = CASE
+            <foreach collection="list" item="item" index="index" separator=" ">
+                WHEN CD_CLSF = #{item.CD_CLSF} AND CD = #{item.CD} THEN #{item.CD_NM}
+            </foreach>
+            ELSE CD_NM
+        END,
+        CD_USE_YN = CASE
+            <foreach collection="list" item="item" index="index" separator=" ">
+                WHEN CD_CLSF = #{item.CD_CLSF} AND CD = #{item.CD} THEN #{item.CD_USE_YN}
+            </foreach>
+            ELSE CD_USE_YN
+        END,
+        CD_EXPLN = CASE
+            <foreach collection="list" item="item" index="index" separator=" ">
+                WHEN CD_CLSF = #{item.CD_CLSF} AND CD = #{item.CD} THEN #{item.CD_EXPLN}
+            </foreach>
+            ELSE CD_EXPLN
+        END,
+        CD_SORT_SN = CASE
+            <foreach collection="list" item="item" index="index" separator=" ">
+                WHEN CD_CLSF = #{item.CD_CLSF} AND CD = #{item.CD} THEN #{item.CD_SORT_SN}
+            </foreach>
+            ELSE CD_SORT_SN
+        END
+	    	<where>
+		        <foreach collection="list" item="item" separator="OR">
+		            CD_CLSF = #{item.CD_CLSF} AND CD = #{item.CD} 
+		        </foreach>
+	        </where>
+	</update>
+	
+	
+	
+	<delete id="code_delete" parameterType="java.util.List">
+	    DELETE FROM CODE_INFO
+	    <where> 
+			<foreach collection="list" item="item" open="" close="" separator="OR"> 
+				(CD_CLSF = #{item.CD_CLSF} AND CD = #{item.CD}) 
+			</foreach> 
+		</where> 
+	</delete>
+		
 </mapper>

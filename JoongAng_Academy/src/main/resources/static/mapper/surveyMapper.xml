@@ -5,10 +5,26 @@
 	
 	
 	<select id="list" parameterType="HashMap" resultType="HashMap"> 
-		SELECT * FROM surveyview
-		<if test="survey_search !=null and survey_search!=''">
-			WHERE DGSTFN_NO LIKE CONCAT('%',#{survey_search},'%') OR
-			DGSTFN_TITLE LIKE CONCAT('%',#{survey_search},'%')
+		SELECT * FROM surveylist
+		<where>		
+		<if test="SBJCT_NM !='' and SBJCT_NM !=null">
+			AND SBJCT_NM LIKE CONCAT('%',#{SBJCT_NM},'%');		
 		</if>
-	</select>	
+		<if test="s_CRCLM_CD !='' and s_CRCLM_CD !=null">
+			AND s_CRCLM_CD LIKE CONCAT('%',#{s_CRCLM_CD},'%');		
+		</if>
+		<if test="s_CRCLM_YEAR !='' and s_CRCLM_YEAR !=null">
+			AND s_CRCLM_YEAR = #{s_CRCLM_YEAR}
+		</if>
+		<if test="s_CRCLM_HALF !='' and s_CRCLM_HALF !=null">
+			AND s_CRCLM_HALF = #{s_CRCLM_HALF}
+		</if>
+		</where>
+	</select>
+		
+	<!-- <select id="list" parameterType="HashMap" resultType="HashMap"> 
+		SELECT * FROM surveylist
+		WHERE (CRCLM_CD = #{CRCLM_CD} AND CRCLM_HALF = #{CRCLM_HALF} AND 
+		CRCLM_YEAR = #{CRCLM_YEAR} AND SBJCT_NO = #{SBJCT_NO})
+	</select>	 -->
 </mapper>

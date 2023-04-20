@@ -20,6 +20,11 @@ public interface CodeDAO {
 
 	boolean isCodeExist(Map<String, Object> map);
 
-	int code_update(Map<String, Object> map);
+	boolean isCodeExist2(List<Map<String, Object>> updateData);
+	
+	int code_update(List<Map<String, Object>> updateData);
+
+	int code_delete(List<Map<String, Object>> deleteData);
+
 
 }

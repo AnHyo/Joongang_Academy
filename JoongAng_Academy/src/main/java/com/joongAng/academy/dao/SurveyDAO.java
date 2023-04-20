@@ -10,6 +10,8 @@ import org.springframework.stereotype.Repository;
 @Mapper
 public interface SurveyDAO {
 
-	public List<Map<String, Object>> list(String survey_search);
+	public List<Map<String, Object>> list(Map<String, String> searchcmap);
+
+//	public List<Map<String, Object>> surveyList();
 
 }

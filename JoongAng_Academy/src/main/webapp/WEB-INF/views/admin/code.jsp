@@ -11,57 +11,43 @@
 <meta name="description" content="" />
 <meta name="author" content="" />
 <title>중앙정보처리학원</title>
+
 <link
 	href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css"
 	rel="stylesheet" />
+	
 <link rel="stylesheet"
 	href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+<script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+
 <link href="css/styles.css" rel="stylesheet" />
 <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js"
 	crossorigin="anonymous"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
-<script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+<style type="text/css">
+.tui-grid-cell {
+  font-size: 14px;
+}
+
+</style>
 <script type="text/javascript">
 $(function() {
-/* 	grid.use('Net', {
-    perPage: 100,
-    api: {
-        createData: '/api/createData'
-    }
-	});
-
-var net = grid.getAddOn('Net');
-//...
-// 그리드에서 데이터 생성 완료 후 서버 호출
-net.request('createData');
-
-grid.on('response', function(data) {
-    console.log(data); // 서버 데이터
-}); 
-//  Step 1: URL 설정
-	grid.use('Net', {
-	    perPage: 100,
-	    api: {
-	        createData: '/api/createData'
-	    }
-	}); */
-
 	//전역변수
-	var dataSource = {
-			  api: {
-			    readData: { url: '/codeListAjax', method: 'POST' },
-			    createData: { url: '/codeCreateData', method: 'POST' },
-			    modifyData: { url: '/api/modifyData', method: 'PUT' },
-			    deleteData: { url: '/api/deleteData', method: 'DELETE' }
-			  }
-			};
+// 	var dataSource = {
+// 			  api: {
+// 			    readData: { url: '/codeListAjax', method: 'POST' },
+// 			    createData: { url: '/codeCreateData', method: 'POST' },
+// 			    modifyData: { url: '/api/modifyData', method: 'PUT' },
+// 			    deleteData: { url: '/api/deleteData', method: 'DELETE' }
+// 			  }
+// 			};
 	
  	var grid1 = new tui.Grid({
 		el : document.getElementById('grid'),
 		scrollX : false,
 		scrollY : true,
-		bodyHeight: 200,
-		data: dataSource,
+		bodyHeight: 280,
+// 		data: dataSource,
 		rowHeaders : [ 'checkbox' ],
 		columns : [ 
 		{
@@ -69,18 +55,15 @@ grid.on('response', function(data) {
 			name : 'CD_CLSF',
 			width: 100,
 			align : 'center',
-			editor: {
-				type: 'text',
-				maxLength: 4
-			},
 			sortable: true,
+			editor: 'text',
 		    sortingType: 'desc'
 		}, {
 			header : '코드',
 			name : 'CD',
 			width: 100,
-			align : 'center',
 			editor: 'text',
+			align : 'center',
 			sortable: true,
 		    sortingType: 'desc'
 		}, {
@@ -121,7 +104,6 @@ grid.on('response', function(data) {
 		}, {
 			header : '코드정렬일련번호',
 			name : 'CD_SORT_SN',
-			width: 120,
 			align : 'center',
 			editor: 'text',
 			sortable: true,
@@ -130,6 +112,7 @@ grid.on('response', function(data) {
 		selectionUnit: 'row' //row단위로 선택
 	});
  	
+ 
 	//grid 전체리스트     
 	$.post({
 		url : "/codeListAjax",
@@ -137,33 +120,29 @@ grid.on('response', function(data) {
 	}).done(function(data) {
 		  
 		/* const columns = [
-		    {
-		      header: '코드사용여부',
-		      name: 'CD_USE_YN',
-		      width: 100,
-		      align: 'center',
-		      sortable: true,
-		      sortingType: 'desc',
-		      copyOptions: {
-		        useListItemText: true
-		      },
-		      formatter: 'listItemText',
-		      editor: {
-		        type: 'radio',
-		        options: {
-		          listItems: [
-		            { text: 'Y' },
-		            { text: 'N' }
-		          ],
-		          defaultValue: data.list[0].CD_USE_YN
-		        }
-		      }
-		    }];
-		grid1.setColumns(columns); */
-		    
-		    
-		    
-  	  grid1.resetData(data.list);
+			{
+				header : '코드분류',
+				name : 'CD_CLSF',
+				width: 100,
+				align : 'center',
+				sortable: true,
+				 //editable: false, // 기본값: 편집 불가능
+			    sortingType: 'desc'
+			}];
+		grid1.setColumns(columns);  */
+  		grid1.resetData(data.list);
+		grid1.disableColumn('CD_CLSF');
+		grid1.disableColumn('CD');
+	    //grid1.setReadOnlyCell('CD_NM', true);
+	    
+	      grid.on('beforeChange', ev => {
+		    console.log('before change:', ev);
+		  });
+		  grid.on('afterChange', ev => {
+		    console.log('after change:', ev);
+		  });
+		  
+
   		// cell 하나 클릭시 한 줄 전체 범위 지정
 		grid1.on('focusChange', (ev) => {
 			  grid1.setSelectionRange({
@@ -180,7 +159,7 @@ grid.on('response', function(data) {
 		el : document.getElementById('grid2'),
 		scrollX : false,
 		scrollY : true,
-		bodyHeight: 200,
+		bodyHeight: 160,
 		rowHeaders : [ 'checkbox' ],
 		columns : [ 
 			{
@@ -245,11 +224,18 @@ grid.on('response', function(data) {
 			selectionUnit: 'row'
 	});
 	
+	
 	// 신규 버튼
 	$("#add_btn1").click(function(){
-		grid1.prependRow();
-		$("#add_btn1").addClass("disabled");
-	}); 
+	    grid1.prependRow();
+		
+	    var rowKey = grid1.getRowCount() - 1;
+	    grid1.enableCell(rowKey, 'CD_CLSF');
+	    grid1.enableCell(rowKey, 'CD');
+	    $(this).addClass("disabled"); 
+	    
+	    
+	});
 	//검색버튼
 	$("#search_btn").click(function(){
 	var code_search = $("#code_search").val();
@@ -267,16 +253,49 @@ grid.on('response', function(data) {
 		
 	});
 	
-	$('#add_btn3').on('click', function() {
-		  grid3.appendRow();
-		});
 	// 신규2 버튼
 	$("#add_btn2").click(function(){
-		grid2.appendRow();
-		$("#add_btn2").addClass("disabled");
-			/* focus : true*/
-	});
+	  grid2.prependRow();
+	    var rowKey = grid2.getRowCount() - 1;
+	    grid2.enableCell(rowKey, 'CD_CLSF');
+	    grid2.enableCell(rowKey, 'CD');
+	    $(this).addClass("disabled"); 
+		});
 
+	//삭제1
+	var deletedRows = [];
+	$("#del_btn1").on('click', function(){
+		var selectedRows = grid1.getCheckedRows();// 선택된 행들의 정보를 가져옴
+		if(selectedRows.length > 0){
+		  // 선택된 행들의 rowKey 값을 추출하여 배열로 변환
+		  var rowKeys = selectedRows.map(function(row) {
+		    return row.rowKey;
+		  });
+		  // 선택된 행들을 삭제
+		  grid1.removeRows(rowKeys);
+		} else {
+			alert("행을 선택해주세요");
+		}
+	});
+	
+	//삭제2
+	var deletedRows = [];
+	$("#del_btn2").on('click', function(){
+		var selectedRows = grid2.getCheckedRows();// 선택된 행들의 정보를 가져옴
+		if(selectedRows.length > 0){
+		  // 선택된 행들의 rowKey 값을 추출하여 배열로 변환
+		  var rowKeys = selectedRows.map(function(row) {
+		    return row.rowKey;
+		  });
+		  // 선택된 행들을 삭제
+		  grid2.removeRows(rowKeys);
+		} else {
+			alert("행을 선택해주세요");
+		}
+	});
+	
+	
+	
 	// 저장 버튼(추가,수정,삭제)
 	$('#save_btn1').on('click', function(){
 		//필수값 입력하기
@@ -303,10 +322,10 @@ grid.on('response', function(data) {
 		}
 		
 		  // __modified__ 속성 제거 후 반환
-// 		  var data = modifiedRows.map(function(row) {
-// 		    delete row['__modified__'];
-// 		    return row;
-// 		  }); 
+		  var data = modifiedRows.map(function(row) {
+		    delete row['__modified__'];
+		    return row;
+		  }); 
 		//alert("data:" + JSON.stringify(data)); //ok
 		
 		//신규추가한 행의 정보 
@@ -322,23 +341,12 @@ grid.on('response', function(data) {
 		    };
 		});
 		
-		//수정한 행의 정보
-// 		for(var i=0; i<modifiedRows.length; i++){
+			//수정한 행의 정보
 			var updatedRows = modifiedRows[0].updatedRows;
-			//alert("updatedRows.length :"+updatedRows.length); //수정된 행의 갯수
-			var updatedData = updatedRows.map(function(row){
-				return {
-					CD_CLSF: row.CD_CLSF,
-			        CD: row.CD,
-			        CD_NM: row.CD_NM,
-			        CD_USE_YN: row.CD_USE_YN,
-			        CD_EXPLN: row.CD_EXPLN,
-			        CD_SORT_SN: row.CD_SORT_SN
-				}
-			});
-// 		}
-		
-		if(createdRows.length > 0 || updatedRows.length > 0){//(삭제 추후 넣기)
+			//삭제한 행의 정보
+			var deletedRows = modifiedRows[0].deletedRows;
+			//alert(deletedRows.length);//ok
+		if(createdRows.length > 0 || updatedRows.length > 0 || deletedRows.length > 0){
 			//if(createdRows && createdRows.length > 0){	
 			//신규값이 있는경우 
 			if(createdRows.length > 0){	
@@ -385,51 +393,76 @@ grid.on('response', function(data) {
 			} //create 끝 
 			
 			if(updatedRows.length > 0){
-				var CD_CLSF = updatedData[0].CD_CLSF;
-				var CD = updatedData[0].CD;
-				var CD_NM = updatedData[0].CD_NM;
-				var CD_USE_YN = updatedData[0].CD_USE_YN;
-				var CD_EXPLN = updatedData[0].CD_EXPLN;
-				var CD_SORT_SN = updatedData[0].CD_SORT_SN;
-				//alert(CD_CLSF);//ok
-				
-				//필수값 입력
-				if(!checkRequiredValues()){
-		           return false;
-		        }
-				
-				//정보수정 (update) 
+				var updateData = []; //수정된행의 모든정보
+			    for (var i = 0; i < updatedRows.length; i++) {
+			      var row = updatedRows[i];
+			      updateData.push({
+			        CD_CLSF: row.CD_CLSF,
+			        CD: row.CD,
+			        CD_NM: row.CD_NM,
+			        CD_USE_YN: row.CD_USE_YN,
+			        CD_EXPLN: row.CD_EXPLN,
+			        CD_SORT_SN: row.CD_SORT_SN
+			      });
+			    }
+				//alert("updateData:"+JSON.stringify(updateData)); //ok
 				$.post({
 					url : "/codeUpdate",
-					data: {
-						"CD_CLSF" :CD_CLSF,
-						"CD":CD,
-						"CD_NM":CD_NM,
-						"CD_USE_YN" : CD_USE_YN,
-						"CD_EXPLN" : CD_EXPLN,
-						"CD_SORT_SN" : CD_SORT_SN
-					    },
+					    contentType: 'application/json;charset=UTF-8',
+					    data: JSON.stringify(updateData),
 					dataType : "json"
 				}).done(function(data) {
-					if(data.result == 2){
+					if(data.result2 == 2){
 						alert("이미 존재하는 코드입니다.");
-					}
-					else if(data.result == 1){
+					} 
+					else if(data.result > 0){
 						alert("수정 되었습니다.");
+						updatedRows = [];
 						grid1.resetData(data.list);
-						//$("#add_btn1").removeClass("disabled");
-						// 저장 후 focus
-						grid1.focus(updatedRows[0].rowKey); //안됨. 마지막로우가 포커스됨
+						//grid1.focus(updatedRows[0].rowKey); //안됨. 마지막로우가 포커스됨
 					}
 				}).fail(function() {
 					alert("문제가 발생했습니다.");
 				});
-				
 			}
+			
+			//삭제
+			if(deletedRows.length > 0){
+				
+			    var deleteData = []; //삭제된행의 모든정보
+			    for (var i = 0; i < deletedRows.length; i++) {
+			      var row = deletedRows[i];
+			      deleteData.push({
+			        CD_CLSF: row.CD_CLSF,
+			        CD: row.CD,
+			        CD_NM: row.CD_NM,
+			        CD_USE_YN: row.CD_USE_YN,
+			        CD_EXPLN: row.CD_EXPLN,
+			        CD_SORT_SN: row.CD_SORT_SN
+			      });
+			    }
+				
+				$.post({
+					url : "/codeDelete",
+					    contentType: 'application/json;charset=UTF-8',
+					    data: JSON.stringify(deleteData),
+					dataType : "json"
+				}).done(function(data) {
+					if(data.result > 0){
+						alert("삭제 되었습니다.");
+						deletedRows = [];
+						grid1.resetData(data.list);
+						//grid1.focus(updatedRows[0].rowKey); //안됨. 마지막로우가 포커스됨
+					}
+				}).fail(function() {
+					alert("문제가 발생했습니다.");
+				});
+		}//delete 끝
+		
 		}
-	else {
-		alert("저장할 데이터가 없습니다.");
-	} 
+		else {
+			alert("저장할 데이터가 없습니다.");
+		} 
 }); //save_btn1 끝
 
 
@@ -446,23 +479,19 @@ grid.on('response', function(data) {
      
      // 수정전 값 old_CD_CLSF객체에 담기
       var CD_CLSFValue = grid1.getValue(rowKey, 'CD_CLSF'); //td값 //0번째의 CD_CLSF값 //0000
-//      old_CD_CLSF1[rowKey] = CD_CLSFValue;
-//      alert(JSON.stringify(old_CD_CLSF1)); //{"0":"0000"}//ok
-//      old_CD_CLSF = CD_CLSFValue; 
-     
      //td를 눌러서 셀값을 바꿀때마다 old_CD_CLSF값이 달라짐..이러면안댐
      //alert(CD_CLSFValue); //0000
      //if(CD_CLSFValue){}
      //alert(CD_CLSFValue);
-     
-     
-     
 	 	$.post({
 			url : "/codeListAjax2",
 			dataType : "json",
 	 		data: {"CD_CLSFValue" : CD_CLSFValue}
 		}).done(function(data) {
 	  	  grid2.resetData(data.detaillist);
+			grid2.disableColumn('CD_CLSF');
+			grid2.disableColumn('CD');
+			
 		  grid2.on('focusChange', (ev) => {
 				  grid2.setSelectionRange({
 				    start: [ev.rowKey, 0],
@@ -495,6 +524,180 @@ grid.on('response', function(data) {
 		});
 	});
 	
+	
+	
+	
+	// 저장2 버튼(추가,수정,삭제)
+	$('#save_btn2').on('click', function(){
+		//필수값 입력하기
+		function checkRequiredValues(){
+			if(CD_CLSF == "" || CD_CLSF == null){
+				alert("코드분류를 입력하세요");
+				result = false;
+			}
+			else if(CD == "" || CD == null){
+				alert("코드를 입력하세요");
+				result = false;
+			}
+			else {
+				result = true;
+			}
+			return result;
+		};
+		
+		var modifiedRows = grid2.getModifiedRows(); //추가/수정/삭제된 값 
+
+		// 배열로 변환
+		if (!Array.isArray(modifiedRows)) {
+		  modifiedRows = [modifiedRows];
+		}
+		
+		  // __modified__ 속성 제거 후 반환
+		  var data = modifiedRows.map(function(row) {
+		    delete row['__modified__'];
+		    return row;
+		  }); 
+		//alert("data:" + JSON.stringify(data)); //ok
+		
+		//신규추가한 행의 정보 
+		var createdRows = modifiedRows[0].createdRows;
+		var createdData = createdRows.map(function(row) {
+		    return {
+		        CD_CLSF: row.CD_CLSF,
+		        CD: row.CD,
+		        CD_NM: row.CD_NM,
+		        CD_USE_YN: row.CD_USE_YN,
+		        CD_EXPLN: row.CD_EXPLN,
+		        CD_SORT_SN: row.CD_SORT_SN
+		    };
+		});
+		
+			//수정한 행의 정보
+			var updatedRows = modifiedRows[0].updatedRows;
+			//삭제한 행의 정보
+			var deletedRows = modifiedRows[0].deletedRows;
+			//alert(deletedRows.length);//ok
+		if(createdRows.length > 0 || updatedRows.length > 0 || deletedRows.length > 0){
+			//if(createdRows && createdRows.length > 0){	
+			//신규값이 있는경우 
+			if(createdRows.length > 0){	
+				var CD_CLSF = createdData[0].CD_CLSF;
+				var CD = createdData[0].CD;
+				var CD_NM = createdData[0].CD_NM;
+				var CD_USE_YN = createdData[0].CD_USE_YN;
+				var CD_EXPLN = createdData[0].CD_EXPLN;
+				var CD_SORT_SN = createdData[0].CD_SORT_SN;
+				//alert("datas:"+JSON.stringify(datas)); //새로 추가한 정보 값 
+				//alert(CD_CLSF); //ok
+				//필수값 입력
+				if(!checkRequiredValues()){ //boolean
+		           return false;
+		        } 
+				//추가한정보 삽입 
+				$.post({
+					url : "/codeCreate",
+					data: {
+						"CD_CLSF" :CD_CLSF,
+						"CD":CD,
+						"CD_NM":CD_NM,
+						"CD_USE_YN" : CD_USE_YN,
+						"CD_EXPLN" : CD_EXPLN,
+						"CD_SORT_SN" : CD_SORT_SN
+					    },
+		 			//type: dataSource.api.createData.method, ($.post이기 때문에 생략가능)
+		 			//contentType: "application/json;charset=UTF-8", //이거 있으면 오류남! 왜?
+					dataType : "json"
+				}).done(function(data) {
+					if(data.result == 2){
+						alert("이미 존재하는 코드입니다.");
+					}
+					else if(data.result == 1){
+						alert("(신규)저장되었습니다.");
+						grid1.resetData(data.list);
+						grid2.resetData(data.detaillist);
+						$("#add_btn1").removeClass("disabled");
+						// 신규 저장 후 focus
+						grid2.focus(createdRows[0].rowKey); //안됨. 마지막로우가 포커스됨
+					}
+				}).fail(function() {
+					alert("문제가 발생했습니다.");
+				});
+			} //create 끝 
+			
+			if(updatedRows.length > 0){
+				var updateData = []; //수정된행의 모든정보
+			    for (var i = 0; i < updatedRows.length; i++) {
+			      var row = updatedRows[i];
+			      updateData.push({
+			        CD_CLSF: row.CD_CLSF,
+			        CD: row.CD,
+			        CD_NM: row.CD_NM,
+			        CD_USE_YN: row.CD_USE_YN,
+			        CD_EXPLN: row.CD_EXPLN,
+			        CD_SORT_SN: row.CD_SORT_SN
+			      });
+			    }
+				//alert("updateData:"+JSON.stringify(updateData)); //ok
+				$.post({
+					url : "/codeUpdate",
+					    contentType: 'application/json;charset=UTF-8',
+					    data: JSON.stringify(updateData),
+					dataType : "json"
+				}).done(function(data) {
+					if(data.result2 == 2){
+						alert("이미 존재하는 코드입니다.");
+					} 
+					else if(data.result > 0){
+						alert("수정 되었습니다.");
+						updatedRows = [];
+						grid1.resetData(data.list);
+						grid2.resetData(data.detaillist);
+						//grid1.focus(updatedRows[0].rowKey); //안됨. 마지막로우가 포커스됨
+					}
+				}).fail(function() {
+					alert("문제가 발생했습니다.");
+				});
+			}
+			
+			//삭제
+			if(deletedRows.length > 0){
+				
+			    var deleteData = []; //삭제된행의 모든정보
+			    for (var i = 0; i < deletedRows.length; i++) {
+			      var row = deletedRows[i];
+			      deleteData.push({
+			        CD_CLSF: row.CD_CLSF,
+			        CD: row.CD,
+			        CD_NM: row.CD_NM,
+			        CD_USE_YN: row.CD_USE_YN,
+			        CD_EXPLN: row.CD_EXPLN,
+			        CD_SORT_SN: row.CD_SORT_SN
+			      });
+			    }
+				
+				$.post({
+					url : "/codeDelete",
+					    contentType: 'application/json;charset=UTF-8',
+					    data: JSON.stringify(deleteData),
+					dataType : "json"
+				}).done(function(data) {
+					if(data.result > 0){
+						alert("삭제 되었습니다.");
+						deletedRows = [];
+						grid1.resetData(data.list);
+						grid2.resetData(data.detaillist);
+						//grid1.focus(updatedRows[0].rowKey); //안됨. 마지막로우가 포커스됨
+					}
+				}).fail(function() {
+					alert("문제가 발생했습니다.");
+				});
+		}//delete 끝
+		
+		}
+		else {
+			alert("저장할 데이터가 없습니다.");
+		} 
+}); //save_btn1 끝
 	//grid hover
 	/* 	const grid = tui.Grid;
 		grid.applyTheme('clean', { 
@@ -518,39 +721,6 @@ grid.on('response', function(data) {
 			});
 		}
 		fn_control_mouse();	 */	
-	
-	
-	
-	
-	const grid3 = new Grid({
-	      el: document.getElementById('grid3'),
-	      scrollX: false,
-	      scrollY: false,
-	      minBodyHeight: 30,
-	      rowHeaders: ['checkbox'],
-	      columns : [ 
-	  		{
-	  			header : '코드분류',
-	  			name : 'CD_CLSF',
-	  			width: 100,
-	  			align : 'center',
-	  			editor: 'text',
-	  			sortable: true,
-	  		    sortingType: 'desc'
-	  		}, {
-	  			header : '코드',
-	  			name : 'CD',
-	  			width: 100,
-	  			align : 'center',
-	  			editor: 'text',
-	  			sortable: true,
-	  		    sortingType: 'desc'
-	  		}]
-	    });
-
-
-
-
 
 });
 
@@ -600,17 +770,12 @@ button {
 					<div class="d-flex justify-content-end pb-1 mb-2 mt-2">
 						<div>
 							<button type="button" class="btn btn-secondary btn-sm" id="add_btn2">신규</button>
-							<button type="button" class="btn btn-secondary btn-sm">삭제</button>
-							<button type="button" class="btn btn-secondary btn-sm">저장</button>
+							<button type="button" class="btn btn-secondary btn-sm" id="del_btn2">삭제</button>
+							<button type="button" class="btn btn-secondary btn-sm" id="save_btn2">저장</button>
 						</div>
 					</div>
 					<div>
 						<div id="grid2"></div>
-					</div>
-					<div>
-						<button type="button" class="btn btn-secondary btn-sm" id="saveBtn">저장</button>
-						<button type="button" class="btn btn-secondary btn-sm" id="add_btn3">신규</button>
-						<div id="grid3"></div>
 					</div>
 
 
@@ -621,6 +786,7 @@ button {
 			<%@include file="../bar/footer.jsp"%>
 		</div>
 	</div>
+	
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
 		crossorigin="anonymous"></script>
@@ -637,9 +803,12 @@ button {
 
 
 	<!-- TOAST UI Grid -->
-	<link rel="stylesheet"
-		href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
-	<script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+<!-- 	<link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" /> -->
+<!-- 	<script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script> -->
+
+	<!-- Toast UI Grid Editing Module -->
+<!-- 	<link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/grid.css" /> -->
+<!-- 	<script src="https://uicdn.toast.com/grid/latest/grid.js"></script> -->
 
 
 </body>

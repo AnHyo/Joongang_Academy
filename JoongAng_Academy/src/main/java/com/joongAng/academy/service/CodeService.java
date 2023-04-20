@@ -30,8 +30,17 @@ public class CodeService {
 			return codeDAO.isCodeExist(map);
 		}
 
-		public int code_update(Map<String, Object> map) {
-			return codeDAO.code_update(map);
+		public boolean isCodeExist2(List<Map<String, Object>> updateData) {
+			return codeDAO.isCodeExist2(updateData);
 		}
+
+		public int code_update(List<Map<String, Object>> updateData) {
+			return codeDAO.code_update(updateData);
+		}
+
+		public int code_delete(List<Map<String, Object>> deleteData) {
+			return codeDAO.code_delete(deleteData);
+		}
+
 
 }
