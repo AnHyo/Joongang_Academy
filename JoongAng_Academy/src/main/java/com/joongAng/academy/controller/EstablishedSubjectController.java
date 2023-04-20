@@ -157,6 +157,7 @@ public class EstablishedSubjectController {
 		int resultSave = estService.estSave(map);
 		int resultPlan = estService.estPlan(map);
 		int resultInst = estService.estInst(map);
+		int resultDgst = estService.estDgst(map);
 		json.put("result", resultSave);
 		return json.toString();
 	}

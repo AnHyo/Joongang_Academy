@@ -50,11 +50,17 @@
 		VALUES (#{year},#{hlf},#{crc},#{sbjcd},#{sbjnm},#{sbjxp},#{hrs},#{room},#{esntl})
 		ON DUPLICATE KEY UPDATE
 			ROOM_NO = #{room},
+			SBJCT_NM = #{sbjnm},
+			SBJCT_EXPLN = #{sbjxp},
 			ESNTL_YN = #{esntl, jdbcType=BOOLEAN}
 	</insert>
 	<insert id="estPlan" parameterType="HashMap">
 		INSERT IGNORE INTO SBJCT_PLAN (CRCLM_YEAR,CRCLM_HALF,CRCLM_CD,SBJCT_NO)
 		VALUES (#{year},#{hlf},#{crc},#{sbjcd})
+	</insert>
+	<insert id="estDgst" parameterType="HashMap">
+		INSERT IGNORE INTO APPL_DGSTFN_LIST (CRCLM_YEAR,CRCLM_HALF,CRCLM_CD,SBJCT_NO,DGSTFN_OP_YN)
+		VALUES (#{year},#{hlf},#{crc},#{sbjcd},"N")
 	</insert>
 	<insert id="estInst" parameterType="HashMap">
 		INSERT INTO SBJCT_INSTR (CRCLM_YEAR,CRCLM_HALF,CRCLM_CD,SBJCT_NO,INSTR_NO,RPRS_INSTR_YN)

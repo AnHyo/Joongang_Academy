@@ -286,6 +286,7 @@
 					$("#g").val("");
 					$("#h").attr("checked",false);
 					$("#i").val("");
+					$("#z").val("");
 				}).fail(function() {
 					alert("문제가 발생했습니다.");
 				});
@@ -376,6 +377,7 @@
 			$("#m").val("");
 			$("#n").val("");
 			$("#i").val("");
+			$("#z").val("");
 		});
 		
 // 		저장 버튼 클릭 시 입력된 데이터를 DB에 저장하고 입력창을 다시 비활성화
@@ -392,6 +394,10 @@
 			endHour = $("#k").val();
 			kornm = $("#m").val();
 			insno = $("#n").val();
+			if(year==''||hlf==''||crc==''||sbjcd==''||sbjnm==''||insno==''){
+				alert("!");
+				return false;
+			}
 			if($("#o").attr("checked") == true){
 				esntl = "Y";
 			}else{
@@ -643,19 +649,19 @@
 </script>
 <style>
 .tui-grid-cell {
-  font-size: 14px;
+	font-size: 14px;
 }
 </style>
 </head>
 <body class="sb-nav-fixed">
 	<%@include file="../bar/topbar.jsp"%>
-		<div id="layoutSidenav">
+	<div id="layoutSidenav">
 		<%@include file="../bar/sidebar.jsp"%>
 		<div id="layoutSidenav_content">
 			<main>
 				<!-- 탭 메뉴 -->
 				<div class="bg-dark text-white" style="width: 100%; height: 40px;">
-					
+
 				</div>
 				<div class="container-fluid px-4">
 					<h1 class="mt-4">개설교과목관리</h1>
@@ -686,157 +692,242 @@
 						<div id="grid" class="mb-3" style="width: 100%;"></div>
 					</div>
 					<div>
-						<div style="background-color:#F3FAFE; width:100%; height:300px;">
+						<div
+							style="background-color: #F3FAFE; width: 100%; height: 300px;">
 							<form>
-							<div class="form-group">
-							<label for="c" class="col-form-label">교육과정</label>
-							<select id="c" disabled>
-								<option></option>
-							</select>
-							<label for="a" class="col-form-label">연도</label>
-							<select id="a" disabled>
-								<option>연도선택</option>
-							</select>
-							<label for="b" class="col-form-label">반기</label>
-							<select id="b" disabled>
-								<option>반기선택</option>
-							</select>
-							</div>
-							<div class="form-group">
-							<label for="d" class="col-form-label">과목번호</label>
-							<input id="d" type="text" disabled>
-							<input id="z" type="text" disabled>
-							<button type="button" id="subjectSearchBtn" disabled>검색</button>
-							<label for="e" class="col-form-label">개설과목명</label>
-							<input id="e" type="text">
 
-							<label for="f" class="col-form-label">과목설명</label>
-							<input id="f" type="text">
-							<label for="g" class="col-form-label">총강의시간</label>
-							<input id="g" type="text" disabled>
-							</div>
-							<div class="form-group">
-							<label for="h" class="col-form-label">강의계획서작성여부</label>
-							<input id="h" type="checkbox" disabled>
-							<label for="o" class="col-form-label">필수과목여부</label>
-							<input id="o" type="checkbox" disabled>
-							<label for="i" class="col-form-label">강의실</label>
-							<select id="i" disabled>
-								<option></option>
-							</select>
-							</div>
-							<div class="form-group">
-							<label for="j" class="col-form-label">시작교시</label>
-							<select id="j" disabled>
-								<option value="">선택</option>
-							</select>
-							<label for="k" class="col-form-label">종료교시</label>
-							<select id="k" disabled>
-								<option value="">선택</option>
-							</select>
-							
-							<label for="m" class="col-form-label">담당강사</label>
-							<input id="m" type="text" disabled>
-							<button type="button" id="instructorSearchBtn">검색</button>
-							<input id="n" type="hidden">
-							</div>
+								<div class="row">
+									<div class="form-group col-md-6">
+										<label for="c">교육과정</label> <select id="c"
+											class="form-control" disabled>
+											<option></option>
+										</select>
+									</div>
+									<div class="form-group col-md-3">
+										<label for="a">연도</label> <select id="a" class="form-control"
+											disabled>
+											<option>연도선택</option>
+										</select>
+									</div>
+									<div class="form-group col-md-3">
+										<label for="b">반기</label> <select id="b" class="form-control"
+											disabled>
+											<option>반기선택</option>
+										</select>
+									</div>
+								</div>
+
+
+								<div class="row">
+									<div class="form-group col-md-1">
+										<label for="d">과목번호</label> <input id="d" type="text"
+											class="form-control" disabled readonly>
+									</div>
+									<div class="form-group col-md-3">
+										<label for="z"></label>
+										<div class="input-group">
+											<input id="z" type="text" class="form-control" disabled>
+											<div class="input-group-append">
+												<button type="button" class="btn btn-outline-dark" id="subjectSearchBtn"
+													disabled>검색</button>
+											</div>
+										</div>
+									</div>
+									<div class="form-group col-md-4">
+										<label for="e">개설과목명</label> <input id="e"
+											class="form-control" type="text">
+									</div>
+									<div class="form-group col-md-4">
+									<label for="m">담당강사</label> 
+									<div class="input-group">
+											<input id="m" class="form-control" type="text" disabled>
+										<div class="input-group-append">
+											<button type="button" class="btn btn-info" id="instructorSearchBtn">검색</button>
+										</div>
+									</div>
+									</div>
+
+								</div>
+								<div class="row">
+									<div class="form-group col-md-3">
+										<label for="g">총강의시간</label> <input id="g"
+											class="form-control" type="text" disabled>
+									</div>
+									<div class="form-group col-md-3">
+										<label for="j">시작교시</label> <select id="j"
+											class="form-control" disabled>
+											<option value="">선택</option>
+										</select>
+									</div>
+									<div class="form-group col-md-3">
+										<label for="k">종료교시</label> <select id="k"
+											class="form-control" disabled>
+											<option value="">선택</option>
+										</select>
+									</div>
+									<div class="form-group col-md-3">
+									
+										
+											<label for="i">강의실</label> 
+											<select id="i" class="form-control" disabled>
+												<option></option>
+											</select>
+										
+									</div>
+								
+								<div class="row">
+
+									<div class="form-group col-md-12">
+										<label for="f">과목설명</label> 
+										<input id="f" class="form-control"
+											type="text">
+									</div>
+				
+								</div>
+								
+								</div>
+								<div class="row">
+									<div class="form-group col-md-2">
+    									<div class="form-check">
+											<label for="h" class="form-check-label">강의계획서작성여부</label> 
+											<input id="h" class="form-check-input" type="checkbox" disabled> 
+										</div>
+									</div>
+									<div class="form-group col-md-2">
+										<div class="form-check">
+											<label for="o" class="form-check-label">필수과목여부</label> 
+											<input id="o" class="form-check-input" type="checkbox" disabled> 
+										</div>
+									</div>
+									<input id="n" type="hidden">
+								</div>
 							</form>
 						</div>
 					</div>
-					</div>
+				</div>
 				<div class="container-fluid"></div>
 				<!-- 과목 검색모달  -->
-					<div class="modal fade" id="estSubjectModal" tabindex="-1"
-						role="dialog" data-bs-backdrop="static"
-						aria-labelledby="exampleModalLabel" aria-hidden="true">
-						<div class="modal-dialog modal-lg" role="document">
-							<div class="modal-content">
-								<div class="modal-header">
-									<h5 class="modal-title" id="exampleModalLabel">
-										<b>과목검색</b>
-									</h5>
-									<button type="button" class="btn-close" data-bs-dismiss="modal"
-										aria-label="Close"></button>
+				<div class="modal fade" id="estSubjectModal" tabindex="-1"
+					role="dialog" data-bs-backdrop="static"
+					aria-labelledby="exampleModalLabel" aria-hidden="true">
+					<div class="modal-dialog modal-lg" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="exampleModalLabel">
+									<b>과목검색</b>
+								</h5>
+								<button type="button" class="btn-close" data-bs-dismiss="modal"
+									aria-label="Close"></button>
+							</div>
+							<div class="modal-body">
+								<div class="mb-4 w-100" style="height: 18px;">
+									<button type="button"
+										class="btn btn-sm btn-secondary float-end"
+										style="margin-left: 5px;" id="estSubClose"
+										data-bs-dismiss="modal" aria-label="Close">닫기</button>
+									<button type="button"
+										class="btn btn-sm btn-secondary float-end"
+										style="margin-left: 5px;" id="estSubChoose"
+										disabled="disabled">선택</button>
+									<button type="button"
+										class="btn btn-sm btn-secondary float-end"
+										style="margin-left: 5px;" id="estSubShow">조회</button>
 								</div>
-								<div class="modal-body">
-									<div class="mb-4 w-100" style="height: 18px;">
-										<button type="button" class="btn btn-sm btn-secondary float-end" style="margin-left: 5px;" id="estSubClose" data-bs-dismiss="modal" aria-label="Close">닫기</button>
-										<button type="button" class="btn btn-sm btn-secondary float-end" style="margin-left: 5px;" id="estSubChoose"  disabled="disabled">선택</button>
-										<button type="button" class="btn btn-sm btn-secondary float-end" style="margin-left: 5px;" id="estSubShow">조회</button>
-									</div>
-									
-									<div class="p-1 mb-4 border container-fluid" style="background-color: #F3FAFE">
-									 <div class="row">	
+
+								<div class="p-1 mb-4 border container-fluid"
+									style="background-color: #F3FAFE">
+									<div class="row">
 										<span class="col-2 text-center ta font-set">과목</span>
-										  <div class="col-10" style="padding-bottom: 3.5px; padding-top: 3.5px; margin-left: -13px;">
+										<div class="col-10"
+											style="padding-bottom: 3.5px; padding-top: 3.5px; margin-left: -13px;">
 											<div class="input-group input-group-sm">
-												<input type="text" class="form-control form-control-sm dep_Search_text" placeholder="검색어을 입력하세요"
-													name="dep_Search_text" id="dep_Search_text" aria-describedby="basic-addon3">
+												<input type="text"
+													class="form-control form-control-sm dep_Search_text"
+													placeholder="검색어을 입력하세요" name="dep_Search_text"
+													id="dep_Search_text" aria-describedby="basic-addon3">
 											</div>
-										   </div>	
-										</div>	
-									
-									</div>
-									<div class="head">
-										<div class="float-start" style="width: 10px; height: 27px; background-color: #498c5f;"></div>
-										<div class="fw-border" style="font-size: 17px; margin-left: 15px; padding-top: 2px;">과목 정보</div>
-									</div>
-									<div class="table-responsive" style="margin-top: 5px;">
-										<div id="subjectGrid"></div>
+										</div>
 									</div>
 
 								</div>
-								<!-- <div class="modal-footer"></div> -->
+								<div class="head">
+									<div class="float-start"
+										style="width: 10px; height: 27px; background-color: #498c5f;"></div>
+									<div class="fw-border"
+										style="font-size: 17px; margin-left: 15px; padding-top: 2px;">과목
+										정보</div>
+								</div>
+								<div class="table-responsive" style="margin-top: 5px;">
+									<div id="subjectGrid"></div>
+								</div>
+
 							</div>
+							<!-- <div class="modal-footer"></div> -->
 						</div>
 					</div>
+				</div>
 				<!-- 강사 검색모달  -->
-					<div class="modal fade" id="estInstructorModal" tabindex="-1"
-						role="dialog" data-bs-backdrop="static"
-						aria-labelledby="exampleModalLabel" aria-hidden="true">
-						<div class="modal-dialog modal-lg" role="document">
-							<div class="modal-content">
-								<div class="modal-header">
-									<h5 class="modal-title" id="exampleModalLabel">
-										<b>과목검색</b>
-									</h5>
-									<button type="button" class="btn-close" data-bs-dismiss="modal"
-										aria-label="Close"></button>
+				<div class="modal fade" id="estInstructorModal" tabindex="-1"
+					role="dialog" data-bs-backdrop="static"
+					aria-labelledby="exampleModalLabel" aria-hidden="true">
+					<div class="modal-dialog modal-lg" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="exampleModalLabel">
+									<b>과목검색</b>
+								</h5>
+								<button type="button" class="btn-close" data-bs-dismiss="modal"
+									aria-label="Close"></button>
+							</div>
+							<div class="modal-body">
+								<div class="mb-4 w-100" style="height: 18px;">
+									<button type="button"
+										class="btn btn-sm btn-secondary float-end"
+										style="margin-left: 5px;" id="estInsClose"
+										data-bs-dismiss="modal" aria-label="Close">닫기</button>
+									<button type="button"
+										class="btn btn-sm btn-secondary float-end"
+										style="margin-left: 5px;" id="estInsChoose"
+										disabled="disabled">선택</button>
+									<button type="button"
+										class="btn btn-sm btn-secondary float-end"
+										style="margin-left: 5px;" id="estInsShow">조회</button>
 								</div>
-								<div class="modal-body">
-									<div class="mb-4 w-100" style="height: 18px;">
-										<button type="button" class="btn btn-sm btn-secondary float-end" style="margin-left: 5px;" id="estInsClose" data-bs-dismiss="modal" aria-label="Close">닫기</button>
-										<button type="button" class="btn btn-sm btn-secondary float-end" style="margin-left: 5px;" id="estInsChoose"  disabled="disabled">선택</button>
-										<button type="button" class="btn btn-sm btn-secondary float-end" style="margin-left: 5px;" id="estInsShow">조회</button>
-									</div>
-									
-									<div class="p-1 mb-4 border container-fluid" style="background-color: #F3FAFE">
-									 <div class="row">	
+
+								<div class="p-1 mb-4 border container-fluid"
+									style="background-color: #F3FAFE">
+									<div class="row">
 										<span class="col-2 text-center ta font-set">강사</span>
-										  <div class="col-10" style="padding-bottom: 3.5px; padding-top: 3.5px; margin-left: -13px;">
+										<div class="col-10"
+											style="padding-bottom: 3.5px; padding-top: 3.5px; margin-left: -13px;">
 											<div class="input-group input-group-sm">
-												<input type="text" class="form-control form-control-sm dep_Search_text" placeholder="검색어을 입력하세요"
-													name="dep_Search_text" id="dep_Search_text" aria-describedby="basic-addon3">
+												<input type="text"
+													class="form-control form-control-sm dep_Search_text"
+													placeholder="검색어을 입력하세요" name="dep_Search_text"
+													id="dep_Search_text" aria-describedby="basic-addon3">
 											</div>
-										   </div>	
-										</div>	
-									
-									</div>
-									<div class="head">
-										<div class="float-start" style="width: 10px; height: 27px; background-color: #498c5f;"></div>
-										<div class="fw-border" style="font-size: 17px; margin-left: 15px; padding-top: 2px;">강사 정보</div>
-									</div>
-									<div class="table-responsive" style="margin-top: 5px;">
-										<div id="instructorGrid"></div>
+										</div>
 									</div>
 
 								</div>
-								<!-- <div class="modal-footer"></div> -->
+								<div class="head">
+									<div class="float-start"
+										style="width: 10px; height: 27px; background-color: #498c5f;"></div>
+									<div class="fw-border"
+										style="font-size: 17px; margin-left: 15px; padding-top: 2px;">강사
+										정보</div>
+								</div>
+								<div class="table-responsive" style="margin-top: 5px;">
+									<div id="instructorGrid"></div>
+								</div>
+
 							</div>
+							<!-- <div class="modal-footer"></div> -->
 						</div>
 					</div>
+				</div>
 			</main>
-<%-- 			<%@include file="../bar/footer.jsp"%> --%>
+			<%-- 			<%@include file="../bar/footer.jsp"%> --%>
 		</div>
 	</div>
 	<script

@@ -77,5 +77,10 @@ public class EstablishedSubjectService {
 		// TODO Auto-generated method stub
 		return estDAO.estHalfList(map);
 	}
+
+	public int estDgst(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return estDAO.estDgst(map);
+	}
 	
 }

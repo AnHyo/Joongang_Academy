@@ -23,7 +23,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
 <script>
 	$(document).ready(function() {
-
+		$("#detailEnter").hide(0);
 		var Grid = tui.Grid;
 		Grid.applyTheme('clean', { 
 			  row: { 
@@ -228,7 +228,7 @@
 						appendHTML += "</div>";
 					});
 					$("#detailTable").html(appendHTML);
-					var detList = data.detailList;
+					$("#detailEnter").show(0);
 				}).fail(function() {
 					alert("문제가 발생했습니다.");
 				});
@@ -260,7 +260,10 @@
 			var cn = $("#b").val();
 			var book = $("#c").val();
 			var method = $("#l").val();
-			console.log(crc,year,hlf,sbj);
+			if(crc==''||year==''||hlf==''||sbj==''||trgt==''||cn==''){
+				alert("!");
+				return false;
+			}
 			$.post({
 				url : "/estPlanSave",
 				data : {
@@ -352,14 +355,31 @@
 					<div>
 						<div style="background-color:#F3FAFE; width:100%; min-height:300px;">
 							<form id="subjectPlanMain">
-							<input type="text" id="crc" readonly>
-							<input type="text" id="year" readonly>
-							<input type="text" id="hlf" readonly>
-							<input type="text" id="sbj" readonly>
-							<label for="l" class="col-form-label">강의방법</label>
-							<select id="l">
-								<option value="">선택</option>
-							</select>
+							<div class="row">
+								<div class="form-group col-md-4">
+								<label for="crc" class="col-form-label">교육과정</label>
+								<input type="text" class="form-control" id="crc" readonly>
+								</div>
+								<div class="form-group col-md-2">
+								<label for="year" class="col-form-label">연도</label>
+								<input type="text" class="form-control" id="year" readonly>
+								</div>
+								<div class="form-group col-md-2">
+								<label for="hlf" class="col-form-label">반기</label>
+								<input type="text" class="form-control" id="hlf" readonly>
+								</div>
+								<div class="form-group col-md-2">
+								<label for="sbj" class="col-form-label">과목</label>
+								<input type="text" class="form-control" id="sbj" readonly>
+								</div>
+								<div class="form-group col-md-2">
+								<label for="l" class="col-form-label">강의방법</label>
+								<select id="l" class="form-control">
+									<option value="">선택</option>
+								</select>
+								</div>
+							</div>
+							<br>
 							<div class="form-group row">
 								<label for="a" class="col-sm-2 col-form-label">강의목표</label>
 								<div class="col-sm-10">
@@ -386,7 +406,7 @@
 							</table>
 						</div>
 						<hr>
-						<div>
+						<div id="detailEnter">
 							<form id="subjectPlanDetail">
 							<div class="form-group row">
 								<label for="d" class="col-sm-2 col-form-label">강의제목</label>
@@ -406,7 +426,7 @@
 								<input id="f" type="text" class="form-control">
 								</div>					
 							</div>		
-							<button type="button" id="insDetail">추가</button>						
+							<button type="button" class="btn" id="insDetail">추가</button>						
 							</form>
 						</div>
 						</div>
