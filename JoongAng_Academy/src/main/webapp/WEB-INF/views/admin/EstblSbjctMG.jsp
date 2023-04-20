@@ -35,7 +35,7 @@
 				});
 		var grid = new tui.Grid({
 			el : document.getElementById("grid"),
-			scrollX : false,
+			scrollX : true,
 			scrollY : true,
 			bodyHeight : 200,
 			options : {
@@ -45,7 +45,9 @@
 			columns : [ {
 				header : "연도",
 				name : 'CRCLM_YEAR',
-				sortable : true
+				sortable : true,
+				width : 50,
+				align : 'center'
 			}, 
 			{
 				header : "반기코드",
@@ -54,7 +56,9 @@
 			}, 
 			{
 				header : "반기",
-				name : 'HALF'
+				name : 'HALF',
+				width : 50,
+				align : 'center'
 			}, 
 			{
 				header : "교육과정코드",
@@ -63,33 +67,55 @@
 			},
 			{
 				header : "교육과정",
-				name : 'CRCLM_NM'
+				name : 'CRCLM_NM',
+				width : 400,
+				align : 'center'
 			}, {
 				header : "과목번호",
 				name : 'SBJCT_NO',
+				align : 'center',
+				width : 50,
 				sortable : true
-			}, {
+			},{
 				header : "과목명",
-				name : 'SBJCT_NM'
+				name : 'REAL_SBJCT_NO',
+				hidden : true
+			}, {
+				header : "개설과목명",
+				name : 'SBJCT_NM',
+				width : 150
 			}, {
 				header : "과목설명",
-				name : 'SBJCT_EXPLN'
+				name : 'SBJCT_EXPLN',
+				width : 150
 			}, {
 				header : "총강의시간",
-				name : 'EDU_HR'
+				name : 'EDU_HR',
+				align : 'center',
+				width : 70
 			}, {
-				header : "강의계획서 작성여부",
-				name : 'SBJCT_PLAN_YN'
+				header : "강의계획서",
+				name : 'SBJCT_PLAN_YN',
+				align : 'center',
+				width : 70
 			}, {
 				header : "강의실",
 				name : 'ROOM_NO',
-				sortable : true
+				sortable : true,
+				align : 'center',
+				width : 50
 			}, {
-				header : "필수과목여부",
+				header : "필수",
 				name : 'ESNTL_YN',
-				sortable : true
+				align : 'center',
+				width : 50
 			} ],
-			selectionUnit: 'row' 
+			selectionUnit: 'row'
+			,
+		    columnOptions: {
+		        minWidth: 100
+		    },
+		    autoWidth : true
 		});
 		
 // 		교육과정목록생성
@@ -175,6 +201,35 @@
 				alert("문제가 발생했습니다.");
 			});
 		});
+
+// 		상동
+		$("#a").change(function() {
+			var crc = $("#c").val();
+			var year = $("#a").val();
+			$.post({
+				url : "/estHalfList",
+				data : {
+					crc : crc,
+					year : year
+				},
+				dataType : "json"
+			}).done(function(data) {
+				var year, optionHTML;
+				if(data.estHalfList.length==0){
+					optionHTML = "<option value=''>" + "반기선택" + "</option>";
+				}else{
+					optionHTML = "<option value=''>" + "반기선택" + "</option>";
+					$.each(data.estHalfList, function(index, element) {
+					halfcd = element.CRCLM_HALF;
+					half = element.HALF;
+					optionHTML += "<option value="+halfcd+">" + half + "</option>";
+					});
+				}
+				$("#b").html(optionHTML);
+			}).fail(function() {
+				alert("문제가 발생했습니다.");
+			});
+		});
 		
 // 		반기선택
 		$("#halfSelect").append("<option value='0010'>상반기</option>");
@@ -201,6 +256,7 @@
 					dataType : "json"
 				}).done(function(data) {
 					grid.resetData(data.estList);
+					grid.setAutoColumnWidth(true);
 					grid.on('focusChange', (ev) => {
 						  grid.setSelectionRange({
 						    start: [ev.rowKey, 0],
@@ -212,14 +268,16 @@
 					$("#b").attr("disabled",true);
 					$("#c").attr("disabled",true);
 					$("#d").attr("disabled",true);
-					$("#e").attr("disabled",true);
-					$("#f").attr("disabled",true);
 					$("#g").attr("disabled",true);
 					$("#insertBtn").attr("disabled",false);
 					grid.on('click', function(ev){
 						$.fn.gridClicker(ev);
 					});
 					$("#a").val("");
+					
+					$("#b").html("<option value=''>반기선택</option>");
+					$("#b").append("<option value='0010'>상반기</option>");
+					$("#b").append("<option value='0020'>하반기</option>");
 					$("#b").val("");
 					$("#c").val("");
 					$("#d").val("");
@@ -245,6 +303,7 @@
 				$("#c").val(grid.getValue(ev.rowKey,"CRCLM_CD"));
 				$("#d").val(grid.getValue(ev.rowKey,"SBJCT_NO"));
 				$("#e").val(grid.getValue(ev.rowKey,"SBJCT_NM"));
+				$("#z").val(grid.getValue(ev.rowKey,"REAL_SBJCT_NM"));
 				$("#f").val(grid.getValue(ev.rowKey,"SBJCT_EXPLN"));
 				$("#g").val(grid.getValue(ev.rowKey,"EDU_HR"));
 				var h = grid.getValue(ev.rowKey,"SBJCT_PLAN_YN");
@@ -300,12 +359,11 @@
 			$("#a").attr("disabled",false);
 			$("#b").attr("disabled",false);
 			$("#c").attr("disabled",false);
-			$("#d").attr("disabled",false);
+			$("#d").attr("disabled",false);				
 			$("#subjectSearchBtn").attr("disabled",false);
-			$("#e").attr("disabled",false);
-			$("#f").attr("disabled",false);
 			$("#g").attr("disabled",false);
 			$("#i").attr("disabled",false);
+			$("#o").attr("disabled",false);
 			$("#a").val("");
 			$("#b").val("");
 			$("#c").val("");
@@ -315,6 +373,8 @@
 			$("#g").val("");
 			$("#h").attr("checked",false);
 			$("#o").attr("checked",false);
+			$("#m").val("");
+			$("#n").val("");
 			$("#i").val("");
 		});
 		
@@ -332,8 +392,11 @@
 			endHour = $("#k").val();
 			kornm = $("#m").val();
 			insno = $("#n").val();
-			esntl = $("#o").val();
-			
+			if($("#o").attr("checked") == true){
+				esntl = "Y";
+			}else{
+				esntl = "N" 	;
+			}
 			$.post({
 				url : "/estSaveAjax",
 				data : {
@@ -358,14 +421,15 @@
 				$("#b").attr("disabled",true);
 				$("#c").attr("disabled",true);
 				$("#d").attr("disabled",true);
-				$("#e").attr("disabled",true);
 				$("#subjectSearchBtn").attr("disabled",true);
-				$("#f").attr("disabled",true);
 				$("#g").attr("disabled",true);
 				grid.on('click', function(ev){
 					$.fn.gridClicker(ev);
 				});
 				$("#insertBtn").attr("disabled",false);
+				$("#b").html("<option value=''>반기선택</option>");
+				$("#b").append("<option value='0010'>상반기</option>");
+				$("#b").append("<option value='0020'>하반기</option>");
 			}).fail(function() {
 				alert("문제가 발생했습니다.");
 			});
@@ -512,6 +576,7 @@
 		$("#estSubChoose").click(function(ev){
 			$("#d").val(sbjno);
 			$("#e").val(sbjnm);
+			$("#z").val(sbjnm);
 			$("#f").val(sbjxp);
 			$("#g").val(hrs);
 			$("#estSubChoose").attr("disabled",true);
@@ -640,12 +705,13 @@
 							<div class="form-group">
 							<label for="d" class="col-form-label">과목번호</label>
 							<input id="d" type="text" disabled>
-							<label for="e" class="col-form-label">과목명</label>
-							<input id="e" type="text" disabled>
+							<input id="z" type="text" disabled>
 							<button type="button" id="subjectSearchBtn" disabled>검색</button>
+							<label for="e" class="col-form-label">개설과목명</label>
+							<input id="e" type="text">
 
 							<label for="f" class="col-form-label">과목설명</label>
-							<input id="f" type="text" disabled>
+							<input id="f" type="text">
 							<label for="g" class="col-form-label">총강의시간</label>
 							<input id="g" type="text" disabled>
 							</div>
@@ -653,7 +719,7 @@
 							<label for="h" class="col-form-label">강의계획서작성여부</label>
 							<input id="h" type="checkbox" disabled>
 							<label for="o" class="col-form-label">필수과목여부</label>
-							<input id="o" type="checkbox" value="Y" disabled>
+							<input id="o" type="checkbox" disabled>
 							<label for="i" class="col-form-label">강의실</label>
 							<select id="i" disabled>
 								<option></option>

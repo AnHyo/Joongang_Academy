@@ -124,6 +124,24 @@ public class EstablishedSubjectController {
 		return json.toString();
 	}
 	@ResponseBody
+	@PostMapping(value = "/estHalfList", produces = "application/json;charset=UTF-8")
+	public String estHalfList(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		Map<String, String[]> reqmap = request.getParameterMap();
+		Map<String,Object> map = new HashMap<String, Object>();
+		for (String key : reqmap.keySet()) {
+			String[] values = reqmap.get(key);
+			for (String value : values) {
+				System.out.println(key + " = " + value);
+				map.put(key.toString(), value);
+			}
+		}
+		List<Map<String, Object>> estHalfList = estService.estHalfList(map);
+		JSONArray estHalfListJ = new JSONArray(estHalfList);
+		json.put("estHalfList", estHalfListJ);
+		return json.toString();
+	}
+	@ResponseBody
 	@PostMapping(value = "/estSaveAjax", produces = "application/json;charset=UTF-8")
 	public String estSaveAjax(HttpServletRequest request) {
 		JSONObject json = new JSONObject();

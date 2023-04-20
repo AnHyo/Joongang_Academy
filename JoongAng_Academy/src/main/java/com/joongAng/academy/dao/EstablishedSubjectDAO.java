@@ -34,4 +34,6 @@ public interface EstablishedSubjectDAO {
 	public int estInst(Map<String, Object> map);
 
 	public Map<String, Object> estGetInstr(Map<String, Object> map);
+
+	public List<Map<String, Object>> estHalfList(Map<String, Object> map);
 }

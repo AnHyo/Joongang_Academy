@@ -25,16 +25,28 @@
 	$(document).ready(function() {
 
 		var Grid = tui.Grid;
-		Grid.applyTheme('clean');
+		Grid.applyTheme('clean', { 
+			  row: { 
+				    hover: { 
+				      background: '#e9ecef' 
+				    }
+				  }
+				});
 		var grid = new tui.Grid({
 			el : document.getElementById("grid"),
-			scrollX : false,
+			scrollX : true,
 			scrollY : true,
 			bodyHeight : 200,
+			options : {
+				autoWidth: true
+			},
+			rowHeaders : [ 'checkbox' ],
 			columns : [ {
 				header : "연도",
 				name : 'CRCLM_YEAR',
-				
+				sortable : true,
+				width : 50,
+				align : 'center'
 			}, 
 			{
 				header : "반기코드",
@@ -43,7 +55,9 @@
 			}, 
 			{
 				header : "반기",
-				name : 'HALF'
+				name : 'HALF',
+				width : 50,
+				align : 'center'
 			}, 
 			{
 				header : "교육과정코드",
@@ -52,26 +66,51 @@
 			},
 			{
 				header : "교육과정",
-				name : 'CRCLM_NM'
+				name : 'CRCLM_NM',
+				width : 400,
+				align : 'center'
 			}, {
 				header : "과목번호",
-				name : 'SBJCT_NO'
+				name : 'SBJCT_NO',
+				align : 'center',
+				width : 50,
+				sortable : true
 			}, {
 				header : "과목명",
-				name : 'SBJCT_NM'
+				name : 'SBJCT_NM',
+				width : 150
 			}, {
 				header : "과목설명",
-				name : 'SBJCT_EXPLN'
+				name : 'SBJCT_EXPLN',
+				width : 150
 			}, {
+				header : "강의계획서",
+				name : 'SBJCT_PLAN_YN',
+				align : 'center',
+				width : 70
+			},{
 				header : "총강의시간",
-				name : 'EDU_HR'
-			}, {
-				header : "강의계획서 작성여부",
-				name : 'SBJCT_PLAN_YN'
+				name : 'EDU_HR',
+				align : 'center',
+				width : 70
 			}, {
 				header : "강의실",
-				name : 'ROOM_NO'
-			} ]
+				name : 'ROOM_NO',
+				sortable : true,
+				align : 'center',
+				width : 50
+			}, {
+				header : "필수",
+				name : 'ESNTL_YN',
+				align : 'center',
+				width : 50
+			} ],
+			selectionUnit: 'row'
+			,
+		    columnOptions: {
+		        minWidth: 100
+		    },
+		    autoWidth : true
 		});
 		$.post({
 			url : "/estCrclmList",
@@ -264,6 +303,9 @@
 				dataType : "json"
 			}).done(function(data) {
 				alert("저장했다");
+				$("#d").val("");
+				$("#e").val("");
+				$("#f").val("");
 			}).fail(function() {
 				alert("문제가 발생했습니다.");
 			});

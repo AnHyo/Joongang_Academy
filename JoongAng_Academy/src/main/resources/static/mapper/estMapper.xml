@@ -3,7 +3,7 @@
 
 <mapper namespace="com.joongAng.academy.dao.EstablishedSubjectDAO">
 	<select id="estList" parameterType="HashMap" resultType="HashMap">
-		SELECT CRCLM_YEAR,CRCLM_HALF, CodeFind('0018',CRCLM_HALF) AS HALF,CRCLM_CD, CodeFind('0002',CRCLM_CD) AS CRCLM_NM, SBJCT_NO, SBJCT_NM, SBJCT_EXPLN, EDU_HR, SBJCT_PLAN_YN, ROOM_NO, ESNTL_YN FROM ESTBL_SBJCT
+		SELECT CRCLM_YEAR,CRCLM_HALF, CodeFind('0018',CRCLM_HALF) AS HALF,CRCLM_CD,SubjectFind(SBJCT_NO)AS REAL_SBJCT_NM, CodeFind('0002',CRCLM_CD) AS CRCLM_NM, SBJCT_NO, SBJCT_NM, SBJCT_EXPLN, EDU_HR, SBJCT_PLAN_YN, ROOM_NO, ESNTL_YN FROM ESTBL_SBJCT
 		WHERE CRCLM_CD = #{crc}
         <if test="year != ''">
 			AND CRCLM_YEAR = #{year}
@@ -21,6 +21,11 @@
 		SELECT CRCLM_YEAR FROM CRCLM_INFO
 		WHERE CRCLM_CD = #{crc}
 		GROUP BY CRCLM_YEAR
+	</select>
+	<select id="estHalfList" parameterType="String" resultType="HashMap">
+		SELECT CRCLM_HALF, CodeFind('0018',CRCLM_HALF) AS HALF FROM CRCLM_INFO
+		WHERE CRCLM_CD = #{crc} AND CRCLM_YEAR = #{year}
+		GROUP BY CRCLM_HALF
 	</select>
 	<select id="estRoomList" resultType="HashMap">
 		SELECT * FROM ROOM_INFO
@@ -44,10 +49,8 @@
 		INSERT INTO ESTBL_SBJCT (CRCLM_YEAR,CRCLM_HALF,CRCLM_CD,SBJCT_NO,SBJCT_NM,SBJCT_EXPLN,EDU_HR,ROOM_NO,ESNTL_YN)
 		VALUES (#{year},#{hlf},#{crc},#{sbjcd},#{sbjnm},#{sbjxp},#{hrs},#{room},#{esntl})
 		ON DUPLICATE KEY UPDATE
-			ROOM_NO = #{room}
-<!-- 			<if test="esntl == 'Y'"> -->
-<!-- 			,ESNTL_YN = '#{esntl}' -->
-<!-- 			</if> -->
+			ROOM_NO = #{room},
+			ESNTL_YN = #{esntl, jdbcType=BOOLEAN}
 	</insert>
 	<insert id="estPlan" parameterType="HashMap">
 		INSERT IGNORE INTO SBJCT_PLAN (CRCLM_YEAR,CRCLM_HALF,CRCLM_CD,SBJCT_NO)
