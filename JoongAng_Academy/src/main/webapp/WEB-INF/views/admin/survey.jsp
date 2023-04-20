@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -31,33 +32,8 @@ $(function() {
 				  deleteData: { url: '/api/deleteData', method: 'DELETE' }
 			}
 		};
-	//검색버튼
-	$("#search_btn").click(function(){
-	var survey_search = $("#survey_search").val();
-		alert(survey_search);
-		$.post({
-			url : "/surveyListAjax",
-			dataType : "json",
-			cache : false,
-			data: {"survey_search" : survey_search}
-		}).done(function(data) {
-	  	  grid.resetData(data.list);
-	  	  
-		}).fail(function() {
-			alert("문제가 발생했습니다.");
-		});
 		
-	});
-	
-		$.post({
-			url : "/surveyListAjax",
-			dataType : "json"
-
-		}).done(function(data) {
-			grid.resetData(data.list);
-		}).fail(function() {
-			alert("문제가 발생했습니다.");
-		});
+		//그리드1
 		const Grid = tui.Grid;
 		Grid.applyTheme('clean');
 
@@ -67,37 +43,76 @@ $(function() {
 			scrollY : true,
 			bodyHeight : 250,
 			rowHeaders : [ 'checkbox' ],
-			columns : [ {
+			columns : [ 
+				/* {
 				header : '설문번호',
 				name : 'DGSTFN_NO'
+			},  */
+			{
+				header : '년도',
+				name : 'CRCLM_YEAR',
+				width: 70,
+				align : 'center',
+				sortable: true,
+			    sortingType: 'desc'
 			}, {
-				header : '설문명',
-				name : 'DGSTFN_TITLE',
-			}, {
-				header : '훈련과정',
-				name : 'CRCLM_NM'
-			}, {
+				header : '분기',
+				name : 'CRCLM_HALF_NM',
+				width: 60,
+				align : 'center',
+				sortable: true,
+			    sortingType: 'desc'
+			}, 
+			{
+				header : '훈련과정명',
+				name : 'CRCLM_CD_NM',
+				align : 'center',
+				sortable: true,
+			    sortingType: 'desc'
+			}, 
+			{
+				header : '과목명',
+				name : 'SBJCT_NM',
+				width: 150,
+				align : 'center',
+				sortable: true,
+			    sortingType: 'desc'
+			},
+			{
 				header : '등록일자',
-				name : 'DGSTFN_YMD',
+				name : 'DGSTFN_RGDATE',
+				width: 110,
 				editor: {
 					type: 'datePicker',
 					options: {
 						formate: 'yyyy-MM-dd'
 					}
-				}
+				},
+				align : 'center',
+				sortable: true,
+			    sortingType: 'desc'
 			}, {
 				header : '설문시작일',
 				name : 'DGSTFN_SDATE',
+				width: 110,
+				align : 'center',
+				sortable: true,
+			    sortingType: 'desc'
 			}, {
 				header : '설문종료일',
 				name : 'DGSTFN_FDATE',
-			}, {
-				header : '년도',
-				name : 'CRCLM_YEAR',
-			}, {
-				header : '분기',
-				name : 'CRCLM_HALF'
-			} ]
+				width: 110,
+				align : 'center',
+				sortable: true,
+			    sortingType: 'desc'
+			},{
+				header : '개설여부',
+				name : 'DGSTFN_OP_YN',
+				width: 40,
+				align : 'center',
+				sortable: true,
+			    sortingType: 'desc'
+			}]
 		});
 		
 		//surveyview
@@ -179,7 +194,125 @@ $(function() {
 					editor: 'text'
 				}],
 		});
+		//전체리스트
+		$.post({
+			url : "/surveyListAjax",
+			dataType : "json"
 
+			}).done(function(data) {
+				grid.resetData(data.list);
+			}).fail(function() {
+				alert("문제가 발생했습니다.");
+			});
+		
+		//검색버튼
+		$("#search_btn").click(function(){
+			var s_CRCLM_YEAR = $("#s_CRCLM_YEAR").val(); //입력한년도
+			var s_CRCLM_HALF = $('select[name=s_CRCLM_HALF]').val(); //상/하반기 선택
+			var SBJCT_NM = $("#SBJCT_NM").val(); //입력한년도
+			var s_CRCLM_CD = $('select[name=s_CRCLM_CD_NM]').val(); //과정현황 선택
+// 			alert("s_CRCLM_YEAR:"+s_CRCLM_YEAR);//ok
+// 			alert("s_CRCLM_HALF:"+s_CRCLM_HALF);//ok
+// 			alert("SBJCT_NM:"+SBJCT_NM);//ok
+			alert("s_CRCLM_CD:"+s_CRCLM_CD);
+		
+			$.post({
+				url : "/surveyListAjax",
+				dataType : "json",
+				cache : false,
+				data : {
+					"s_CRCLM_YEAR" : s_CRCLM_YEAR,
+					"s_CRCLM_HALF" : s_CRCLM_HALF,
+					"SBJCT_NM" : SBJCT_NM,
+					"s_CRCLM_CD" : s_CRCLM_CD
+				},
+			}).done(function(data) {
+		  	  grid.resetData(data.list);[]
+		  	  
+			}).fail(function() {
+				alert("문제가 발생했습니다.");
+			}); 
+		});
+		
+			
+			
+		//grid 행 클릭시    	
+		grid.on('click', function(ev) {
+			var rowKey = ev.rowKey; // 클릭한 행의 키값
+			var rowData = grid.getRow(rowKey); // 클릭한 행의 데이터
+			//alert("rowKey:"+rowKey);//ok
+			//alert("rowData:"+JSON.stringify(rowData));//ok
+			
+			//신규 클릭시 개행된후 행을 클릭했을시 제약조건
+			var cno1 = rowData.CRCLM_CD;
+			
+			if(cno1 ==null){
+					$(".CRCLM_YEAR").prop('disabled', false); 
+			}
+			else{
+				//사용자 입력칸 입력가능
+	 			const inputTags = $("tbody input, tbody textarea");
+					inputTags.each(function() {
+				 	 $(this).prop('disabled', false);
+				});
+	// 			const inputTags1 = $("tbody select");
+	// 				inputTags1.each(function() {
+	// 				  $(this).prop('disabled', false);
+	// 				});
+				//$(".econtent").prop('disabled', false);
+				
+				$(".CRCLM_NO").prop('disabled', true);
+				$(".CRCLM_YEAR").prop('disabled', true); 
+				$(".CRCLM_HALF").prop('disabled', true); 
+				$(".crclmNameList").prop('disabled', true); 
+			}
+			
+			var CRCLM_NO = rowData.CRCLM_NO; 
+			var CRCLM_CD = rowData.CRCLM_CD; //과정코드
+			var CRCLM_YEAR = rowData.CRCLM_YEAR; // 연도
+			var CRCLM_HALF = rowData.CRCLM_HALF; // 상/하반기
+			var DGSTFN_YMD = rowData.DGSTFN_YMD; // 등록일
+			var DGSTFN_SDATE = rowData.DGSTFN_SDATE; // 시작일
+			var DGSTFN_FDATE = rowData.DGSTFN_FDATE; // 종료일
+			var DGSTFN_TITLE = rowData.DGSTFN_TITLE;			
+			//var CRCLM_NM = rowData.CRCLM_NM;			
+			var DGSTFN_INTRO; //안내문구	
+			$(".CRCLM_NO").val(CRCLM_NO);
+			$(".CRCLM_YEAR").val(CRCLM_YEAR);
+			$(".CRCLM_HALF").val(CRCLM_HALF);
+			$(".DGSTFN_YMD").val(DGSTFN_YMD);
+			$(".DGSTFN_SDATE").val(DGSTFN_SDATE);
+			$(".DGSTFN_FDATE").val(DGSTFN_FDATE);
+			$(".DGSTFN_TITLE").val(DGSTFN_TITLE);
+			$(".crclmNameList").val(CRCLM_CD);
+			
+			/* alert("CRCLM_CD:"+rowData.CRCLM_CD);//ok
+			alert("CRCLM_YEAR:"+rowData.CRCLM_YEAR);//ok
+			alert("CRCLM_HALF:"+rowData.CRCLM_HALF);//ok */
+			
+			//추가한정보 삽입 
+		
+			//ajax
+			/* $.post({
+				url : "/surveyInfo",
+				data: {
+					"CRCLM_CD" :CRCLM_CD,
+					"CRCLM_YEAR":CRCLM_YEAR,
+					"CRCLM_HALF":CRCLM_HALF
+				    },
+				dataType : "json"
+			}).done(function(data) {
+				if(data.result == 1){
+					alert("(신규)저장되었습니다.");
+					grid.resetData(data.surveyInfo);
+					//$("#add_btn1").removeClass("disabled");
+					// 신규 저장 후 focus
+					//grid.focus(createdRows[0].rowKey); //안됨. 마지막로우가 포커스됨
+				}
+			}).fail(function() {
+				alert("문제가 발생했습니다.");
+			}); */
+		});
 	});
 </script>
 <style type="text/css">
@@ -201,37 +334,40 @@ ml-10 { margin-left: 10px;}
 					<div class="d-flex justify-content-end pb-1 mb-2 mt-2">
 						<div>
 							<button type="button" class="btn btn-secondary btn-sm" id="search_btn">조회</button>
-							<button type="button" class="btn btn-secondary btn-sm">신규</button>
-							<button type="button" class="btn btn-secondary btn-sm">삭제</button>
-							<button type="button" class="btn btn-secondary btn-sm">저장</button>
+							<button type="button" class="btn btn-secondary btn-sm" id="add_btn">신규</button>
+							<button type="button" class="btn btn-secondary btn-sm" id="del_btn">삭제</button>
+							<button type="button" class="btn btn-secondary btn-sm" id="search_btn">저장</button>
 						</div>
 					</div>
 					<div
 						style="width: 100%; background-color: #F3FAFE; height: 60px; border: 1px solid #c0c0c0; position: relative;">
 						<div
 							style="position: absolute; width: 100%; top: 50%; transform: translateY(-50%) translateX(10%);">
-							<div class="input-group " style="width: calc(20%); float: left;">
-								학년도 <input type="text" class="form-control form-control-sm"
-									style="margin-left: 10px;" placeholder="2023"> <select
-									class="form-select form-select-sm">
-									<option>상반기</option>
-									<option>하반기</option>
-								</select>
-							</div>
+								<div class="input-group " style="width: calc(20%); float: left;">
+								학년도 
+									<input type="text" class="form-control form-control-sm" style="margin-left: 10px;" placeholder="2023" id="s_CRCLM_YEAR">
+									<select class="form-select form-select-sm s_CRCLM_HALF" name="s_CRCLM_HALF">
+										<option value="">상/하반기</option>
+										<option value="0010">상반기</option>
+										<option value="0020">하반기</option>
+									</select>
+								</div>
 							<!-- 검색 -->
 							<div class="input-group "
-								style="width: calc(15%); margin-left: 10px; float: left;">설문명(번호)
-								<input class="form-control form-control-sm" type="text" name="survey_search" id="survey_search"
-									placeholder="설문명(번호)" aria-describedby="btnNavbarSearch" style="margin-left: 10px;"/>
+								style="width: calc(15%); margin-left: 10px; float: left;">
+								<input class="form-control form-control-sm" type="text" name="SBJCT_NM" id="SBJCT_NM"
+									placeholder="과목명" aria-describedby="btnNavbarSearch" style="margin-left: 10px;"/>
 							</div>
 
 							<div class="input-group "
 								style="width: calc(40%); margin-left: 10px; float: left;">
-								훈련과정명 <select class="form-select form-select-sm"
-									style="margin-left: 10px;">
-									<option>상반기</option>
-									<option>하반기</option>
-								</select>
+								훈련과정명 
+								<select class="form-select form-select-sm s_CRCLM_CD_NM" name="s_CRCLM_CD_NM" style="margin-left: 10px;">
+										<option value="">선택</option>
+										<c:forEach items="${crclmName}" var ="cn">
+											<option value="${cn.CD }">${cn.CD_NM}</option>
+										</c:forEach>
+									</select>
 							</div>
 						</div>
 					</div> <!-- 상단 끝 -->
@@ -251,10 +387,112 @@ ml-10 { margin-left: 10px;}
 					    <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">참석자정보</button>
 					  </div>
 					</nav>	
-						<!--기본정보 -->
-						<div class="tab-content" id="nav-tabContent">
+					
+					<div class="mb-5 inputTotal"
+							style="width: 100%; background-color: #F3FAFE; height: 420px; border: 1px solid #c0c0c0; position: relative;">
+					<div class="tab-content" id="nav-tabContent">
 						  <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
 							<!--기본정보 -->
+							<div class="mb-5" id="tab1"
+								style="width: 100%; background-color: #F3FAFE; height: 420px; border: 1px solid #c0c0c0; position: relative;">
+							<table
+								style="width: 90%; position: absolute; top: 50%; transform: translateY(-50%) translateX(5%);">
+								<tr style="height: 50px">
+									<td class="col-1" style="text-align: right;" >과목명(번호)</td>
+									<td class="col-2">
+									  <div class="input-group">
+									    <input type="text" class="form-control form-control-sm SBJCT_NM" disabled="disabled">
+									    <input type="text" class="form-control form-control-sm SBJCT_NO" disabled="disabled"
+									    style="width: calc(18%);">
+									  </div>
+									</td>
+								
+								
+									<td class="col-1" style="text-align:right;">훈련과정명</td>
+					 				<td class="col-4" colspan='3'>
+									<select class="form-select form-select-sm crclmNameList" disabled="disabled">
+										<option value="">선택</option>
+										<c:forEach items="${crclmName}" var ="cn">
+											<option value="${cn.CD }">${cn.CD_NM}</option>
+										</c:forEach>
+									</select>
+									</td> 
+								</tr>
+								<tr style="height: 50px">
+								<td class="col-1" style="text-align: right;">학년도</td>
+								<td class="col-2">
+								  <div class="input-group">
+										<input type="text"
+										class="form-control form-control-sm CRCLM_YEAR" disabled="disabled">
+										<select class="form-select form-select-sm CRCLM_HALF" disabled="disabled" >
+												<option value="">선택</option>
+												<option value="0010">상반기</option>
+												<option value="0020">하반기</option>
+										</select>
+									</div>
+									</td>
+									
+									
+									
+									
+									<td style="text-align: right;">등록일자</td>
+									<td><input type="text"
+										class="form-control form-control-sm DGSTFN_YMD" disabled="disabled"></td>
+									
+								</tr>
+								<tr style="height: 50px">
+									<td style="text-align: right;">설문명</td>
+									<td><input type="text"
+										class="form-control form-control-sm DGSTFN_TITLE" disabled="disabled"></td>
+									<td style="text-align: right;">설문시작일시</td>
+									<td><input type="text"
+										class="form-control form-control-sm DGSTFN_SDATE" disabled="disabled"></td>
+									<td style="text-align: right;">설문종료일시</td>
+									<td><input type="text"
+										class="form-control form-control-sm DGSTFN_FDATE" disabled="disabled"></td>
+								</tr>
+								<tr>
+									<td style="text-align: right;">안내문구</td>
+								</tr>
+								<tr>
+									<td></td>
+									<td colspan="7"><textarea class="form-control DGSTFN_INTRO"
+											style="height: 200px; resize: none;" disabled="disabled"></textarea></td>
+								</tr>
+
+							</table>
+							</div></div>
+							  <!-- 문항정보 -->
+						  <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+							  <div>
+								<div id="grid2"></div>
+							  </div>
+						  </div>
+						  <!-- 참석자정보 -->
+						  <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
+							  <div>
+								<div id="grid3"></div>
+							  </div>
+						  </div>
+						  
+						  </div>
+						</div>
+					
+					
+					
+					
+					
+					
+					
+					
+					<!-- 
+					
+					
+					
+						기본정보
+						<div class="tab-content" id="nav-tabContent">
+						  <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+							기본정보
 							<div class="mb-5" id="tab1"
 								style="width: 100%; background-color: #F3FAFE; height: 420px; border: 1px solid #c0c0c0; position: relative;">
 								<table
@@ -306,20 +544,20 @@ ml-10 { margin-left: 10px;}
 								</table>
 							</div>
 							</div>
-						  <!-- 문항정보 -->
+						  문항정보
 						  <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
 							  <div>
 								<div id="grid2"></div>
 							  </div>
 						  </div>
-						  <!-- 참석자정보 -->
+						  참석자정보
 						  <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
 							  <div>
 								<div id="grid3"></div>
 							  </div>
 						  </div>
 							
-					</div>
+					</div> -->
 
 				</div>
 				</div>

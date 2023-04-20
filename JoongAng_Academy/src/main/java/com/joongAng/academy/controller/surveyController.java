@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
+import com.joongAng.academy.service.CrclmInfoService;
 import com.joongAng.academy.service.SurveyService;
 
 @Controller
@@ -19,20 +21,26 @@ public class surveyController {
 
 	@Autowired
 	private SurveyService surveyService;
+	@Autowired
+	private CrclmInfoService crclmInfoService;
 	
+	//커리큘럼 목록조회
 	@GetMapping("survey")
-	public String survey() {
-		return "admin/survey";
+	public ModelAndView survey() {
+		ModelAndView mv = new ModelAndView("admin/survey");
+		List<Map<String, Object>> list = crclmInfoService.crclmNameList();
+		mv.addObject("crclmName", list);
+		return mv;
 	}
 	
-	//디테일리스트
+	//설문리스트
 	@ResponseBody
 	@PostMapping(value = "/surveyListAjax", produces = "application/json;charset=UTF-8")
-	public String surveyListAjax(@RequestParam(value="survey_search", required=false) String survey_search) {
+	public String surveyListAjax(@RequestParam Map<String, String> searchcmap) {
 		JSONObject json = new JSONObject();
-		List<Map<String, Object>> list = surveyService.list(survey_search); 
-		JSONArray listJ = new JSONArray(list);
-		json.put("list", listJ);
+		List<Map<String, Object>> list = surveyService.list(searchcmap); 
+		//JSONArray listJ = new JSONArray(list);
+		json.put("list", list);
 		
 		//System.err.println(detaillist); //ok
 		return json.toString();

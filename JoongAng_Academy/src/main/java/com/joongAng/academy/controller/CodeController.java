@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -84,45 +85,48 @@ public class CodeController {
 	//수정
 	@ResponseBody
 	@PostMapping(value = "/codeUpdate", produces = "application/json;charset=UTF-8")
-	public String codeUpdate(@RequestParam Map<String, Object> map,HttpServletRequest request){
+	//public String codeUpdate(@RequestParam Map<String, Object> map,HttpServletRequest request){
+	public String codeUpdate(@RequestBody List<Map<String, Object>> updateData,HttpServletRequest request){
 		JSONObject json = new JSONObject();
-		if (codeService.isCodeExist(map)) { // 중복된 값이 있을 경우
-			int result = 2;
+//		if (codeService.isCodeExist2(updateData)) { // CD_CLSF, CD는 수정불가이므로, 필요없음!
+//			int result2 = 2;
+//			json.put("result2", result2);
+//			System.err.println("result2:"+result2);//ok
+//			System.err.println(updateData);//ok
+//		} 
+//		else {
+			int result = codeService.code_update(updateData); 
+			//System.err.println(updateData.get(0).get("CD_CLSF")); //ok
+			//System.err.println(updateData);//ok
 			json.put("result", result);
-			System.err.println(result);//ok
-		} 
-		else {
-			int result = codeService.code_update(map); 
-			//System.err.println(map.get("CD_CLSF")); //ok
-			//System.err.println(map);//ok
-			System.err.println(map.get("old_CD_CLSF"));//ok
-			json.put("result", result);
-			System.err.println(result);//0
+			//System.err.println(result);//0
 			
 			//추가 저장후 다시 전체리스트 조회페이지로 가야함(전체조회+검색) 
 			String code_search = request.getParameter("code_search");
 			List<Map<String, Object>> list = codeService.list(code_search); 
 			JSONArray listJ = new JSONArray(list);
 			json.put("list", listJ);
-		}
-//		Map<String, Object> search = new HashMap<String, Object>();
-//		String CD_CLSF = request.getParameter("CD_CLSF");
-//		String CD = request.getParameter("CD");
-//		String CD_NM = request.getParameter("CD_NM");
-//		String CD_USE_YN = request.getParameter("CD_USE_YN");
-//		String CD_EXPLN = request.getParameter("CD_EXPLN");
-//		String CD_SORT_SN = request.getParameter("CD_SORT_SN");
-//		search.put("CD_CLSF",CD_CLSF);
-//		search.put("CD",CD);
-//		search.put("CD_NM",CD_NM);
-//		search.put("CD_USE_YN",CD_USE_YN);
-//		search.put("CD_EXPLN",CD_EXPLN);
-//		search.put("CD_SORT_SN",CD_SORT_SN);
-//		System.err.println(search);
-		
-//		List<Map<String, Object>> create_list = codeService.create_list(code_create); 
-//		JSONArray listJ = new JSONArray(create_list);
-//		json.put("create_list", listJ);
+//		}
+		return json.toString();
+	}
+	//삭제
+	@ResponseBody
+	@PostMapping(value = "/codeDelete", produces = "application/json;charset=UTF-8")
+	public String codeDelete(@RequestBody List<Map<String, Object>> deleteData, HttpServletRequest request){
+		    JSONObject json = new JSONObject();
+		    int result = codeService.code_delete(deleteData);
+		    System.err.println(deleteData.get(0).get("CD_CLSF"));//ok
+		    System.err.println(deleteData); //[{CD_CLSF=1, CD=1, CD_NM=1, CD_USE_YN=, CD_EXPLN=1, CD_SORT_SN=1}, {CD_CLSF=1, CD=2, CD_NM=1, CD_USE_YN=, CD_EXPLN=1, CD_SORT_SN=1}]
+		    json.put("result", result);
+		    System.err.println("result:"+result);//삭제된 행 갯수
+			
+		    
+		    
+			//삭제 저장후 다시 전체리스트 조회페이지로 가야함(전체조회+검색) 
+			String code_search = request.getParameter("code_search");
+			List<Map<String, Object>> list = codeService.list(code_search); 
+			JSONArray listJ = new JSONArray(list);
+			json.put("list", listJ);
 		return json.toString();
 	}
 }
