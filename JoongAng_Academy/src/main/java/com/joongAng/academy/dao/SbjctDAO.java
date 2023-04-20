@@ -14,7 +14,7 @@ public interface SbjctDAO {
 
 	public int addsbj(Map<String, Object> map);
 
-	public int delsbj(int rowcnt);
+	public int delsbj(Map<String, Object> map);
 
 	public int updatesbj(Map<String, Object> map);
 

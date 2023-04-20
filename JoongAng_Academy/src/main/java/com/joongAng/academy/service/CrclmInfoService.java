@@ -35,6 +35,16 @@ public class CrclmInfoService {
 	public List<Map<String, Object>> saveAfter() {
 		return crclmInfoDAO.saveAfter();
 	}
+
+	public int checkCrclmAjax(Map<String, String> paramap) {
+		// TODO Auto-generated method stub
+		return crclmInfoDAO.checkCrclmAjax(paramap);
+	}
+
+	public List<Map<String, Object>> instrSearchM(Map<String, String> paramap) {
+		return crclmInfoDAO.instrSearchM(paramap);
+	}
+
 	
 	
 

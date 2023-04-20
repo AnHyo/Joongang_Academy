@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.joongAng.academy.dao.ApplyDAO">
+
+	<select id="list" resultType="HashMap" parameterType="HashMap">
+		SELECT * FROM applinfoview
+		WHERE 1=1
+		<if test="searchnm != null">
+			AND (STDNT_NO LIKE CONCAT ('%',#{searchnm},'%') OR KORN_FLNM LIKE CONCAT ('%',#{searchnm},'%'))
+		</if>
+		<if test="searchyear != null and searchyear !=''">
+			AND CRCLM_YEAR LIKE CONCAT ('%',#{searchyear},'%')
+		</if>
+		<if test="searchhalf != null and searchhalf !=''">
+			AND CRCLM_HALF LIKE CONCAT ('%',#{searchhalf},'%')
+		</if>
+		<if test="searchCN != null and searchCN !=''">
+			AND CRCLM_CD LIKE CONCAT ('%',#{searchCN},'%')
+		</if>
+		ORDER BY KORN_FLNM;
+	</select>
+	<select id="info" parameterType="HashMap" resultType="HashMap">
+		SELECT * FROM applinfoview
+		WHERE STDNT_NO=#{stdnt_no}
+	
+	</select>
+</mapper>

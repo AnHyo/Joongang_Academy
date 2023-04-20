@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.joongAng.academy.dao.LoginDAO">
+	<select id="login" parameterType="Hashmap" resultType="LoginDTO">
+		SELECT COUNT(*) as count , USER_ID, PSWD, KORN_FLNM ,USER_NO, USER_GROUP_CD, PSWD_ERR_NMTM
+		FROM USER_INFO
+		WHERE USER_ID = #{userid} AND PSWD =#{userpw};
+	
+	</select>
+	
+	<update id="loginTry" parameterType="Hashmap">
+		UPDATE USER_INFO SET
+			<choose>
+				<when test="PSWD_ERR_NMTM != null"> PSWD_ERR_NMTM = #{PSWD_ERR_NMTM}</when>
+				<otherwise>PSWD_ERR_NMTM = PSWD_ERR_NMTM +1 </otherwise>
+			</choose>
+		WHERE  USER_ID = #{userid}
+	</update>
+		
+	<select id="ckid" parameterType="String" resultType="Integer">
+		SELECT COUNT(*) as count 
+		FROM USER_INFO
+		WHERE  USER_ID = #{ckid}
+	</select>
+	
+</mapper>

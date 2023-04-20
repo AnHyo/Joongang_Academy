@@ -5,7 +5,7 @@
 
 <select id="studentInfo" resultType="HashMap">
 	SELECT * FROM applinfoview
-	WHERE FNL_PASS_YN = 'Y'
+	<where>
 	<if test="department != ''">
 	AND CRCLM_CD = #{department }
 	</if>
@@ -19,11 +19,12 @@
 	AND CRCLM_HALF = #{turn }
 	</if>
 	<if test="nameAndNum != ''">
-	AND (APPL_NO LIKE CONCAT('%',#{nameAndNum },'%') or KORN_FLNM LIKE CONCAT('%',#{nameAndNum },'%'))
+	AND (STDNT_NO LIKE CONCAT('%',#{nameAndNum },'%') or KORN_FLNM LIKE CONCAT('%',#{nameAndNum },'%'))
 	</if>
 	<if test="gender != ''">
 	AND GENDER_CD = #{gender }
 	</if>
+	</where>
 </select>
 
 <select id="depInfo" resultType="StudentRecordDTO">

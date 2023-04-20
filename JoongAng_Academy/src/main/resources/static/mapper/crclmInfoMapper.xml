@@ -11,30 +11,28 @@
 		WHERE CD_CLSF =0002;
 	</select>
 
-	<select id="listCrclmAjax" resultType="HashMap" parameterType="Hashmap">
+	 <select id="listCrclmAjax" resultType="HashMap" parameterType="Hashmap">
 		SELECT * FROM crclmListView
-		WHERE 1=1
-		<if test="insname != null">
-			AND KORN_FLNM LIKE CONCAT('%',#{insname},'%');		
-		</if>
-		<if test="crclmname != null">
-			AND EDU_CN LIKE CONCAT('%',#{crclmname},'%');		
-		</if>
-		<if test="year != null and year !=''">
-			AND CRCLM_YEAR = #{year}
-		</if>
-		<if test="half != null and  half !=''">
-			AND CRCLM_HALF = #{half}
-		</if>
-		<if test="radioval != null and  radioval !=''">
-			AND CRCLM_SCHDL_CD =#{radioval}                                                                                                                                          
-		</if>
-		
-	</select>
+		<where>
+			<if test="crclmname != null and crclmname !='' ">
+				AND CRCLM_NM LIKE CONCAT('%',#{crclmname},'%')		
+			</if>
+			<if test="year != null and year !=''">
+				AND CRCLM_YEAR = #{year}
+			</if>
+			<if test="half != null and  half !=''">
+				AND CRCLM_HALF = #{half}
+			</if>
+			<if test="radioval != null and  radioval !=''">
+				AND CRCLM_SCHDL_CD =#{radioval}                                                                                                                                          
+			</if>
+		</where>
+	</select> 
 	
 	<!--수정  -->
 	<update id="saveCrclmAjax" parameterType="Hashmap">
 		UPDATE CRCLM_INFO set
+		RPRS_INSTR_NO =#{instrname},
 		CRCLM_YEAR =#{cyear},
 		CRCLM_HALF =#{chalf},
 		EDU_CN =#{econtent},
@@ -43,13 +41,14 @@
 		EDU_END_YMD =#{endYMD},
 		CRCLM_SCHDL_CD =#{schedule},
 		EDU_FNSH_YN =#{efnYN},
-		EDU_NOPE =#{epeople}
+		EDU_NOPE =#{epeople},
+		CRCLM_NM =#{crname}
 		WHERE CRCLM_NO=#{cno}
 	</update>
 	<!--신규  -->
 	<insert id="newCrclmAjax"  parameterType="Hashmap">
 		INSERT INTO CRCLM_INFO SET
-		RPRS_INSTR_NO =(SELECT INSTR_NO  FROM INSTR_INFO WHERE KORN_FLNM =#{instrname} ),
+		RPRS_INSTR_NO =#{instrname},
 		CRCLM_YEAR =#{cyear},
 		CRCLM_HALF =#{chalf},
 		EDU_CN =#{econtent},
@@ -66,10 +65,25 @@
 	
 	<select id="saveAfter" resultType="HashMap">
 		SELECT * FROM crclmListView
+		WHERE CRCLM_YEAR =#{cyear}
+	</select>
+	
+	<select id="checkCrclmAjax" resultType="Integer" parameterType="Hashmap"> 
+		SELECT COUNT(*) FROM CRCLM_INFO 
+		WHERE CRCLM_CD = #{ccd} AND  CRCLM_YEAR = #{cyear} AND CRCLM_HALF = #{chalf};	
 	</select>
 	
 	
-	
+	<!-- 강사명모달 -->
+	<select id="instrSearchM" parameterType="Hashmap" resultType="Hashmap">
+		SELECT INSTR_NO,KORN_FLNM
+		FROM INSTR_INFO
+		<where>
+			<if test="iname != null and  iname !=''">
+			AND KORN_FLNM LIKE CONCAT('%',#{iname},'%')	
+			</if>
+		</where>
+	</select>
 	
 	
 	
