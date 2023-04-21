@@ -14,4 +14,20 @@ public interface ApplyDAO {
 
 	List<Map<String, Object>> info(Map<String, Object> map);
 
+	List<Map<String, Object>> estblSBJ(Map<String, Object> map);
+
+	int addApply(Map<String, Object> map);
+
+	List<Map<String, Object>> applySBJ(Map<String, Object> map);
+
+	int delApply(Map<String, Object> map);
+
+	int applyCheck(Map<String, Object> map);
+
+	int addHist(Map<String, Object> map);
+
+	int delHist(Map<String, Object> map);
+
+	List<Map<String, Object>> applyHist(Map<String, Object> map);
+
 }

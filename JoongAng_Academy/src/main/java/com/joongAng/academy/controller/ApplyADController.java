@@ -55,10 +55,71 @@ public class ApplyADController {
 	@PostMapping(value = "/stuinfoAjax", produces = "application/json;charset=UTF-8")
 	public String stuinfoAjax(@RequestParam Map<String, Object> map) {
 		JSONObject json = new JSONObject();
-		System.err.println(map);
 		List<Map<String, Object>> info = applyService.info(map); 
 		JSONArray infoJ = new JSONArray(info);
 		json.put("info", infoJ);		
+		return json.toString();
+	}
+	
+	@ResponseBody
+	@PostMapping(value = "/estblSBJAjax", produces = "application/json;charset=UTF-8")
+	public String estblSBJAjax(@RequestParam Map<String, Object> map) {
+		JSONObject json = new JSONObject();
+		List<Map<String, Object>> estblSBJ = applyService.estblSBJ(map); 
+		List<Map<String, Object>> applySBJ = applyService.applySBJ(map); 
+		JSONArray EstblSBJ = new JSONArray(estblSBJ);
+		JSONArray ApplySBJ = new JSONArray(applySBJ);
+		json.put("estblSBJ", EstblSBJ);		
+		json.put("applySBJ", ApplySBJ);		
+		return json.toString();
+	}
+	@ResponseBody
+	@PostMapping(value = "/applyHistAjax", produces = "application/json;charset=UTF-8")
+	public String applyHistAjax(@RequestParam Map<String, Object> map) {
+		JSONObject json = new JSONObject();
+		List<Map<String, Object>> applyHist = applyService.applyHist(map); 
+		JSONArray ApplyHist = new JSONArray(applyHist);
+		json.put("applyHist", ApplyHist);		
+		return json.toString();
+	}
+	@ResponseBody
+	@PostMapping(value = "/addApplyAjax", produces = "application/json;charset=UTF-8")
+	public String addApplyAjax(@RequestParam Map<String, Object> map) {
+		JSONObject json = new JSONObject();
+		int check = applyService.applyCheck(map);
+		if(check != 1) {
+			json.put("check", 0);	
+			int result = applyService.addApply(map);
+			int addHist = applyService.addHist(map);
+			if(result == 1 && addHist == 1) {
+				List<Map<String, Object>> applySBJ = applyService.applySBJ(map); 
+				json.put("result", result);		
+				JSONArray ApplySBJ = new JSONArray(applySBJ);
+				json.put("applySBJ", ApplySBJ);		
+			} else {
+				json.put("result", 0);	
+			}
+		} else {
+			json.put("check", 1);	
+		}
+
+		return json.toString();
+	}
+	@ResponseBody
+	@PostMapping(value = "/delApplyAjax", produces = "application/json;charset=UTF-8")
+	public String delApplyAjax(@RequestParam Map<String, Object> map) {
+		JSONObject json = new JSONObject();
+		System.err.println(map);
+		int result = applyService.delApply(map);
+		int delHist = applyService.delHist(map);
+		if(result == 1 && delHist == 1) {
+			List<Map<String, Object>> applySBJ = applyService.applySBJ(map); 
+			json.put("result", result);		
+			JSONArray ApplySBJ = new JSONArray(applySBJ);
+			json.put("applySBJ", ApplySBJ);		
+		} else {
+			json.put("result", 0);	
+		}
 		return json.toString();
 	}
 	

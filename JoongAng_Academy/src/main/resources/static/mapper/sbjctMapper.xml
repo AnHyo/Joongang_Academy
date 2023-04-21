@@ -11,14 +11,12 @@
 		<if test="searchuse != null">
 			AND USE_YN LIKE CONCAT('%',#{searchuse},'%')
 		</if>
-		<if test="searchdel != null">
-			AND DEL_YN LIKE CONCAT('%',#{searchdel},'%')
-		</if>
 	</select>
 	<insert id="addsbj" parameterType="HashMap">
 		INSERT INTO SBJCT_INFO
 		SET
-		SBJCT_NO = LPAD((SELECT maxf.maxno FROM (SELECT MAX(SBJCT_NO)+1 AS maxno FROM SBJCT_INFO) AS maxf), 4,'0'),
+		SBJCT_NO = LPAD((SELECT maxf.maxno FROM (SELECT MAX(SBJCT_NO)+1 AS
+		maxno FROM SBJCT_INFO) AS maxf), 4,'0'),
 		SBJCT_NM = #{SBJCT_NM},
 		SBJCT_EXPLN = #{SBJCT_EXPLN},
 		USE_YN=#{USE_YN},
@@ -26,17 +24,25 @@
 	</insert>
 
 	<update id="delsbj" parameterType="HashMap">
-		UPDATE SBJCT_INFO SET
-		DEL_YN ='Y'
-		WHERE SBJCT_NO =#{rowcnt}
+		DELETE FROM SBJCT_INFO
+		WHERE
+		SBJCT_NO =#{rowcnt}
 	</update>
 	<update id="updatesbj" parameterType="HashMap">
 		UPDATE SBJCT_INFO SET
 		SBJCT_NM = #{SBJCT_NM},
 		SBJCT_EXPLN = #{SBJCT_EXPLN},
 		USE_YN=#{USE_YN},
-		DEL_YN=#{DEL_YN},
 		EDU_HR=#{EDU_HR}
 		WHERE SBJCT_NO = #{SBJCT_NO}
 	</update>
+	<select id="integrity" parameterType="HashMap" resultType="Integer">
+		SELECT COUNT(*)
+		FROM SBJCT_INFO
+		WHERE NOT EXISTS (
+		SELECT *
+		FROM ESTBL_SBJCT
+		WHERE SBJCT_INFO.SBJCT_NO = ESTBL_SBJCT.SBJCT_NO
+		) AND SBJCT_NO = #{rowcnt};
+	</select>
 </mapper>

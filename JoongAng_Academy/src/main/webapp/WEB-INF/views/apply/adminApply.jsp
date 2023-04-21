@@ -143,12 +143,13 @@ $(function(){
 		$("#searchNM2").val($("#searchNM2").val());
 		loadData2();
 	});
-	$("#searchNM2").keydown(function(key){
-		  if(key.keyCode == 13){
-			$("#searchNM2").val($("#searchNM2").val());
-			$("#searchbtn2").click();
-		  }
-		});
+	
+	$("#searchNM2,#crclm_year,#crclm_half,#crclm_cd_name").on("keydown", function(key) {
+		 if(key.keyCode == 13){
+				$("#searchNM2").val($("#searchNM2").val());
+				$("#searchbtn2").click();
+			  }
+	});
 	
  	const Grid = tui.Grid;
 	
@@ -175,7 +176,7 @@ $(function(){
 			align:'center'
 		}, {
 			header : '이름',
-			name : 'KORN_FLNM',
+			name : 'KORN_FLNM_S',
 			width : 150,
 			align:'center'
 		}, {
@@ -196,12 +197,15 @@ $(function(){
 		} ] 
 	});
 	
-
+	var CRCLM_HALF = "";
+	var CRCLM_CD = "";
+	var CRCLM_YEAR ="";
+	var stdnt_no ="";
 	$("#selectbtn").click(function(){
 		const rowKey = stuList.getFocusedCell().rowKey
 		var obj = stuList.getRow(rowKey);
 		var values = Object.values(obj);
-		var stdnt_no = values[0];
+		stdnt_no = values[0];
 		
 		 $.post({
 				url : "/stuinfoAjax",
@@ -214,7 +218,7 @@ $(function(){
 				var info = data.info;
 				$("#stuSearchModal").modal("hide");
 				$("#stdntNo").val(info[0].STDNT_NO);
-				$("#searchNM").val(info[0].KORN_FLNM);
+				$("#searchNM").val(info[0].KORN_FLNM_S);
 				$("#regNM").val(info[0].REG_CD_NAME);
 				$("#crclmYear").val(info[0].CRCLM_YEAR);
 				$("#crclmHalf").val(info[0].CRCLM_HALF_NAME);
@@ -223,59 +227,294 @@ $(function(){
 				$("#genderNM").val(info[0].GENDER_CD_NAME);
 				$("#relTel").val(info[0].TELNO);
 				$("#emailAddr").val(info[0].EML_ADDR);
+				$("#rprsNM").val(info[0].KORN_FLNM_L);
+				
+				 CRCLM_HALF = info[0].CRCLM_HALF;
+				 CRCLM_CD = info[0].CRCLM_CD;
+				 CRCLM_YEAR = info[0].CRCLM_YEAR;
+				 $.post({
+						url : "/estblSBJAjax",
+						data : {
+							
+							"CRCLM_HALF" : CRCLM_HALF,
+							"CRCLM_CD" : CRCLM_CD,
+							"CRCLM_YEAR" : CRCLM_YEAR,
+							"STDNT_NO" : stdnt_no
+						},
+						dataType : "json"
+
+					}).done(function(data) {
+						var estbl = data.estblSBJ;
+						estblSBJ.resetData(estbl);
+						var apply = data.applySBJ;
+						applySBJ.resetData(apply);
+					}).fail(function() {
+						alert("문제가 발생했습니다.");
+					}); //estblSBJAjax 
 			}).fail(function() {
 				alert("문제가 발생했습니다.");
 			});
+		 
+		 
 	});
+	
+	
+	
+	class buttonRenderer{
+		constructor(props) {
+			const el = document.createElement('input');
+			
+			el.type='button';
+			
+			this.el = el;
+			this.render(props);
+			this.el.addEventListener('click', (event) => {
+				
+				var STDNT_NO=$("#stdntNo").val();
+				var SBJCT_NO= el.getAttribute("data-value");
+				  $.post({
+						url : "/addApplyAjax",
+						data : {
+							"STDNT_NO" : STDNT_NO,
+							"SBJCT_NO" : SBJCT_NO,
+							"CRCLM_HALF" : CRCLM_HALF,
+							"CRCLM_CD" : CRCLM_CD,
+							"CRCLM_YEAR" : CRCLM_YEAR
+						},
+						dataType : "json"
+
+					}).done(function(data) {
+						let check = data.check;
+						let result = data.result;
+						if(check == 0){
+							if(result == 1){
+							alert("신청을 완료했습니다.");
+							var apply = data.applySBJ;
+							applySBJ.resetData(apply);
+							} else{
+								alert("문제가 발생했습니다. 다시 시도 해주세요.");
+							}
+						}else{
+							alert("이미 신청한 과목입니다.");
+						}
+					}).fail(function() {
+						alert("문제가 발생했습니다.");
+					});  
+				
+				
+				
+			});
+			
+		}
+		
+		
+		getElement(){
+			return this.el;
+		}
+		
+		render(props){
+			this.el.value="신청";
+			this.el.id="applybtn";
+			this.el.setAttribute("data-value", props.value);
+			this.el.setAttribute("class", "applybtn");
+		}
+	}
+	
+	class buttonRenderer2{
+		constructor(props) {
+			const el = document.createElement('input');
+			
+			el.type='button';
+			
+			this.el = el;
+			this.render(props);
+			this.el.addEventListener('click', (event) => {
+				
+				var STDNT_NO=$("#stdntNo").val();
+				var SBJCT_NO= el.getAttribute("data-value");
+				   $.post({
+						url : "/delApplyAjax",
+						data : {
+							"STDNT_NO" : STDNT_NO,
+							"SBJCT_NO" : SBJCT_NO,
+							"CRCLM_HALF" : CRCLM_HALF,
+							"CRCLM_CD" : CRCLM_CD,
+							"CRCLM_YEAR" : CRCLM_YEAR
+						},
+						dataType : "json"
+
+					}).done(function(data) {
+						let result = data.result;
+						if(result == 1){
+							alert("신청을 취소했습니다.");
+							var apply = data.applySBJ;
+							applySBJ.resetData(apply);
+						}
+					}).fail(function() {
+						alert("문제가 발생했습니다.");
+					});  
+				
+				
+				
+			});
+			
+		}
+		
+		
+		getElement(){
+			return this.el;
+		}
+		
+		render(props){
+			this.el.value="삭제";
+			this.el.id="delbtn";
+			this.el.setAttribute("data-value", props.value);
+			this.el.setAttribute("class", " delbtn");
+		}
+	}
 	
 	var estblSBJ = new tui.Grid({
   		el : document.getElementById('estblSBJ'),
 		scrollX : false,
 		scrollY : true,
 		bodyHeight : 450,
-		rowHeaders: ['rowNum'],
 		columns : [ 
-		{
+		 {
 			header : '필수구분',
-			name : 'STDNT_NO',
-			width : 150,
-			align:'center'
+			name : 'ESNTL_YN',
+			width : 80,
+			align:'center',
+			formatter: function(e) {
+			    if (e.value == 'Y') {
+			      return '필수';
+			    } else if(e.value == 'N') {
+			      return '선택';
+			    }
+			 },
+			 sortable: true,
+			 sortingType: 'desc'
 		}, {
 			header : '개설과목명',
-			name : 'KORN_FLNM',
-			width : 150,
-			align:'center'
+			name : 'SBJCT_NM',
+			width : 200,
+			align:'center',
+			sortable: true,
+		    sortingType: 'desc'
 		}, {
 			header : '강사명',
-			name : 'GENDER_CD_NAME',
-			width : 80,
-			align:'center'
+			name : 'KORN_FLNM',
+			width : 100,
+			align:'center',
+			sortable: true,
+		    sortingType: 'desc'
 		}, {
 			header : '강의시간',
-			name : 'USER_BRDT',
-			width : 200,
-			align:'center'
+			name : 'CLASSTM',
+			width : 150,
+			align:'center',
+			sortable: true,
+		    sortingType: 'desc'
+		},{
+			header : '강의실',
+			name : 'ROOM_NO',
+			width : 80,
+			align:'center',
+			formatter: function(e) {
+				return e.value+'호';
+		 	},
+		 	sortable: true,
+		    sortingType: 'desc'
 		}, {
 			header : '강의계획서',
-			name : 'USER_BRDT',
-			width : 200,
-			align:'center'
-		},{
-			header : '정원',
-			name : 'REG_CD_NAME',
-			width :130,
-			align:'center'
-		},{
-			header : '수강',
-			name : 'USER_BRDT',
-			width : 200,
+			name : 'SBJCT_PLAN_YN',
+			width : 80,
+			minwidth:'auto',
+			align:'center',
+			sortable: true,
+		    sortingType: 'desc'
+		},{ 	
+			header : '신청',
+			name: 'SBJCT_NO', 
+			renderer: { type: buttonRenderer },
+			width: 80,
 			align:'center'
 		} ] 
-	});
+	}); //estblSBJ grid
 	
 	
-	});
 	
+	var applySBJ = new tui.Grid({
+  		el : document.getElementById('applySBJ'),
+		scrollX : false,
+		scrollY : true,
+		bodyHeight : 450,
+		columns : [ 
+		 {
+			header : '필수구분',
+			name : 'ESNTL_YN',
+			width : 80,
+			align:'center',
+			formatter: function(e) {
+			    if (e.value == 'Y') {
+			      return '필수';
+			    } else if(e.value == 'N') {
+			      return '선택';
+			    }
+			 },
+			 sortable: true,
+			 sortingType: 'desc'
+		}, {
+			header : '개설과목명',
+			name : 'SBJCT_NM',
+			width : 200,
+			align:'center',
+			sortable: true,
+		    sortingType: 'desc'
+		}, {
+			header : '강사명',
+			name : 'KORN_FLNM',
+			width : 100,
+			align:'center',
+			sortable: true,
+		    sortingType: 'desc'
+		}, {
+			header : '강의시간',
+			name : 'CLASSTM',
+			width : 150,
+			align:'center',
+			sortable: true,
+		    sortingType: 'desc'
+		},{
+			header : '강의실',
+			name : 'ROOM_NO',
+			width : 80,
+			align:'center',
+			formatter: function(e) {
+				return e.value+'호';
+		 	},
+		 	sortable: true,
+		    sortingType: 'desc'
+		}, {
+			header : '강의계획서',
+			name : 'SBJCT_PLAN_YN',
+			width : 80,
+			minwidth:'auto',
+			align:'center',
+			sortable: true,
+		    sortingType: 'desc'
+		},{ 	header : '삭제',
+			name: 'SBJCT_NO', 
+			renderer: { type: buttonRenderer2 },
+			width: 80,
+			align:'center'
+		} ] 
+	});// applySBJ grid
+
+	
+	
+	}); //function()
+	
+
 	
 	
 	
@@ -292,7 +531,6 @@ $(function(){
 			<main>
 				<div class="container-fluid px-4">
 					<div class="mt-3">
-
 						<h5 class="fw-bolder">수강신청(관리자)</h5>
 					</div>
 					<hr class="m-0 mb-2">
@@ -348,45 +586,53 @@ $(function(){
 									</div>
 								</div>
 							</div>
-
-							<div class="d-flex justify-content-center">
-								<div class="row col-4">
-									<div class="col-3 mt-2 d-flex justify-content-end fw-bolder"
-										style="font-size: 14px;">생년월일</div>
-									<div class="col-8 mt-1">
-										<div class="input-group" style="margin-right: 5px;">
-											<div class="col-8">
-												<input type="text" class="form-control form-control-sm"
-													style="border-radius: 5px 0 0 5px;" id="userBrdT" disabled>
-											</div>
-											<div class="col-4">
-												<input type="text" class="form-control form-control-sm"
-													style="border-radius: 0 5px 5px 0;" id="genderNM" disabled>
+							<div style="margin-left:55px;">
+								<div class="d-flex justify-content-center">
+									<div class="row col-4">
+										<div class="col-3 mt-2 d-flex justify-content-end fw-bolder"
+											style="font-size: 14px;">생년월일</div>
+										<div class="col-8 mt-1">
+											<div class="input-group" style="margin-right: 5px;">
+												<div class="col-8">
+													<input type="text" class="form-control form-control-sm"
+														style="border-radius: 5px 0 0 5px;" id="userBrdT" disabled>
+												</div>
+												<div class="col-4">
+													<input type="text" class="form-control form-control-sm"
+														style="border-radius: 0 5px 5px 0;" id="genderNM" disabled>
+												</div>
 											</div>
 										</div>
 									</div>
-								</div>
-								<div class="row col-4">
-									<div class="col-2 mt-2 d-flex justify-content-end fw-bolder"
-										style="font-size: 14px;">연락처</div>
-									<div class="col-7 mt-1">
-										<input type="text" class="form-control form-control-sm"
-											id="relTel" disabled>
+									<div class="row col-3">
+										<div class="col-2 mt-2 d-flex justify-content-end fw-bolder"
+											style="font-size: 14px;">연락처</div>
+										<div class="col-8 mt-1">
+											<input type="text" class="form-control form-control-sm"
+												id="relTel" disabled>
+										</div>
 									</div>
-								</div>
-								<div class="row col-4">
-									<div class="col-2 mt-2 d-flex justify-content-end fw-bolder"
-										style="font-size: 14px;">이메일</div>
-									<div class="col-7 mt-1">
-										<input type="text" class="form-control form-control-sm"
-											id="emailAddr" disabled>
+									<div class="row col-3">
+										<div class="col-2 mt-2 d-flex justify-content-end fw-bolder"
+											style="font-size: 14px;">이메일</div>
+										<div class="col-8 mt-1">
+											<input type="text" class="form-control form-control-sm"
+												id="emailAddr" disabled>
+										</div>
 									</div>
-								</div>
+									<div class="row col-3">
+										<div class="col-3 mt-2 d-flex justify-content-end fw-bolder"
+											style="font-size: 14px;">대표강사</div>
+										<div class="col-5 mt-1">
+											<input type="text" class="form-control form-control-sm"
+												id="rprsNM" disabled>
+										</div>
+									</div>
 
 
+								</div>
 							</div>
 						</div>
-
 					</div>
 					<div class="row">
 						<div class="col-6">
@@ -407,7 +653,7 @@ $(function(){
 						</div>
 						<div class="col-6">
 							<div id="applySBJ" class="mb-3 mt-1"
-								style="width: 100%; background-color: pink; height: 500px;"></div>
+								style="width: 100%; height: 500px;"></div>
 						</div>
 					</div>
 

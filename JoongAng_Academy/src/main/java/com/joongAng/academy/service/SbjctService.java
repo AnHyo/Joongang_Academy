@@ -30,4 +30,8 @@ public class SbjctService {
 		return sbjctDAO.updatesbj(map);
 	}
 
+	public int integrity(Map<String, Object> map) {
+		return sbjctDAO.integrity(map);
+	}
+
 }

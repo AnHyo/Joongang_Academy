@@ -7,7 +7,7 @@
 		SELECT * FROM applinfoview
 		WHERE 1=1
 		<if test="searchnm != null">
-			AND (STDNT_NO LIKE CONCAT ('%',#{searchnm},'%') OR KORN_FLNM LIKE CONCAT ('%',#{searchnm},'%'))
+			AND (STDNT_NO LIKE CONCAT ('%',#{searchnm},'%') OR KORN_FLNM_S LIKE CONCAT ('%',#{searchnm},'%'))
 		</if>
 		<if test="searchyear != null and searchyear !=''">
 			AND CRCLM_YEAR LIKE CONCAT ('%',#{searchyear},'%')
@@ -18,11 +18,84 @@
 		<if test="searchCN != null and searchCN !=''">
 			AND CRCLM_CD LIKE CONCAT ('%',#{searchCN},'%')
 		</if>
-		ORDER BY KORN_FLNM;
+		ORDER BY KORN_FLNM_S;
 	</select>
 	<select id="info" parameterType="HashMap" resultType="HashMap">
 		SELECT * FROM applinfoview
 		WHERE STDNT_NO=#{stdnt_no}
+	</select>
+	<select id="estblSBJ" parameterType="HashMap" resultType="HashMap">
+		SELECT *
+		FROM estblSbJview 
+		WHERE 
+		CRCLM_YEAR =#{CRCLM_YEAR}
+		AND CRCLM_HALF =#{CRCLM_HALF}
+		AND CRCLM_CD =#{CRCLM_CD}
+	</select>
+	<select id="applySBJ" parameterType="HashMap" resultType="HashMap">
+		SELECT * FROM applyclsview
+		WHERE 
+		CRCLM_YEAR =#{CRCLM_YEAR}
+		AND CRCLM_HALF =#{CRCLM_HALF}
+		AND CRCLM_CD =#{CRCLM_CD}
+		AND STDNT_NO =#{STDNT_NO}
+	</select>
+	<insert id="addApply"  parameterType="HashMap">
+		INSERT INTO APPL_CLS
+		SET
+		CRCLM_CD=#{CRCLM_CD},
+		CRCLM_YEAR=#{CRCLM_YEAR},
+		CRCLM_HALF=#{CRCLM_HALF},
+		SBJCT_NO=#{SBJCT_NO},
+		STDNT_NO=#{STDNT_NO}
 	
+	</insert>
+	<delete id="delApply" parameterType="HashMap">
+		DELETE FROM APPL_CLS
+		WHERE
+		CRCLM_CD=#{CRCLM_CD} AND
+		CRCLM_YEAR=#{CRCLM_YEAR} AND
+		CRCLM_HALF=#{CRCLM_HALF}AND 
+		SBJCT_NO=#{SBJCT_NO} AND
+		STDNT_NO=#{STDNT_NO}
+	
+	</delete>
+	<select id="applyCheck" parameterType="HashMap" resultType="Integer">
+	 	SELECT COUNT(*) FROM APPL_CLS
+	 	WHERE 
+	 	CRCLM_CD=#{CRCLM_CD} AND
+		CRCLM_YEAR=#{CRCLM_YEAR} AND
+		CRCLM_HALF=#{CRCLM_HALF}AND 
+		SBJCT_NO=#{SBJCT_NO} AND
+		STDNT_NO=#{STDNT_NO}
+	</select>
+	<insert id="addHist" parameterType="HashMap">
+		INSERT INTO APPL_CLS_HIST
+		SET
+		CRCLM_CD=#{CRCLM_CD},
+		CRCLM_YEAR=#{CRCLM_YEAR},
+		CRCLM_HALF=#{CRCLM_HALF},
+		SBJCT_NO=#{SBJCT_NO},
+		STDNT_NO=#{STDNT_NO},
+		CD='0010'
+	</insert>
+	<insert id="delHist" parameterType="HashMap">
+		INSERT INTO APPL_CLS_HIST
+		SET
+		CRCLM_CD=#{CRCLM_CD},
+		CRCLM_YEAR=#{CRCLM_YEAR},
+		CRCLM_HALF=#{CRCLM_HALF},
+		SBJCT_NO=#{SBJCT_NO},
+		STDNT_NO=#{STDNT_NO},
+		CD='0020'
+	</insert>
+	<select id="applyHist" parameterType="HashMap" resultType="HashMap">
+		SELECT * FROM applyhistview
+		WHERE
+		CRCLM_CD=#{CRCLM_CD} AND
+		CRCLM_YEAR=#{CRCLM_YEAR} AND
+		CRCLM_HALF=#{CRCLM_HALF} AND 
+		STDNT_NO=#{STDNT_NO}
+		ORDER BY DT DESC;
 	</select>
 </mapper>
