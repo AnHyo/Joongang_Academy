@@ -28,20 +28,6 @@
 				$(".sbjhr").val(1);
 			}
 		});
-		
-		//우클릭, 드래그 방지(그리드 X)
-		function fn_control_mouse(){
-			$(document).bind("contextmenu", function(e){
-				return false;
-			});
-			$(document).bind("selectstart", function(e){
-				return false;
-			});
-			$(document).bind("dragstart", function(e){
-				return false;
-			});
-		}
-		fn_control_mouse();		
 	
 		const Grid = tui.Grid;
 		
@@ -60,14 +46,12 @@
 			el : document.getElementById('grid'),
 			scrollX : false,
 			scrollY : true,
-			contextMenu: null,
 			bodyHeight : 250,
-			rowHeaders : [ 'checkbox' ],
 			columns : [ {
 				header : '과목코드',
 				name : 'SBJCT_NO',
 				align : 'center',
-				width:200,
+				width:250,
 				sortable: true,
 			    sortingType: 'desc'
 			
@@ -75,18 +59,18 @@
 				header : '과목명',
 				name : 'SBJCT_NM',
 				align : 'center',
-				width:280,
+				width:320,
 				sortable: true,
 			    sortingType: 'desc'
 			}, {
 				header : '과목설명',
 				name : 'SBJCT_EXPLN',
-				width:760
+				width:730
 			}, {
 				header : '총 강의시간',
 				name : 'EDU_HR',
 				align : 'center',
-				width:140,
+				width:180,
 				formatter({value}) {
 					var hr = value;
 				    if(value != null){
@@ -99,17 +83,9 @@
 				header : '사용여부',
 				name : 'USE_YN',
 				align : 'center',
-				width:100,
+				width:120,
 				sortable: true,
 			    sortingType: 'desc'
-			}, {
-				header : '삭제여부',
-				name : 'DEL_YN',
-				width:100,
-				align : 'center',
-				sortable: true,
-			    sortingType: 'desc'
-				
 			} ],
 			selectionUnit: 'row'
 			
@@ -129,7 +105,6 @@
 			$(".sbjnm").attr("disabled",false);
 			$(".sbjhr").attr("disabled",false);
 			$(".sbjex").attr("disabled",false);
-			$(".delU").attr("disabled",false);
 			$(".useU").attr("disabled",false);
 			
 			$("#sbjno").val(sbjno);
@@ -137,16 +112,11 @@
 			$(".sbjnm").val(sbjnm);
 			$(".sbjhr").val(eduhr);
 			$(".sbjex").val(sbjex);
-			if(useyn == 'Y'){
-				$("input:radio[name ='useU']:input[value='Y']").prop("checked", true);
-			} else if(useyn == 'N'){
-				$("input:radio[name ='useU']:input[value='N']").prop("checked", true);
-			}
-			if(delyn == 'Y'){
-				$("input:radio[name ='delU']:input[value='Y']").prop("checked", true);
-			} else if(delyn == 'N'){
-				$("input:radio[name ='delU']:input[value='N']").prop("checked", true);
-			}
+				if(useyn == 'Y'){
+					$("input:radio[name ='useU']:input[value='Y']").prop("checked", true);
+				} else if(useyn == 'N'){
+					$("input:radio[name ='useU']:input[value='N']").prop("checked", true);
+				}
 			} else {
 				$("#sbjno").val("");
 				$(".sbjno").val("");
@@ -154,8 +124,6 @@
 				$(".sbjhr").val("");
 				$(".sbjex").val("");
 				$("input[name=useU]").prop("checked", false);
-				$("input[name=delU]").prop("checked", false);
-				$(".delU").attr("disabled",true);
 			}
 		}); //grid click
 		
@@ -166,11 +134,15 @@
 		
 		
 		//조회 버튼
+		$("#searchnm").keydown(function(key){
+		  if(key.keyCode == 13){
+			$("#searchbtn").click();
+		  }
+		});
 		$("#searchbtn").click(function() {
 		 searchnm = $.trim($("#searchnm").val());
 		 $("#searchnm").val(searchnm);
 		 searchuse = $("input[name=searchuse]:checked").val();
-		 searchdel = $("input[name=searchdel]:checked").val();
 			
 			$.post({
 				url : "/listAjax",
@@ -201,19 +173,16 @@
 				$("#delbtn").removeClass("disabled");
 				$("#searchNM").val(searchnm);
 				$("#searchUSE").val(searchuse);
-				$("#searchDEL").val(searchdel);
 				$("#sbjno").val("");
 				$(".sbjno").val("");
 				$(".sbjnm").val("");
 				$(".sbjhr").val("");
 				$(".sbjex").val("");
 				$("input[name=useU]").prop("checked", false);
-				$("input[name=delU]").prop("checked", false);
 				$(".sbjnm").attr("disabled",true);
 				$(".sbjhr").attr("disabled",true);
 				$(".sbjex").attr("disabled",true);
 				$(".useU").attr("disabled",true);
-				$(".delU").attr("disabled",true);
 				
 				
 			}).fail(function() {
@@ -226,7 +195,6 @@
 		$("#addbtn").click(function(){
 			var searchNM = $.trim($("#searchNM").val());
 			var searchUSE = $("#searchUSE").val();
-			var searchDEL = $("#searchDEL").val();
 			grid.appendRow(list,{
 				focus : true
 			}); // appendRow end
@@ -242,7 +210,6 @@
 			$(".sbjhr").attr("disabled",false);
 			$(".sbjex").attr("disabled",false);
 			$(".useU").attr("disabled",false);
-			$(".delU").attr("disabled",true);
 		
 		}); // addbtn end
 		
@@ -257,7 +224,6 @@
 				var delUv = $("input[name=delU]:checked").val();
 				var searchNM = $.trim($("#searchNM").val());
 				var searchUSE = $("#searchUSE").val();
-				var searchDEL = $("#searchDEL").val();
 				
 				
 				if(sbjnmv == ""){
@@ -288,8 +254,7 @@
 							"EDU_HR":sbjhrv,
 							"USE_YN":useUv,
 							"searchnm" : searchNM,
-							"searchuse" : searchUSE,
-							"searchdel" : searchDEL
+							"searchuse" : searchUSE
 						},
 						dataType : "json"
 
@@ -309,7 +274,6 @@
 							$(".sbjhr").attr("disabled",true);
 							$(".sbjex").attr("disabled",true);
 							$(".useU").attr("disabled",true);
-							$(".delU").attr("disabled",true);
 							$("#addbtn").removeClass("disabled");
 							
 							// 신규 저장 후 focus
@@ -330,10 +294,8 @@
 									"SBJCT_EXPLN":sbjexv,
 									"EDU_HR":sbjhrv,
 									"USE_YN":useUv,
-									"DEL_YN":delUv,
 									"searchnm" : searchNM,
-									"searchuse" : searchUSE,
-									"searchdel" : searchDEL
+									"searchuse" : searchUSE
 								},
 								dataType : "json"
 
@@ -349,12 +311,10 @@
 									$(".sbjhr").val("");
 									$(".sbjex").val("");
 									$("input[name=useU]").prop("checked", false);
-									$("input[name=delU]").prop("checked", false);
 									$(".sbjnm").attr("disabled",true);
 									$(".sbjhr").attr("disabled",true);
 									$(".sbjex").attr("disabled",true);
 									$(".useU").attr("disabled",true);
-									$(".delU").attr("disabled",true);
 									$("#addbtn").removeClass("disabled");
 									// 수정 저장 후 focus
 									grid.focus(rowKey);
@@ -376,8 +336,8 @@
 				const rowKey = grid.getFocusedCell().rowKey
 				var searchNM = $.trim($("#searchNM").val());
 				var searchUSE = $("#searchUSE").val();
-				var searchDEL = $("#searchDEL").val();
 				var sbjnov = $.trim($("#sbjno").val());
+				alert(sbjnov);
  				if(sbjno != "[object Object]"){
 				if(confirm("삭제하시겠습니까?")){
 					$.post({
@@ -385,33 +345,34 @@
 						data: {
 							"rowcnt" : sbjnov,
 							"searchnm" : searchNM,
-							"searchuse" : searchUSE,
-							"searchdel" : searchDEL
+							"searchuse" : searchUSE
 						},
 						dataType : "json"
 
 					}).done(function(data) {
-						if(data.result == 1){
-							alert("삭제되었습니다.");
-							grid.resetData(data.list);
-							var rowCount = grid.getRowCount();
-							$("#crclmCount").html(String(rowCount).padStart(3, "0"));
-							$(".sbjno").val("");
-							$(".sbjnm").val("");
-							$(".sbjhr").val("");
-							$(".sbjex").val("");
-							$("input[name=useU]").prop("checked", false);
-							$("input[name=delU]").prop("checked", false);
-							$(".sbjnm").attr("disabled",true);
-							$(".sbjhr").attr("disabled",true);
-							$(".sbjex").attr("disabled",true);
-							$(".useU").attr("disabled",true);
-							$(".delU").attr("disabled",true);
-							$("#addbtn").removeClass("disabled");
-							
-							// 삭제 후 focus
-							grid.focus(rowKey);
+						if(data.integrity == 1){
+							if(data.result == 1){
+								alert("삭제되었습니다.");
+								grid.resetData(data.list);
+								var rowCount = grid.getRowCount();
+								$("#crclmCount").html(String(rowCount).padStart(3, "0"));
+								$(".sbjno").val("");
+								$(".sbjnm").val("");
+								$(".sbjhr").val("");
+								$(".sbjex").val("");
+								$("input[name=useU]").prop("checked", false);
+								$(".sbjnm").attr("disabled",true);
+								$(".sbjhr").attr("disabled",true);
+								$(".sbjex").attr("disabled",true);
+								$(".useU").attr("disabled",true);
+								$("#addbtn").removeClass("disabled");
+								
+							}
+						} else{
+							alert("사용중인 데이터가 있으므로 삭제할 수 없습니다.");
 						}
+						
+						
 					}).fail(function() {
 						alert("문제가 발생했습니다.");
 					});		
@@ -442,12 +403,6 @@
 						<div>
 							<button type="button" class="btn btn-secondary btn-sm"
 								id="searchbtn">조회</button>
-							<button type="button" class="btn btn-secondary btn-sm disabled"
-								id="addbtn">신규</button>
-							<button type="button" class="btn btn-secondary btn-sm disabled"
-								id="delbtn">삭제</button>
-							<button type="button" class="btn btn-secondary btn-sm disabled"
-								id="updatebtn">저장</button>
 						</div>
 					</div>
 					<!-- 검색 -->
@@ -456,21 +411,23 @@
 							style="width: 100%; height: 55px; background-color: #F3FAFE; border: 1px solid #c0c0c0;">
 
 							<input type="hidden" id="searchNM"> <input type="hidden"
-								id="searchUSE"> <input type="hidden" id="searchDEL">
+								id="searchUSE">
+							<div class="col-2"></div>
 							<div class="col-4" style="height: 100%;">
 								<div class="row">
 									<div class="col-6 fw-bolder d-flex justify-content-end"
 										style="line-height: 55px; font-size: 14px;">과목명</div>
 									<div class="col-6 mt-2 py-1 ">
-										<input type="text" class="form-control form-control-sm" id="searchnm">
+										<input type="text" class="form-control form-control-sm"
+											id="searchnm">
 									</div>
 								</div>
 							</div>
-							<div class="col-8" style="height: 100%;">
+							<div class="col-5" style="height: 100%;">
 								<div class="row">
 									<div class="col-2 fw-bolder d-flex justify-content-end"
 										style="line-height: 55px; font-size: 14px;">사용여부</div>
-									<div class="col-3 mt-3">
+									<div class="col-5 mt-3">
 										<div class="row">
 											<div class="col-4">
 												<input type="radio" class="form-check-input"
@@ -490,42 +447,18 @@
 												<input type="radio" class="form-check-input"
 													name="searchuse" id="use3" style="cursor: pointer;"
 													value="N"> <label for="use3"
-													class="form-check-label" style="font-size: 14px; cursor: pointer;">&nbsp;N</label>
+													class="form-check-label"
+													style="font-size: 14px; cursor: pointer;">&nbsp;N</label>
 											</div>
 										</div>
 									</div>
-									<div class="col-2 fw-bolder d-flex justify-content-end"
-										style="line-height: 55px; font-size: 14px;">삭제여부</div>
-									<div class="col-3 mt-3">
-										<div class="row">
-											<div class="col-4">
-												<input type="radio" class="form-check-input"
-													name="searchdel" id="del1" style="cursor: pointer;"
-													checked="checked" value=""> <label for="del1"
-													class="ml-1 text-center form-check-label"
-													style="cursor: pointer; font-size: 14px;">&nbsp;전체</label>
-											</div>
-											<div class="col-3">
-												<input type="radio" style="cursor: pointer;"
-													class="form-check-input" name="searchdel" id="del2"
-													value="Y"> <label for="del2"
-													style="cursor: pointer; font-size: 14px;" class="ml-1 text-center">&nbsp;Y</label>
-											</div>
-											<div class="col-3">
-												<input type="radio" style="cursor: pointer;"
-													class="form-check-input" name="searchdel" id="del3"
-													value="N"> <label for="del3"
-													style="cursor: pointer; font-size: 14px;">&nbsp;N</label>
-											</div>
-										</div>
-									</div>
+
 								</div>
 							</div>
 
 						</div>
 					</div>
-					<div class="position-relative"
-							style="display: flex; ">
+					<div class="position-relative" style="display: flex;">
 
 						<div class="float-start mb-2"
 							style="width: 10px; height: 29px; background-color: #498c5f; margin-right: 10px;"></div>
@@ -542,18 +475,30 @@
 
 
 					<hr style="height: 4px;" class="mb-2">
-					<div class="float-start mb-3"
-						style="width: 10px; height: 29px; background-color: #498c5f; margin-right: 10px;"></div>
-					<h6 class="mt-2 pt-1 fw-bolder" >과목정보</h6>
-
-					<div class="mb-3 mt-3"
+					<div class="d-flex justify-content-between">
+						<div style="width: 20%;">
+							<div class="float-start mb-3"
+								style="width: 10px; height: 29px; background-color: #498c5f; margin-right: 10px;"></div>
+							<h6 class="pt-1 fw-bolder">과목정보</h6>
+						</div>
+						<div>
+							<button type="button" class="btn btn-secondary btn-sm disabled"
+								id="addbtn">신규</button>
+							<button type="button" class="btn btn-secondary btn-sm disabled"
+								id="delbtn">삭제</button>
+							<button type="button" class="btn btn-secondary btn-sm disabled"
+								id="updatebtn">저장</button>
+						</div>
+					</div>
+					<div class="mb-3"
 						style="width: 100%; height: 320px; background-color: #F3FAFE; border: 1px solid #c0c0c0;">
 						<div class="row" style="width: 100%;">
 							<div class="col-1"></div>
 							<div class="col-3 fw-bolder d-flex justify-content-end"
 								style="line-height: 55px; font-size: 14px;">과목코드</div>
 							<div class="col-2 mt-2 py-1">
-								<input type="text" class="form-control form-control-sm col-6 sbjno"
+								<input type="text"
+									class="form-control form-control-sm col-6 sbjno"
 									disabled="disabled"> <input type="hidden" id="sbjno"
 									disabled="disabled">
 							</div>
@@ -563,9 +508,23 @@
 							<div class="col-3 fw-bolder d-flex justify-content-end"
 								style="line-height: 55px; font-size: 14px;">과목명</div>
 							<div class="col-2 mt-2 py-1">
-								<input type="text" class="form-control form-control-sm col-6 sbjnm"
+								<input type="text"
+									class="form-control form-control-sm col-6 sbjnm"
 									disabled="disabled" id="sbjnm">
 							</div>
+
+						</div>
+						<div class="row" style="width: 100%;">
+							<div class="col-1"></div>
+							<div class="col-3 fw-bolder d-flex justify-content-end"
+								style="line-height: 55px; font-size: 14px;">총 강의시간</div>
+							<div class="col-2 mt-2 py-1">
+								<input type="number" class="form-control sbjhr form-control-sm"
+									disabled="disabled" step="10"
+									onKeyup="this.value=this.value.replace(/[^-0-9]/g,'');" min="1"
+									max="160">
+							</div>
+
 							<div class="col-2 fw-bolder d-flex justify-content-end"
 								style="line-height: 55px; font-size: 14px;">사용여부</div>
 							<div class="col-2 mt-3">
@@ -590,39 +549,10 @@
 						<div class="row" style="width: 100%;">
 							<div class="col-1"></div>
 							<div class="col-3 fw-bolder d-flex justify-content-end"
-								style="line-height: 55px; font-size: 14px;">총 강의시간</div>
-							<div class="col-2 mt-2 py-1">
-								<input type="number" class="form-control sbjhr form-control-sm"
-									disabled="disabled" step="10"
-									onKeyup="this.value=this.value.replace(/[^-0-9]/g,'');" min="1"
-									max="160">
-							</div>
-							<div class="col-2 fw-bolder d-flex justify-content-end"
-								style="line-height: 55px; font-size: 14px;">삭제여부</div>
-							<div class="col-2 mt-3 ">
-								<div class="row">
-									<div class="col-3">
-										<input type="radio" style="cursor: pointer;"
-											class="form-check-input delU" name="delU" id="delU1"
-											disabled="disabled" value="Y"> <label for="delU1"
-											style="cursor: pointer; font-size: 14px;"
-											class="ml-1 text-center form-check-label">&nbsp;Y</label>
-									</div>
-									<div class="col-3">
-										<input type="radio" style="cursor: pointer;"
-											class="form-check-input delU" name="delU" id="delU2"
-											disabled="disabled" value="N"> <label for="delU2"
-											style="cursor: pointer; font-size: 14px;" class="form-check-label">&nbsp;N</label>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="row" style="width: 100%;">
-							<div class="col-1"></div>
-							<div class="col-3 fw-bolder d-flex justify-content-end"
 								style="line-height: 55px; font-size: 14px;">과목 설명</div>
 							<div class="col-6 mt-2 py-1">
-								<textarea rows="5" class="form-control form-control-sm col-6 sbjex"
+								<textarea rows="5"
+									class="form-control form-control-sm col-6 sbjex"
 									style="resize: none;" disabled="disabled"></textarea>
 							</div>
 						</div>
@@ -639,11 +569,6 @@
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
 		crossorigin="anonymous"></script>
 	<script src="js/scripts.js"></script>
-	<script
-		src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"
-		crossorigin="anonymous"></script>
-	<script src="assets/demo/chart-area-demo.js"></script>
-	<script src="assets/demo/chart-bar-demo.js"></script>
 	<script
 		src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js"
 		crossorigin="anonymous"></script>

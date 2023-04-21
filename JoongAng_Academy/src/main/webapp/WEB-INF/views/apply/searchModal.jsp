@@ -37,7 +37,7 @@
 							<div class="input-group" style="margin-top: -5px;">
 
 								<input type="text" class="form-control form-control-sm"
-									style="border-radius: 5px 0 0 5px;" value="2023" id="crclm_year"> <select
+									style="border-radius: 5px 0 0 5px;" placeholder="2023" id="crclm_year"> <select
 									class="form-select form-select-sm" name="crclm_half" id="crclm_half"
 									style="border-radius: 0 5px 5px 0;>
 									<option value="">상/하반기</option>

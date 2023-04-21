@@ -18,4 +18,6 @@ public interface SbjctDAO {
 
 	public int updatesbj(Map<String, Object> map);
 
+	public int integrity(Map<String, Object> map);
+
 }
