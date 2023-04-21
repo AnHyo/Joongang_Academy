@@ -38,4 +38,6 @@ public interface EstablishedSubjectDAO {
 	public List<Map<String, Object>> estHalfList(Map<String, Object> map);
 
 	public int estDgst(Map<String, Object> map);
+
+	public int estTime(Map<String, Object> map);
 }

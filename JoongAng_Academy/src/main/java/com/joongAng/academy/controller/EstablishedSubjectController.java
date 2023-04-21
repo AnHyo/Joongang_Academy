@@ -162,6 +162,23 @@ public class EstablishedSubjectController {
 		return json.toString();
 	}
 	@ResponseBody
+	@PostMapping(value = "/estSaveTime", produces = "application/json;charset=UTF-8")
+	public String estSaveTime(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		Map<String, String[]> reqmap = request.getParameterMap();
+		Map<String,Object> map = new HashMap<String, Object>();
+		for (String key : reqmap.keySet()) {
+			String[] values = reqmap.get(key);
+			for (String value : values) {
+				System.out.println(key + " = " + value);
+				map.put(key.toString(), value);
+			}
+		}
+		int result = estService.estTime(map);
+		json.put("result", result);
+		return json.toString();
+	}
+	@ResponseBody
 	@PostMapping(value = "/estInstrAjax", produces = "application/json;charset=UTF-8")
 	public String estInstrAjax(HttpServletRequest request) {
 		JSONObject json = new JSONObject();

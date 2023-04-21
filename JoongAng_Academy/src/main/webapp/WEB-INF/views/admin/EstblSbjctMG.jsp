@@ -239,6 +239,11 @@
 		
 // 		조회버튼을 클릭
 		$("#searchBtn").click(function() {
+			$.fn.Search();
+		});
+
+//		조회함수
+		$.fn.Search = function(){
 			var crc = $("#crclmSelect").val();
 			var year = $("#yearSelect").val();
 			var hlf = $("#halfSelect").val();
@@ -256,7 +261,6 @@
 					dataType : "json"
 				}).done(function(data) {
 					grid.resetData(data.estList);
-					grid.setAutoColumnWidth(true);
 					grid.on('focusChange', (ev) => {
 						  grid.setSelectionRange({
 						    start: [ev.rowKey, 0],
@@ -281,6 +285,7 @@
 					$("#b").val("");
 					$("#c").val("");
 					$("#d").val("");
+					$("#d").text("과목번호");
 					$("#e").val("");
 					$("#f").val("");
 					$("#g").val("");
@@ -291,8 +296,7 @@
 					alert("문제가 발생했습니다.");
 				});
 			}
-		});
-
+		};
 		
 // 		메인 그리드 내의 데이터를 클릭하면 작동하는 함수 
 		$.fn.gridClicker = function(ev){
@@ -303,23 +307,24 @@
 				$("#b").val(grid.getValue(ev.rowKey,"CRCLM_HALF"));
 				$("#c").val(grid.getValue(ev.rowKey,"CRCLM_CD"));
 				$("#d").val(grid.getValue(ev.rowKey,"SBJCT_NO"));
+				$("#d").text(grid.getValue(ev.rowKey,"SBJCT_NO"));
 				$("#e").val(grid.getValue(ev.rowKey,"SBJCT_NM"));
 				$("#z").val(grid.getValue(ev.rowKey,"REAL_SBJCT_NM"));
 				$("#f").val(grid.getValue(ev.rowKey,"SBJCT_EXPLN"));
 				$("#g").val(grid.getValue(ev.rowKey,"EDU_HR"));
 				var h = grid.getValue(ev.rowKey,"SBJCT_PLAN_YN");
 				if(h=='Y') {
-					$("#h").attr("checked",true);
+					$("#h").prop("checked",true);
 				}
 				if(h=='N') {
-					$("#h").attr("checked",false);
+					$("#h").prop("checked",false);
 				}
 				var o = grid.getValue(ev.rowKey,"ESNTL_YN");
 				if(o=='Y') {
-					$("#o").attr("checked",true);
+					$("#o").prop("checked",true);
 				}
 				if(o=='N') {
-					$("#o").attr("checked",false);
+					$("#o").prop("checked",false);
 				}
 				$("#o").attr("disabled",false);
 				$("#i").val(grid.getValue(ev.rowKey,"ROOM_NO"));
@@ -339,7 +344,6 @@
 				}).done(function(data) {
 					$("#m").val(data.instr.KORN_FLNM);
 					$("#n").val(data.instr.INSTR_NO);
-					console.log(data.instr.KORN_FLNM,data.instr.INSTR_NO);
 				}).fail(function() {
 					alert("문제가 발생했습니다.");
 				});
@@ -369,6 +373,7 @@
 			$("#b").val("");
 			$("#c").val("");
 			$("#d").val("");
+			$("#d").text("과목번호");
 			$("#e").val("");
 			$("#f").val("");
 			$("#g").val("");
@@ -394,11 +399,18 @@
 			endHour = $("#k").val();
 			kornm = $("#m").val();
 			insno = $("#n").val();
+			time = timegrid.getData();
 			if(year==''||hlf==''||crc==''||sbjcd==''||sbjnm==''||insno==''){
 				alert("!");
 				return false;
 			}
-			if($("#o").attr("checked") == true){
+			for(i=0;i<7;i++){
+				if(parseInt(time[i].startCode)>parseInt(time[i].endCode)){
+					alert("!");
+					return false;
+				}	
+			}
+			if($("#o").prop("checked") == true){
 				esntl = "Y";
 			}else{
 				esntl = "N" 	;
@@ -436,9 +448,37 @@
 				$("#b").html("<option value=''>반기선택</option>");
 				$("#b").append("<option value='0010'>상반기</option>");
 				$("#b").append("<option value='0020'>하반기</option>");
+				$.fn.Search();
 			}).fail(function() {
 				alert("문제가 발생했습니다.");
 			});
+			$.each(time,function(index,element){
+				if(element.startCode!='' && element.endCode!=''){
+// 					$.post({
+// 						url : "/estSaveTime",
+// 						data : {
+// 							crc : crc,
+// 							year : year,
+// 							hlf : hlf,
+// 							sbjcd : sbjcd,
+// 							room : room,
+// 							insno : insno,
+// 							dayCode : element.dayCode,
+// 							startCode : element.startCode,
+// 							endCode : element.endCode
+// 						},
+// 						dataType : "json"
+// 					}).done(function(data) {
+						
+// 					}).fail(function() {
+// 						alert("문제가 발생했습니다.");
+// 					});
+				console.log(element.dayCode);
+				console.log(element.startCode);
+				console.log(element.endCode);
+				}
+			});
+			
 		});
 		
 // 		삭제 버튼 클릭 시 체크박스가 체크된 모든 데이터를 삭제할 예정, 현재는 값만 넘기고 구현되지 않음
@@ -560,7 +600,6 @@
 				sbjnm = subgrid.getValue(ev.rowKey,'SBJCT_NM');
 				sbjxp = subgrid.getValue(ev.rowKey,'SBJCT_EXPLN');
 				hrs = subgrid.getValue(ev.rowKey,'EDU_HR');
-				console.log(sbjno,sbjnm,sbjxp,hrs);
 			}
 		});
 
@@ -573,7 +612,6 @@
 				$("#estInsChoose").attr("disabled",false);
 				insno = insgrid.getValue(ev.rowKey,'INSTR_NO');
 				kornm = insgrid.getValue(ev.rowKey,'KORN_FLNM');
-				console.log(insno,kornm);
 			}
 		});
 		
@@ -581,6 +619,7 @@
 // 		모달 내에서 선택된 값을 메인 입력창에 입력한다
 		$("#estSubChoose").click(function(ev){
 			$("#d").val(sbjno);
+			$("#d").text(sbjno);
 			$("#e").val(sbjnm);
 			$("#z").val(sbjnm);
 			$("#f").val(sbjxp);
@@ -630,7 +669,6 @@
 				$.each(data.estHourList, function(index, element) {
 					code = element.CD;
 					name = element.CD_NM;
-					console.log(parseInt(code),parseInt(j));
 					if(parseInt(code)<parseInt(j)){
 						
 					}else{						
@@ -643,8 +681,117 @@
 			});
 		});
 		
-		
-		
+		   const timegrid = new tui.Grid({
+			      el: document.getElementById('timeGrid'),
+			      scrollX: false,
+			      scrollY: false,
+			      columns: [
+
+			        {
+			          header: '요일',
+			          name: 'dayCode',
+			          formatter: 'listItemText',
+			          editor: {
+			            type: 'select',
+			            options: {
+			              listItems: [
+			                { text: '월요일', value: '0001' },
+			                { text: '화요일', value: '0002' },
+			                { text: '수요일', value: '0003' },
+			                { text: '목요일', value: '0004' },
+			                { text: '금요일', value: '0005' },
+			                { text: '토요일', value: '0006' },
+			                { text: '일요일', value: '0007' }
+			               ]
+			            }
+			          },
+			          align:'center',
+		               disabled:true
+			        },
+			        {
+			          header: '시작시간',
+			          name: 'startCode',
+			          formatter: 'listItemText',
+			          align : 'center',
+			          editor: {
+			            type: 'select',
+			            options: {
+			              listItems: [			            	  
+			                { text: '', value: '' },
+			                { text: '1교시', value: '0001' },
+			                { text: '2교시', value: '0002' },
+			                { text: '3교시', value: '0003' },
+			                { text: '4교시', value: '0004' },
+			                { text: '5교시', value: '0005' },
+			                { text: '6교시', value: '0006' },
+			                { text: '7교시', value: '0007' },
+			                { text: '8교시', value: '0008' }
+			              ]
+			            }
+			          }
+			        },
+			        {
+			          header: '종료시간',
+			          name: 'endCode',
+			          formatter: 'listItemText',
+			          align: 'center',
+			          editor: {
+			            type: 'select',
+			            options: {
+			              listItems: [
+			            	  { text: '', value: '' },
+			            	  { text: '1교시', value: '0001' },
+				                { text: '2교시', value: '0002' },
+				                { text: '3교시', value: '0003' },
+				                { text: '4교시', value: '0004' },
+				                { text: '5교시', value: '0005' },
+				                { text: '6교시', value: '0006' },
+				                { text: '7교시', value: '0007' },
+				                { text: '8교시', value: '0008' }
+			              ]
+			            }
+			          }
+			        }
+			      ]
+			    });
+			timegrid.resetData([
+				{
+					dayCode:'0001',
+					startCode:'',
+					endCode:''
+				},
+				{
+					dayCode:'0002',
+					startCode:'',
+					endCode:''
+				},
+				{
+					dayCode:'0003',
+					startCode:'',
+					endCode:''
+				},
+				{
+					dayCode:'0004',
+					startCode:'',
+					endCode:''
+				},
+				{
+					dayCode:'0005',
+					startCode:'',
+					endCode:''
+				},
+				{
+					dayCode:'0006',
+					startCode:'',
+					endCode:''
+				},
+				{
+					dayCode:'0007',
+					startCode:'',
+					endCode:''
+				}
+			]);
+
 	});
 </script>
 <style>
@@ -693,24 +840,24 @@
 					</div>
 					<div>
 						<div
-							style="background-color: #F3FAFE; width: 100%; height: 300px;">
+							style="background-color: #F3FAFE; width: 100%; min-height: 300px;">
 							<form>
 
 								<div class="row">
 									<div class="form-group col-md-6">
-										<label for="c">교육과정</label> <select id="c"
+										<label for="c" class="col-form-label">교육과정</label> <select id="c"
 											class="form-control" disabled>
 											<option></option>
 										</select>
 									</div>
 									<div class="form-group col-md-3">
-										<label for="a">연도</label> <select id="a" class="form-control"
+										<label for="a" class="col-form-label">연도</label> <select id="a" class="form-control"
 											disabled>
 											<option>연도선택</option>
 										</select>
 									</div>
 									<div class="form-group col-md-3">
-										<label for="b">반기</label> <select id="b" class="form-control"
+										<label for="b" class="col-form-label">반기</label> <select id="b" class="form-control"
 											disabled>
 											<option>반기선택</option>
 										</select>
@@ -719,13 +866,12 @@
 
 
 								<div class="row">
-									<div class="form-group col-md-1">
-										<label for="d">과목번호</label> <input id="d" type="text"
-											class="form-control" disabled readonly>
-									</div>
-									<div class="form-group col-md-3">
-										<label for="z"></label>
+									<div class="form-group col-md-4">
+										<label for="z" class="col-form-label">과목명</label>
 										<div class="input-group">
+											<div class="input-group-prepend">
+												<span id="d" class="form-control">과목번호</span>
+											</div>
 											<input id="z" type="text" class="form-control" disabled>
 											<div class="input-group-append">
 												<button type="button" class="btn btn-outline-dark" id="subjectSearchBtn"
@@ -734,12 +880,13 @@
 										</div>
 									</div>
 									<div class="form-group col-md-4">
-										<label for="e">개설과목명</label> <input id="e"
+										<label for="e" class="col-form-label">개설과목명</label> <input id="e"
 											class="form-control" type="text">
 									</div>
 									<div class="form-group col-md-4">
-									<label for="m">담당강사</label> 
+									<label for="m" class="col-form-label">담당강사</label> 
 									<div class="input-group">
+											<input id="n" type="hidden">
 											<input id="m" class="form-control" type="text" disabled>
 										<div class="input-group-append">
 											<button type="button" class="btn btn-info" id="instructorSearchBtn">검색</button>
@@ -749,61 +896,51 @@
 
 								</div>
 								<div class="row">
-									<div class="form-group col-md-3">
-										<label for="g">총강의시간</label> <input id="g"
-											class="form-control" type="text" disabled>
-									</div>
-									<div class="form-group col-md-3">
-										<label for="j">시작교시</label> <select id="j"
-											class="form-control" disabled>
-											<option value="">선택</option>
-										</select>
-									</div>
-									<div class="form-group col-md-3">
-										<label for="k">종료교시</label> <select id="k"
-											class="form-control" disabled>
-											<option value="">선택</option>
-										</select>
-									</div>
-									<div class="form-group col-md-3">
-									
-										
-											<label for="i">강의실</label> 
-											<select id="i" class="form-control" disabled>
-												<option></option>
-											</select>
-										
-									</div>
+									<div class="col">
+										<div class="row">
+											<div class="form-group col-md-6">
+												<label for="g" class="col-form-label">총강의시간</label> <input id="g"
+													class="form-control" type="text" disabled>
+											</div>
+											<div class="form-group col-md-6">
+												<label for="i" class="col-form-label">강의실</label> 
+												<select id="i" class="form-control" disabled>
+													<option></option>
+												</select>
+											</div>
+										</div>
 								
-								<div class="row">
-
-									<div class="form-group col-md-12">
-										<label for="f">과목설명</label> 
-										<input id="f" class="form-control"
-											type="text">
-									</div>
-				
-								</div>
-								
-								</div>
-								<div class="row">
-									<div class="form-group col-md-2">
-    									<div class="form-check">
-											<label for="h" class="form-check-label">강의계획서작성여부</label> 
-											<input id="h" class="form-check-input" type="checkbox" disabled> 
+										<div class="row">
+											<div class="form-group col-md-12">
+												<label for="f" class="col-form-label">과목설명</label> 
+												<textarea id="f" class="form-control" rows="5"></textarea>
+											</div>
+										</div>
+										<div class="row">
+											<div class="form-group col-md-6">
+    											<div class="form-check">
+													<label for="h" class="form-check-label">강의계획서작성여부</label> 
+													<input id="h" class="form-check-input" type="checkbox" disabled> 
+												</div>
+											</div>
+											<div class="form-group col-md-6">
+												<div class="form-check">
+													<label for="o" class="form-check-label">필수과목여부</label> 
+													<input id="o" class="form-check-input" type="checkbox" disabled> 
+												</div>
+											</div>								
 										</div>
 									</div>
-									<div class="form-group col-md-2">
-										<div class="form-check">
-											<label for="o" class="form-check-label">필수과목여부</label> 
-											<input id="o" class="form-check-input" type="checkbox" disabled> 
-										</div>
+									<div class="col">
+										<label for="timeGrid" class="col-form-label">강의시간</label>
+										<div id="timeGrid"></div>
+										<button type="button" id="timeButton">time</button>
 									</div>
-									<input id="n" type="hidden">
 								</div>
 							</form>
 						</div>
 					</div>
+		
 				</div>
 				<div class="container-fluid"></div>
 				<!-- 과목 검색모달  -->

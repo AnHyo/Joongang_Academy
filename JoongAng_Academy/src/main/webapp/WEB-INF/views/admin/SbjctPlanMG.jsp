@@ -153,6 +153,10 @@
 		$("#halfSelect").append("<option value='0010'>상반기</option>");
 		$("#halfSelect").append("<option value='0020'>하반기</option>");
 		$("#searchBtn").click(function() {
+			$.fn.planSearch();
+		});
+		
+		$.fn.planSearch = function(){
 			var crc = $("#crclmSelect").val();
 			var year = $("#yearSelect").val();
 			var hlf = $("#halfSelect").val();
@@ -170,12 +174,12 @@
 					dataType : "json"
 				}).done(function(data) {
 					grid.resetData(data.estList);
-					grid.setAutoColumnWidth(true);
 				}).fail(function() {
 					alert("문제가 발생했습니다.");
 				});
 			}
-		});
+		};
+		
 		grid.on('click', function(ev){
 			if(ev.rowKey == null){
 				return false;
@@ -211,35 +215,46 @@
 				}).fail(function() {
 					alert("문제가 발생했습니다.");
 				});
-				
-				$.post({
-					url : "/estPlanDetail",
-					data : {
-						crc : crc,
-						year : year,
-						hlf : hlf,
-						sbj : sbj
-					},
-					dataType : "json"
-				}).done(function(data) {
-					
-					var appendHTML = "";
-					$.each(data.detailList, function(index, element) {
-						appendHTML += "<div>";
-						appendHTML += "<table class='table table-bordered'>";
-						appendHTML += "<tr class='table-info'>"  + "<td class='col-2'>강의제목</td> "+ "<td class='col-10'>" + element.LECT_TTL_NM + "</td> " + "</tr>";
-						appendHTML += "<tr class='table-info'>" + "<td class='col-2'>강의주제</td> " + "<td class='col-10'>" + element.LECT_TPC_NM + "</td> " + "</tr>";
-						appendHTML += "<tr class='table-info'>"  + "<td class='col-2'>강의내용</td> "+ "<td class='col-10'>" + element.LECT_CN + "</td> " + "</tr>";
-						appendHTML += "</table>"
-						appendHTML += "</div>";
-					});
-					$("#detailTable").html(appendHTML);
-					
-				}).fail(function() {
-					alert("문제가 발생했습니다.");
-				});
+				$.fn.detailPlan(crc,year,hlf,sbj);
+
 			}
 		});
+		
+		//강의상세계획을 불러옴
+		$.fn.detailPlan = function(crc,year,hlf,sbj){
+			$.post({
+				url : "/estPlanDetail",
+				data : {
+					crc : crc,
+					year : year,
+					hlf : hlf,
+					sbj : sbj
+				},
+				dataType : "json"
+			}).done(function(data) {
+				
+				var appendHTML = "";
+				$.each(data.detailList, function(index, element) {
+					appendHTML += "<div>";
+					appendHTML += "<div class='d-flex justify-content-end col-md-12'>";
+					appendHTML += "<button class='btn btn-outline-dark'>수정</button>";
+					if(index == data.detailList.length-1){
+						appendHTML += "<button class='btn btn-outline-danger'>삭제</button>";						
+					}
+					appendHTML += "</div>";
+					appendHTML += "<table class='table table-bordered'>";
+					appendHTML += "<tr class='table-info'>"  + "<td class='col-2'>강의제목</td> "+ "<td class='col-10'>" + element.LECT_TTL_NM + "</td> " + "</tr>";
+					appendHTML += "<tr class='table-info'>" + "<td class='col-2'>강의주제</td> " + "<td class='col-10'>" + element.LECT_TPC_NM + "</td> " + "</tr>";
+					appendHTML += "<tr class='table-info'>"  + "<td class='col-2'>강의내용</td> "+ "<td class='col-10'>" + element.LECT_CN + "</td> " + "</tr>";
+					appendHTML += "</table>"
+					appendHTML += "</div>";
+				});
+				$("#detailZone").html(appendHTML);
+				
+			}).fail(function() {
+				alert("문제가 발생했습니다.");
+			});
+		}
 
 // 		강의방법코드에 기반하여 목록 생성
 		$.post({
@@ -285,6 +300,7 @@
 				dataType : "json"
 			}).done(function(data) {
 				alert("저장했다");
+				$.fn.planSearch();
 			}).fail(function() {
 				alert("문제가 발생했습니다.");
 			});
@@ -312,9 +328,11 @@
 				dataType : "json"
 			}).done(function(data) {
 				alert("저장했다");
+				$.fn.detailPlan(crc,year,hlf,sbj);
 				$("#d").val("");
 				$("#e").val("");
 				$("#f").val("");
+				
 			}).fail(function() {
 				alert("문제가 발생했습니다.");
 			});
@@ -432,7 +450,7 @@
 								<input id="f" type="text" class="form-control">
 								</div>					
 							</div>		
-							<button type="button" class="btn" id="insDetail">추가</button>						
+							<button type="button" class="btn btn-outline-dark" id="insDetail">추가</button>						
 							</form>
 						</div>
 						</div>
