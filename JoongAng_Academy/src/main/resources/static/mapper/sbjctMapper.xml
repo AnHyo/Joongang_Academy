@@ -37,7 +37,7 @@
 		WHERE SBJCT_NO = #{SBJCT_NO}
 	</update>
 	<select id="integrity" parameterType="HashMap" resultType="Integer">
-		SELECT COUNT(*)
+		SELECT COUNT(1)
 		FROM SBJCT_INFO
 		WHERE NOT EXISTS (
 		SELECT *

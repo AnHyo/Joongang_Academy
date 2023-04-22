@@ -137,7 +137,7 @@ $(function(){
 		  if(key.keyCode == 13){
 			$("#searchbtn").click();
 		  }
-		});
+	});
 	
 	$("#searchbtn2").click(function(){
 		$("#searchNM2").val($("#searchNM2").val());
@@ -201,6 +201,17 @@ $(function(){
 	var CRCLM_CD = "";
 	var CRCLM_YEAR ="";
 	var stdnt_no ="";
+
+
+	 $("#stuSearchModal").on("keydown", function(key) {
+		    if (key.keyCode == 13 ) {
+		       $("#selectbtn").click();
+		    }
+	 });
+	
+
+
+	
 	$("#selectbtn").click(function(){
 		const rowKey = stuList.getFocusedCell().rowKey
 		var obj = stuList.getRow(rowKey);
@@ -248,6 +259,11 @@ $(function(){
 						estblSBJ.resetData(estbl);
 						var apply = data.applySBJ;
 						applySBJ.resetData(apply);
+						
+						$("#search_value").attr("disabled",false);
+						$("#search_name").attr("disabled",false);
+						$(".esntlchk").attr("disabled",false);
+						$("#sbjSearchbtn").attr("disabled",false);
 					}).fail(function() {
 						alert("문제가 발생했습니다.");
 					}); //estblSBJAjax 
@@ -396,14 +412,14 @@ $(function(){
 		}, {
 			header : '개설과목명',
 			name : 'SBJCT_NM',
-			width : 200,
+			width : 210,
 			align:'center',
 			sortable: true,
 		    sortingType: 'desc'
 		}, {
 			header : '강사명',
 			name : 'KORN_FLNM',
-			width : 100,
+			width : 80,
 			align:'center',
 			sortable: true,
 		    sortingType: 'desc'
@@ -416,18 +432,15 @@ $(function(){
 		    sortingType: 'desc'
 		},{
 			header : '강의실',
-			name : 'ROOM_NO',
-			width : 80,
+			name : 'ROOM_NM',
+			width : 100,
 			align:'center',
-			formatter: function(e) {
-				return e.value+'호';
-		 	},
 		 	sortable: true,
 		    sortingType: 'desc'
 		}, {
 			header : '강의계획서',
 			name : 'SBJCT_PLAN_YN',
-			width : 80,
+			width : 100,
 			minwidth:'auto',
 			align:'center',
 			sortable: true,
@@ -436,7 +449,7 @@ $(function(){
 			header : '신청',
 			name: 'SBJCT_NO', 
 			renderer: { type: buttonRenderer },
-			width: 80,
+			width: 60,
 			align:'center'
 		} ] 
 	}); //estblSBJ grid
@@ -466,14 +479,14 @@ $(function(){
 		}, {
 			header : '개설과목명',
 			name : 'SBJCT_NM',
-			width : 200,
+			width : 210,
 			align:'center',
 			sortable: true,
 		    sortingType: 'desc'
 		}, {
 			header : '강사명',
 			name : 'KORN_FLNM',
-			width : 100,
+			width : 80,
 			align:'center',
 			sortable: true,
 		    sortingType: 'desc'
@@ -486,18 +499,15 @@ $(function(){
 		    sortingType: 'desc'
 		},{
 			header : '강의실',
-			name : 'ROOM_NO',
-			width : 80,
+			name : 'ROOM_NM',
+			width : 100,
 			align:'center',
-			formatter: function(e) {
-				return e.value+'호';
-		 	},
 		 	sortable: true,
 		    sortingType: 'desc'
 		}, {
 			header : '강의계획서',
 			name : 'SBJCT_PLAN_YN',
-			width : 80,
+			width : 100,
 			minwidth:'auto',
 			align:'center',
 			sortable: true,
@@ -505,14 +515,46 @@ $(function(){
 		},{ 	header : '삭제',
 			name: 'SBJCT_NO', 
 			renderer: { type: buttonRenderer2 },
-			width: 80,
+			width: 60,
 			align:'center'
 		} ] 
 	});// applySBJ grid
 
+	$("#search_value,input[name=esntlchk]").on("keydown", function(key) {
+		 if(key.keyCode == 13){
+				$("#sbjSearchbtn").click();
+		}
+	});
+	$("#sbjSearchbtn").click(function(){
+		var search_value = $.trim($("#search_value").val());
+		var search_name = $("#search_name").val();
+		var esntlchk = $("input[name=esntlchk]:checked").val();
+		 $.post({
+				url : "/estblSBJAjax",
+				data : {
+					
+					"CRCLM_HALF" : CRCLM_HALF,
+					"CRCLM_CD" : CRCLM_CD,
+					"CRCLM_YEAR" : CRCLM_YEAR,
+					"STDNT_NO" : stdnt_no,
+					"search_value" : search_value,
+					"search_name" : search_name,
+					"esntlchk" : esntlchk
+				},
+				dataType : "json"
+
+			}).done(function(data) {
+				var estbl = data.estblSBJ;
+				estblSBJ.resetData(estbl);
+			}).fail(function() {
+				alert("문제가 발생했습니다.");
+			}); //estblSBJAjax Search 
+		
+		
+	});
 	
 	
-	}); //function()
+}); //function()
 	
 
 	
@@ -586,7 +628,7 @@ $(function(){
 									</div>
 								</div>
 							</div>
-							<div style="margin-left:55px;">
+							<div style="margin-left: 55px;">
 								<div class="d-flex justify-content-center">
 									<div class="row col-4">
 										<div class="col-3 mt-2 d-flex justify-content-end fw-bolder"
@@ -636,14 +678,66 @@ $(function(){
 					</div>
 					<div class="row">
 						<div class="col-6">
-							<div class="float-start"
-								style="width: 10px; height: 29px; background-color: #498c5f; margin-right: 10px;"></div>
-							<h6 class="mt-1 fw-bolder">개설강좌</h6>
+							<div class="row">
+								<div class="col-3">
+									<div class="float-start"
+										style="width: 10px; height: 32px; background-color: #498c5f; margin-top: -5px; margin-right: 10px;"></div>
+									<h6 class="fw-bolder">개설강좌</h6>
+								</div>
+								<div class="col-4">
+									<div class="row"
+										style="margin-left: 40px; margin-right: -50px;">
+										<div class="col-4" style="margin-left: 20px;">
+											<input type="radio" style="cursor: pointer;"
+												disabled="disabled" checked="checked"
+												class="form-check-input esntlchk" name="esntlchk"
+												id="allchk" value=""> <label for="allchk"
+												style="cursor: pointer; font-size: 14px;"
+												class="text-center form-check-label">전체</label>
+										</div>
+										<div class="col-4" style="margin-left: -20px;">
+											<input type="radio" style="cursor: pointer;"
+												disabled="disabled" class="form-check-input esntlchk"
+												name="esntlchk" id="Ychk" value="Y"> <label
+												for="Ychk" style="cursor: pointer; font-size: 14px;"
+												class="text-center form-check-label">필수</label>
+										</div>
+										<div class="col-4" style="margin-left: -20px;">
+											<input type="radio" style="cursor: pointer;"
+												disabled="disabled" class="form-check-input esntlchk"
+												name="esntlchk" id="Nchk" value="N"> <label
+												for="Nchk" style="cursor: pointer; font-size: 14px;"
+												class="text-center form-check-label">선택</label>
+										</div>
+									</div>
+								</div>
+								<div class="col-5">
+									<div class="input-group" style="margin-top: -5px;">
+										<div class="col-3">
+											<select class="form-control form-control-sm"
+												disabled="disabled" name="search_name" id="search_name"
+												style="border-radius: 5px 0 0 5px;">
+												<option value="all" selected>전체</option>
+												<option value="sbjNM">과목명</option>
+												<option value="instrNM">강사명</option>
+											</select>
+										</div>
+										<input type="text" name="search_value" id="search_value"
+											disabled="disabled"
+											class="form-control form-control-sm border-gray col-md-8"
+											placeholder="검색어를 입력하세요">
+										<button class="btn btn-dark btn-sm" type="button"
+											disabled="disabled" id="sbjSearchbtn">
+											<i class="fas fa-search"></i>
+										</button>
+									</div>
+								</div>
+							</div>
 						</div>
 						<div class="col-6">
 							<div class="float-start"
-								style="width: 10px; height: 29px; background-color: #498c5f; margin-right: 10px;"></div>
-							<h6 class="mt-1 fw-bolder">신청강좌</h6>
+								style="width: 10px; height: 32px; background-color: #498c5f; margin-top: -5px; margin-right: 10px;"></div>
+							<h6 class="fw-bolder">신청강좌</h6>
 						</div>
 					</div>
 					<div class="row">

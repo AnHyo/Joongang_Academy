@@ -329,7 +329,11 @@
 				
 				}); //updatebtn click
 			
-		
+				$("#searchnm").keydown(function(key){
+					  if(key.keyCode == 13){
+						$("#searchbtn").click();
+					  }
+					});
 		
 			
 			$("#delbtn").click(function(){

@@ -58,7 +58,6 @@ public class SbjctController {
 		search.put("searchnm", searchnm);
 		search.put("searchuse", searchuse);
 		search.put("searchdel", searchdel);
-		System.err.println(search);
 		List<Map<String, Object>> list = sbjctService.list(search);
 		JSONArray listJ = new JSONArray(list);
 		json.put("list", listJ);
@@ -87,7 +86,6 @@ public class SbjctController {
 	@PostMapping(value = "/updatesbjAjax", produces = "application/json;charset=UTF-8")
 	public String updatesbjAjax(@RequestParam Map<String, Object> map) {
 		JSONObject json = new JSONObject();
-		System.err.println(map);
 		int result = sbjctService.updatesbj(map);
 		json.put("result", result);
 		List<Map<String, Object>> list = sbjctService.list(map);

@@ -109,7 +109,6 @@ public class ApplyADController {
 	@PostMapping(value = "/delApplyAjax", produces = "application/json;charset=UTF-8")
 	public String delApplyAjax(@RequestParam Map<String, Object> map) {
 		JSONObject json = new JSONObject();
-		System.err.println(map);
 		int result = applyService.delApply(map);
 		int delHist = applyService.delHist(map);
 		if(result == 1 && delHist == 1) {

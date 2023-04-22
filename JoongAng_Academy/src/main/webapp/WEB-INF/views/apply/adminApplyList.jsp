@@ -127,6 +127,7 @@ $(function(){
 	$("#searchbtn").click(function(){
 		if($("#searchNM").val() == ""){
 			alert("학번이나 이름을 입력해주세요");
+			$("#searchNM").focus();
 			return false;
 		}
 		$("#stuSearchModal").modal("show");
@@ -161,7 +162,11 @@ $(function(){
 			    }
 			  }
 	});
-
+	 $("#stuSearchModal").on("keydown", function(key) {
+		    if (key.keyCode == 13 ) {
+		       $("#selectbtn").click();
+		    }
+	 });
 	
 	var stuList = new tui.Grid({
   		el : document.getElementById('stuList'),
@@ -247,7 +252,8 @@ $(function(){
 					}).done(function(data) {
 						var aHist = data.applyHist;
 						applyHist.resetData(aHist);
-					
+						$("#search_value").attr("disabled",false);
+						$("#sbjSearchbtn").attr("disabled",false);
 					}).fail(function() {
 						alert("문제가 발생했습니다.");
 					}); //applyHistAjax 
@@ -257,7 +263,34 @@ $(function(){
 		 
 		 
 	});
-	
+	$("#search_value").keydown(function(key){
+		  if(key.keyCode == 13){
+			$("#sbjSearchbtn").click();
+		  }
+	});
+	$("#sbjSearchbtn").click(function(){
+		var search_value = $.trim($("#search_value").val());
+		 $.post({
+				url : "/applyHistAjax",
+				data : {
+					
+					"CRCLM_HALF" : CRCLM_HALF,
+					"CRCLM_CD" : CRCLM_CD,
+					"CRCLM_YEAR" : CRCLM_YEAR,
+					"STDNT_NO" : stdnt_no,
+					"search_value" : search_value
+				},
+				dataType : "json"
+
+			}).done(function(data) {
+				var aHist = data.applyHist;
+				applyHist.resetData(aHist);
+			}).fail(function() {
+				alert("문제가 발생했습니다.");
+			}); //applyHistAjax Search 
+		
+		
+	});
 
 	
 	var applyHist = new tui.Grid({
@@ -461,12 +494,26 @@ $(function(){
 						</div>
 					</div>
 
-
-					<div class="float-start"
-						style="width: 10px; height: 29px; background-color: #498c5f; margin-right: 10px;"></div>
-					<h6 class="mt-1 pt-1 fw-bolder">수강신청내역</h6>
-
-					<div id="applyHist" class="mb-3 mt-3"
+					<div class="d-flex justify-content-between">
+						<div class="col-10">
+							<div class="float-start"
+								style="width: 10px; height: 32px; background-color: #498c5f; margin-top: -5px; margin-right: 10px;"></div>
+							<h6 class="fw-bolder" style="margin-top:2px;">수강신청내역</h6>
+						</div>
+						<div class="col-2" style="margin-top: 2px;">
+							<div class="input-group" style="margin-top: -5px;">
+								<input type="text" name="search_value" id="search_value"
+									disabled="disabled"
+									class="form-control form-control-sm border-gray col-md-10"
+									placeholder="과목명을 검색하세요.">
+								<button class="btn btn-dark btn-sm" type="button"
+									disabled="disabled" id="sbjSearchbtn">
+									<i class="fas fa-search"></i>
+								</button>
+							</div>
+						</div>
+					</div>
+					<div id="applyHist" class="mb-3 mt-2"
 						style="width: 100%; height: 500px;"></div>
 
 

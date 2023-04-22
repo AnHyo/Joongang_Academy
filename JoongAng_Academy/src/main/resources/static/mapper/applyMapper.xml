@@ -7,7 +7,8 @@
 		SELECT * FROM applinfoview
 		WHERE 1=1
 		<if test="searchnm != null">
-			AND (STDNT_NO LIKE CONCAT ('%',#{searchnm},'%') OR KORN_FLNM_S LIKE CONCAT ('%',#{searchnm},'%'))
+			AND (STDNT_NO LIKE CONCAT ('%',#{searchnm},'%') OR
+			KORN_FLNM_S LIKE CONCAT ('%',#{searchnm},'%'))
 		</if>
 		<if test="searchyear != null and searchyear !=''">
 			AND CRCLM_YEAR LIKE CONCAT ('%',#{searchyear},'%')
@@ -21,26 +22,47 @@
 		ORDER BY KORN_FLNM_S;
 	</select>
 	<select id="info" parameterType="HashMap" resultType="HashMap">
-		SELECT * FROM applinfoview
+		SELECT *
+		FROM applinfoview
 		WHERE STDNT_NO=#{stdnt_no}
 	</select>
-	<select id="estblSBJ" parameterType="HashMap" resultType="HashMap">
+	<select id="estblSBJ" parameterType="HashMap"
+		resultType="HashMap">
 		SELECT *
-		FROM estblSbJview 
-		WHERE 
-		CRCLM_YEAR =#{CRCLM_YEAR}
+		FROM estblSbJview
+		WHERE 1=1
+		AND CRCLM_YEAR =#{CRCLM_YEAR}
 		AND CRCLM_HALF =#{CRCLM_HALF}
-		AND CRCLM_CD =#{CRCLM_CD}
+		AND
+		CRCLM_CD =#{CRCLM_CD}
+		<if test="esntlchk != null and esntlchk != ''">
+			AND ESNTL_YN =#{esntlchk}
+		</if>
+		<if test="search_name != null">
+			<choose>
+				<when test="search_name = 'all'">
+					AND (SBJCT_NM LIKE CONCAT ('%',#{search_value},'%') OR
+					KORN_FLNM LIKE CONCAT ('%',#{search_value},'%'))
+				</when>
+				<when test="search_name = 'sbjNM'">
+					AND SBJCT_NM LIKE CONCAT ('%',#{search_value},'%')
+				</when>
+				<when test="search_name = 'instrNM'">
+					AND KORN_FLNM LIKE CONCAT ('%',#{search_value},'%')
+				</when>
+			</choose>
+		</if>
 	</select>
-	<select id="applySBJ" parameterType="HashMap" resultType="HashMap">
+	<select id="applySBJ" parameterType="HashMap"
+		resultType="HashMap">
 		SELECT * FROM applyclsview
-		WHERE 
+		WHERE
 		CRCLM_YEAR =#{CRCLM_YEAR}
 		AND CRCLM_HALF =#{CRCLM_HALF}
 		AND CRCLM_CD =#{CRCLM_CD}
 		AND STDNT_NO =#{STDNT_NO}
 	</select>
-	<insert id="addApply"  parameterType="HashMap">
+	<insert id="addApply" parameterType="HashMap">
 		INSERT INTO APPL_CLS
 		SET
 		CRCLM_CD=#{CRCLM_CD},
@@ -48,24 +70,25 @@
 		CRCLM_HALF=#{CRCLM_HALF},
 		SBJCT_NO=#{SBJCT_NO},
 		STDNT_NO=#{STDNT_NO}
-	
+
 	</insert>
 	<delete id="delApply" parameterType="HashMap">
 		DELETE FROM APPL_CLS
 		WHERE
 		CRCLM_CD=#{CRCLM_CD} AND
 		CRCLM_YEAR=#{CRCLM_YEAR} AND
-		CRCLM_HALF=#{CRCLM_HALF}AND 
+		CRCLM_HALF=#{CRCLM_HALF}AND
 		SBJCT_NO=#{SBJCT_NO} AND
 		STDNT_NO=#{STDNT_NO}
-	
+
 	</delete>
-	<select id="applyCheck" parameterType="HashMap" resultType="Integer">
-	 	SELECT COUNT(*) FROM APPL_CLS
-	 	WHERE 
-	 	CRCLM_CD=#{CRCLM_CD} AND
+	<select id="applyCheck" parameterType="HashMap"
+		resultType="Integer">
+		SELECT COUNT(*) FROM APPL_CLS
+		WHERE
+		CRCLM_CD=#{CRCLM_CD} AND
 		CRCLM_YEAR=#{CRCLM_YEAR} AND
-		CRCLM_HALF=#{CRCLM_HALF}AND 
+		CRCLM_HALF=#{CRCLM_HALF}AND
 		SBJCT_NO=#{SBJCT_NO} AND
 		STDNT_NO=#{STDNT_NO}
 	</select>
@@ -89,13 +112,16 @@
 		STDNT_NO=#{STDNT_NO},
 		CD='0020'
 	</insert>
-	<select id="applyHist" parameterType="HashMap" resultType="HashMap">
+	<select id="applyHist" parameterType="HashMap"
+		resultType="HashMap">
 		SELECT * FROM applyhistview
-		WHERE
+		WHERE 1=1 AND
 		CRCLM_CD=#{CRCLM_CD} AND
 		CRCLM_YEAR=#{CRCLM_YEAR} AND
-		CRCLM_HALF=#{CRCLM_HALF} AND 
+		CRCLM_HALF=#{CRCLM_HALF} AND
 		STDNT_NO=#{STDNT_NO}
-		ORDER BY DT DESC;
+		<if test="search_value != null and search_value != ''">
+			AND SBJCT_NM LIKE CONCAT ('%',#{search_value},'%')
+		</if>
 	</select>
 </mapper>
