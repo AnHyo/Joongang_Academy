@@ -2,9 +2,80 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.joongAng.academy.dao.StdntNumberDAO">
-	<select id="getCrclmList" resultType="HashMap">
-		SELECT CRCLM_NM as crclm_name, EDU_NOPE as person_no  
+	<select id="getCrclmList" parameterType="HashMap" resultType="HashMap">
+		SELECT crclm.CRCLM_CD AS crclm_cd, crclm.CRCLM_YEAR AS crclm_year, crclm.CRCLM_HALF AS crclm_half, 
+			crclm.CRCLM_NM AS crclm_name, crclm.EDU_NOPE AS person_no
+			, LPAD((SELECT COUNT(*) FROM APPL_INFO WHERE APPL_INFO.CRCLM_CD = crclm.CRCLM_CD AND APPL_INFO.CRCLM_YEAR = #{year } AND APPL_INFO.CRCLM_HALF = #{half }), 2, '0') AS applCount
+		FROM CRCLM_INFO crclm
+		LEFT JOIN APPL_INFO appl ON crclm.CRCLM_CD = appl.CRCLM_CD
+		WHERE crclm.CRCLM_YEAR = #{year } AND crclm.CRCLM_HALF = #{half }
+		<if test="crclmName != null and stdntName == ''">
+			AND crclm.CRCLM_NM LIKE CONCAT('%',#{crclmName },'%')
+		</if>
+		GROUP BY crclm.CRCLM_CD
+	</select>
+	
+	<select id="crclmCount" parameterType="HashMap" resultType="String">
+		SELECT LPAD(COUNT(*), 2, '0')  
 		FROM CRCLM_INFO
 		WHERE CRCLM_YEAR = #{year } and CRCLM_HALF = #{half };
 	</select>
+
+	<select id="getStuList" parameterType="HashMap" resultType="HashMap">
+		SELECT KORN_FLNM as stu_name, TELNO as stu_tel, STDNT_NO as stu_no, CRCLM_CD AS crclm_cd
+				, CASE WHEN (SELECT USER_ID FROM USER_INFO WHERE STDNT_NO = USER_INFO.USER_ID) != ' ' THEN 'Y' ELSE 'N' END AS ID_YN
+		FROM APPL_INFO
+		WHERE CRCLM_YEAR = #{year } and CRCLM_HALF = #{half }
+		<if test="crclm_cd != null">
+				AND CRCLM_CD = #{crclm_cd }
+		</if>
+		<if test="stdntName != null">
+				AND KORN_FLNM = #{stdntName }
+		</if>
+	</select>
+
+	<select id="stdntCount" parameterType="HashMap" resultType="String">
+		SELECT LPAD(COUNT(*), 2, '0')
+		FROM APPL_INFO
+		WHERE CRCLM_CD = #{crclm_cd } and CRCLM_YEAR = #{crclm_year } and CRCLM_HALF = #{crclm_half }; 
+	</select>
+	
+	<select id="createStdntNo" parameterType="HashMap" resultType="HashMap">
+		SELECT USER_NO AS user_no, CRCLM_CD AS crclm_cd, KORN_FLNM as stu_name, TELNO as stu_tel
+			, CONCAT(SUBSTRING(#{year }, 3),SUBSTRING(#{half }, 3),SUBSTRING(CRCLM_CD,3),LPAD(ROW_NUMBER() OVER(PARTITION BY CRCLM_CD ORDER BY CRCLM_CD), 2, '0')) AS stdnt_no
+		FROM APPL_INFO
+	</select>
+	
+	<update id="updateStdntNo" parameterType="HashMap">
+		<foreach item="setNoList" collection="list" index="index" separator=";" close=";">
+			UPDATE APPL_INFO
+			SET STDNT_NO = #{setNoList.stdnt_no }
+			WHERE USER_NO = #{setNoList.user_no }
+		</foreach>
+	</update>
+	
+	<update id="updateUserIdPw" parameterType="HashMap">
+		UPDATE USER_INFO u
+		JOIN APPL_INFO a ON u.USER_NO = a.USER_NO
+		SET u.USER_ID = a.STDNT_NO, u.PSWD = SUBSTRING(u.TELNO, 8)
+		WHERE a.CRCLM_YEAR = #{year } AND a.CRCLM_HALF = #{half }
+	</update>
+	
+	<select id="radioList" parameterType="HashMap" resultType="HashMap">
+		SELECT KORN_FLNM as stu_name, TELNO as stu_tel, STDNT_NO as stu_no, CRCLM_CD AS crclm_cd
+				, CASE WHEN (SELECT USER_ID FROM USER_INFO WHERE STDNT_NO = USER_INFO.USER_ID) != ' ' THEN 'Y' ELSE 'N' END AS ID_YN
+		FROM APPL_INFO
+		WHERE 1=1
+		<choose>
+			<when test="radioVal == 'setNo'">
+				AND (SELECT USER_ID FROM USER_INFO WHERE STDNT_NO = USER_INFO.USER_ID) != ' '
+			</when>
+			<when test="radioVal == 'not'">
+				AND (SELECT USER_ID FROM USER_INFO WHERE STDNT_NO = USER_INFO.USER_ID) IS NULL
+			</when>
+		</choose>
+		ORDER BY CRCLM_CD
+	</select>
+	
+	
 </mapper>
