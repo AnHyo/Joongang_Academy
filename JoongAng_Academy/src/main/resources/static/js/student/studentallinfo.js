@@ -186,8 +186,7 @@ $(function(){
 				return false;
 			}
 			
-			if($("#emerTel").val() == "" || $("#emerTel").val().length > 11 || 
-				RegExp.test($("#emerTel").val())	){
+			if($("#emerTel").val().length > 11 || RegExp.test($("#emerTel").val())	){
 				alert("전화번호는 숫자만 입력해 주세요.");
 				var c = $('#emerTel').val().replace(RegExp, '');
 				$('#emerTel').val(c);
@@ -195,11 +194,21 @@ $(function(){
 				return false;
 			}
 			
-			if($("#relation").val() == ""){
-				alert("관계를 선택해 주세요.");
-				$("#relation").focus();
-				return false;
+			if($("#emerTel").val() != ""){
+				if($("#relation").val() == ""){
+					alert("관계를 선택해 주세요.");
+					$("#relation").focus();
+					return false;
+				}	
+			} else {
+				if($("#relation").val() != ""){
+					alert("비상연락처를 입력해 주세요.");
+					$("#relation").val("");
+					$("#emerTel").focus();
+					return false;
+				}
 			}
+			
 			
 			var studentID = $("#StudentID").val();
 			
