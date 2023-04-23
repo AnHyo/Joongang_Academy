@@ -19,7 +19,7 @@
 	AND CRCLM_HALF = #{turn }
 	</if>
 	<if test="nameAndNum != ''">
-	AND (STDNT_NO LIKE CONCAT('%',#{nameAndNum },'%') or KORN_FLNM LIKE CONCAT('%',#{nameAndNum },'%'))
+	AND (STDNT_NO LIKE CONCAT('%',#{nameAndNum },'%') or KORN_FLNM_S LIKE CONCAT('%',#{nameAndNum },'%'))
 	</if>
 	<if test="gender != ''">
 	AND GENDER_CD = #{gender }
