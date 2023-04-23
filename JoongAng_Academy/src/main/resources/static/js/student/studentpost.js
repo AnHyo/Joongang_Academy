@@ -1,3 +1,4 @@
+// -- 학생
 function stuent_post(){
 	new daum.Postcode({
             oncomplete: function(data) {

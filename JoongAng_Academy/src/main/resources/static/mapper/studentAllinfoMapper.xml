@@ -18,7 +18,7 @@
 <select id="studentSearch" resultType="HashMap">
 	SELECT *
 	FROM applinfoview
-	WHERE (KORN_FLNM LIKE CONCAT('%',#{numName },'%') or STDNT_NO LIKE CONCAT('%',#{numName },'%'))
+	WHERE (KORN_FLNM_S LIKE CONCAT('%',#{numName },'%') or STDNT_NO LIKE CONCAT('%',#{numName },'%'))
 	<if test="courseNum != ''">
 	AND CRCLM_CD = #{courseNum }
 	</if>

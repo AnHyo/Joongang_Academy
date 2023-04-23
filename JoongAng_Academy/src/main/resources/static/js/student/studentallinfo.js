@@ -287,7 +287,7 @@ $(function(){
 		        },
 		        {
 		          header: '이름',
-		          name: 'KORN_FLNM',
+		          name: 'KORN_FLNM_S',
 		          width:120,
 		          align:'center',
 				  sortingType: 'asc',

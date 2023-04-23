@@ -3,9 +3,82 @@
 
 <mapper namespace="com.joongAng.academy.dao.InstructorDAO">
 	<select id="insList" parameterType="HashMap" resultType="HashMap">
-		SELECT INSTR_NO,KORN_FLNM,USER_BRDT,EML_ADDR,TELNO,ZIP,ADDR,DADDR,CodeFind('0011',GENDER_CD) AS GENDER_CD,USER_NO,ENDST_NO FROM INSTR_INFO
+		SELECT * 
+		FROM instrendsttview
 		<if test="name != ''">
 			WHERE KORN_FLNM LIKE CONCAT('%', #{name }, '%')
+			or TELNO LIKE CONCAT('%', #{name }, '%')
 		</if>
 	</select>
+	
+	<select id="teacherUnreg" resultType="InstrDTO">
+	 	SELECT *
+	 	FROM teacherinsertview
+	</select>
+	
+	<select id="gender" resultType="InstrDTO" parameterType="InstrDTO">
+		SELECT CD , CD_NM
+		FROM CODE_INFO
+		WHERE CD_CLSF = '0011'
+	</select>
+	
+	<select id="endst" resultType="InstrDTO" parameterType="InstrDTO">
+		SELECT ENDST_NO , ENDST_NM
+		FROM ENDST_INFO
+	</select>
+	
+	<update id="teacherInfoUpdate" parameterType="HashMap">
+		UPDATE INSTR_INFO SET
+		EML_ADDR = #{email },
+		TELNO = #{tel },
+		ZIP = #{postNumber },
+		ADDR = #{addr },
+		DADDR = #{daddr },
+		ENDST_NO = #{endst }
+		WHERE INSTR_NO = #{instrNo }
+	</update>
+	
+	<insert id="teacherNewRegist" parameterType="HashMap">
+		INSERT INTO INSTR_INFO (INSTR_NO, KORN_FLNM, USER_BRDT, EML_ADDR, TELNO, ZIP, ADDR, DADDR, GENDER_CD, USER_NO, ENDST_NO) 
+		SELECT CONCAT('L', YEAR(CURDATE()) , LPAD(COALESCE(MAX(SUBSTR(INSTR_NO , 6)), 0) + 1, 5, '0')), #{newName },#{newBirth },#{newEmail },#{newTel },#{newPostNum },#{newAddr },#{newDaddr },#{newGender },#{newUserNo },#{newEndstNo }
+		FROM INSTR_INFO
+		WHERE SUBSTR(INSTR_NO, 2, 4) = YEAR(CURDATE())
+	</insert>
+	
+	<update id="teacherUserUpdate" parameterType="HashMap">
+		UPDATE USER_INFO SET 
+		PSWD = SUBSTR(#{newTel }, -4),
+		USER_ID = (SELECT ii.INSTR_NO  FROM INSTR_INFO ii WHERE USER_NO = #{newUserNo } )
+		WHERE USER_NO = #{newUserNo }
+	</update>
+	
+	<select id="telcheck" resultType="HashMap" parameterType="HashMap">
+		SELECT TELNO
+		FROM INSTR_INFO
+		<if test="inst_no != ''">
+			WHERE NOT INSTR_NO = #{inst_no }
+		</if>
+	</select>
+	
+	<select id="foCheck" resultType="HashMap" parameterType="HashMap">
+		SELECT ii.INSTR_NO AS INSTR_INFO , si.INSTR_NO AS SBJCT_INSTR , ci.RPRS_INSTR_NO AS CRCLM_INFO
+		FROM INSTR_INFO ii
+		LEFT JOIN SBJCT_INSTR si ON ii.INSTR_NO = si.INSTR_NO
+		LEFT JOIN CRCLM_INFO ci ON ii.INSTR_NO = ci.RPRS_INSTR_NO
+		WHERE ii.INSTR_NO = #{instrNo }
+		GROUP BY INSTR_INFO
+	</select>
+	
+	<update id="instrDel" parameterType="HashMap">
+		UPDATE INSTR_INFO SET
+		INSTR_DEL = 'N'
+		WHERE INSTR_NO = #{instrNo }
+	</update>
+	
+	<update id="instrDelCen" parameterType="HashMap">
+		UPDATE INSTR_INFO SET
+		INSTR_DEL = 'Y'
+		WHERE INSTR_NO = #{instrNo }
+	</update>
+	
 </mapper>
