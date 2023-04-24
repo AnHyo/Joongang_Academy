@@ -195,6 +195,40 @@ public class EstablishedSubjectController {
 		json.put("instr", instr);
 		return json.toString();
 	}
+	@ResponseBody
+	@PostMapping(value = "/estTimeTable", produces = "application/json;charset=UTF-8")
+	public String estTimeTable(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		Map<String, String[]> reqmap = request.getParameterMap();
+		Map<String,Object> map = new HashMap<String, Object>();
+		for (String key : reqmap.keySet()) {
+			String[] values = reqmap.get(key);
+			for (String value : values) {
+				System.out.println(key + " = " + value);
+				map.put(key.toString(), value);
+			}
+		}
+		List<Map<String,Object>> timeInfo = estService.estTimeInfo(map);
+		json.put("timeInfo", timeInfo);
+		return json.toString();
+	}
+	@ResponseBody
+	@PostMapping(value = "/estTimeConfirm", produces = "application/json;charset=UTF-8")
+	public String estTimeConfirm(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		Map<String, String[]> reqmap = request.getParameterMap();
+		Map<String,Object> map = new HashMap<String, Object>();
+		for (String key : reqmap.keySet()) {
+			String[] values = reqmap.get(key);
+			for (String value : values) {
+				System.out.println(key + " = " + value);
+				map.put(key.toString(), value);
+			}
+		}
+		int result = estService.estTimeConfirm(map);
+		json.put("result", result);
+		return json.toString();
+	}
 	
 	@ResponseBody
 	@PostMapping(value = "/estDelete", produces = "application/json;charset=UTF-8")
