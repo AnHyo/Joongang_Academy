@@ -87,5 +87,15 @@ public class EstablishedSubjectService {
 		// TODO Auto-generated method stub
 		return estDAO.estTime(map);
 	}
+
+	public List<Map<String, Object>> estTimeInfo(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return estDAO.estTimeInfo(map);
+	}
+
+	public int estTimeConfirm(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return estDAO.estTimeConfirm(map);
+	}
 	
 }

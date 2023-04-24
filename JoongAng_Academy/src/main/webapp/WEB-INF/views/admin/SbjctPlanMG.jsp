@@ -207,7 +207,7 @@
 					$("#c").val(data.subjectPlan.CRS_BOOK);
 					$("#l").val(data.subjectPlan.SBJCT_MTHD_CD);
 					console.log(data.subjectPlan);
-					if(data.subjectPlan.SBJCT_TRGT!=null){
+					if(data.subjectPlan.PLAN_WRT_CMPTL=='Y'){
 						$("#detailEnter").show(0);					
 					}else{
 						$("#detailEnter").hide(0);
@@ -243,7 +243,7 @@
 					}
 					appendHTML += "</div>";
 					appendHTML += "<table class='table table-bordered'>";
-					appendHTML += "<tr class='table-info'>"  + "<td class='col-2'>강의제목</td> "+ "<td class='col-10'>" + element.LECT_TTL_NM + "</td> " + "</tr>";
+					appendHTML += "<tr class='table-info'>"  + "<td class='col-2'>강의제목</td> "+ "<td class='col-10'><input type='text' class='form-control' value='" + element.LECT_TTL_NM + "'></td> " + "</tr>";
 					appendHTML += "<tr class='table-info'>" + "<td class='col-2'>강의주제</td> " + "<td class='col-10'>" + element.LECT_TPC_NM + "</td> " + "</tr>";
 					appendHTML += "<tr class='table-info'>"  + "<td class='col-2'>강의내용</td> "+ "<td class='col-10'>" + element.LECT_CN + "</td> " + "</tr>";
 					appendHTML += "</table>"
