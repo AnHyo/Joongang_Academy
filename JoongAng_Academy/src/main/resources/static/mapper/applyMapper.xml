@@ -124,4 +124,29 @@
 			AND SBJCT_NM LIKE CONCAT ('%',#{search_value},'%')
 		</if>
 	</select>
+ 	<select id="classTMChk" parameterType="HashMap" resultType="Integer">
+		SELECT COUNT(1)
+		FROM applyclsview a
+		WHERE a.CLASSTM = 
+		(
+		SELECT CLASSTM
+		FROM estblSbJview e
+		WHERE 	
+		e.CRCLM_CD=#{CRCLM_CD} AND
+		e.CRCLM_YEAR=#{CRCLM_YEAR} AND
+		e.CRCLM_HALF=#{CRCLM_HALF} AND
+		e.SBJCT_NO=#{SBJCT_NO}) AND a.STDNT_NO = #{STDNT_NO}
+	</select> 
+ 	<select id="esntl" parameterType="HashMap" resultType="Integer">
+		SELECT COUNT(1)
+		FROM applyclsview  	
+		WHERE
+		CRCLM_CD=#{CRCLM_CD} AND
+		CRCLM_YEAR=#{CRCLM_YEAR} AND
+		CRCLM_HALF=#{CRCLM_HALF} AND
+		SBJCT_NO=#{SBJCT_NO} AND 
+		STDNT_NO =#{STDNT_NO} AND 
+		ESNTL_YN ='Y'
+	</select> 
+	
 </mapper>

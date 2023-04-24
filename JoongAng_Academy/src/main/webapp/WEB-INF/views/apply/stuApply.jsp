@@ -28,129 +28,6 @@
 
 <script>
 $(function(){
-	function loadData2(){
-	var searchNM = $.trim($("#searchNM2").val());
-	var searchyear = $.trim($("#crclm_year").val());
-	var searchhalf = $.trim($("#crclm_half").val());
-	var searchCN = $.trim($("#crclm_cd_name").val());
-	
-		 $.post({
-				url : "/stuListAjax",
-				 data : {
-					"searchnm" : searchNM,
-					"searchyear" : searchyear,
-					"searchhalf" : searchhalf,
-					"searchCN" : searchCN
-					
-				}, 
-				dataType : "json"
-
-			}).done(function(data) {
-				var list = data.list;
-				stuList.resetData(list);
-				var rowCount = stuList.getRowCount();
-				
-				let selectedRowKey = null;
-				// cell 하나 클릭시 한 줄 전체 범위 지정
-				stuList.on('focusChange', (ev) => {
-					stuList.setSelectionRange({
-					    start: [ev.rowKey, 0],
-					    end: [ev.rowKey, stuList.getColumns().length]
-					  });
-				});
-
-				
-				
-			}).fail(function() {
-				alert("문제가 발생했습니다.");
-			});
-	};
-	function loadData(){
-	var searchNM = $.trim($("#searchNM").val());
-		 $.post({
-				url : "/stuListAjax",
-				 data : {
-					"searchnm" : searchNM
-				}, 
-				dataType : "json"
-
-			}).done(function(data) {
-				var list = data.list;
-				stuList.resetData(list);
-				var rowCount = stuList.getRowCount();
-				
-				let selectedRowKey = null;
-				// cell 하나 클릭시 한 줄 전체 범위 지정
-				stuList.on('focusChange', (ev) => {
-					stuList.setSelectionRange({
-					    start: [ev.rowKey, 0],
-					    end: [ev.rowKey, stuList.getColumns().length]
-					  });
-				});
-
-				
-				
-			}).fail(function() {
-				alert("문제가 발생했습니다.");
-			});
-	};
-	
-	//모달 띄울때 그리드 새로고침
-	$('#stuSearchModal').on('shown.bs.modal', function(e) {
-		stuList.refreshLayout();
-		stuList.off('click');	
-		 $.post({
-				url : "/stuListAjax",
-				dataType : "json"
-
-			}).done(function(data) {
-				var list = data.crclmlist;
-				if(list != null){
-				var option ="<option value='' hidden selected>선택</option>";
-					for(var i = 0; i < list.length; i++){
-						option += "<option value='"+list[i].CD+"'>"+list[i].CD_NM+"</option>";
-					}
-					$(".crclmNameList").append(option);
-				}
-			}).fail(function() {
-				alert("문제가 발생했습니다.");
-			});
-	});
-
-	//화면 끌 경우 초기화
-	$('#stuSearchModal').on('hidden.bs.modal', function(e) {
-		stuList.resetData([]);
-		$(".crclmNameList").empty();
-		stuList.off('click');
-	});
-	
-	$("#searchbtn").click(function(){
-		if($("#searchNM").val() == ""){
-			alert("학번이나 이름을 입력해주세요");
-			return false;
-		}
-		$("#stuSearchModal").modal("show");
-		$("#searchNM2").val($("#searchNM").val());
-		loadData();
-	});
-	$("#searchNM").keydown(function(key){
-		  if(key.keyCode == 13){
-			$("#searchbtn").click();
-		  }
-	});
-	
-	$("#searchbtn2").click(function(){
-		$("#searchNM2").val($("#searchNM2").val());
-		loadData2();
-	});
-	
-	$("#searchNM2,#crclm_year,#crclm_half,#crclm_cd_name").on("keydown", function(key) {
-		 if(key.keyCode == 13){
-				$("#searchNM2").val($("#searchNM2").val());
-				$("#searchbtn2").click();
-			  }
-	});
-	
  	const Grid = tui.Grid;
 	
 	Grid.applyTheme('clean', { 
@@ -161,62 +38,10 @@ $(function(){
 			  }
 	});
 
-	
-	var stuList = new tui.Grid({
-  		el : document.getElementById('stuList'),
-		scrollX : false,
-		scrollY : true,
-		bodyHeight : 400,
-		rowHeaders: ['rowNum'],
-		columns : [ 
-		{
-			header : '학번',
-			name : 'STDNT_NO',
-			width : 150,
-			align:'center'
-		}, {
-			header : '이름',
-			name : 'KORN_FLNM_S',
-			width : 150,
-			align:'center'
-		}, {
-			header : '성별',
-			name : 'GENDER_CD_NAME',
-			width : 80,
-			align:'center'
-		}, {
-			header : '생일',
-			name : 'USER_BRDT',
-			width : 200,
-			align:'center'
-		}, {
-			header : '학적상태',
-			name : 'REG_CD_NAME',
-			width :130,
-			align:'center'
-		} ] 
-	});
-	
-	var CRCLM_HALF = "";
-	var CRCLM_CD = "";
-	var CRCLM_YEAR ="";
-	var stdnt_no ="";
-
-
-	 $("#stuSearchModal").on("keydown", function(key) {
-		    if (key.keyCode == 13 ) {
-		       $("#selectbtn").click();
-		    }
-	 });
-	
-
-
-	
-	$("#selectbtn").click(function(){
-		const rowKey = stuList.getFocusedCell().rowKey
-		var obj = stuList.getRow(rowKey);
-		var values = Object.values(obj);
-		stdnt_no = values[0];
+		var CRCLM_HALF = "";
+		var CRCLM_CD = "";
+		var CRCLM_YEAR ="";
+		var stdnt_no =$("#loginID").val();
 		
 		 $.post({
 				url : "/stuinfoAjax",
@@ -227,7 +52,6 @@ $(function(){
 
 			}).done(function(data) {
 				var info = data.info;
-				$("#stuSearchModal").modal("hide");
 				$("#stdntNo").val(info[0].STDNT_NO);
 				$("#searchNM").val(info[0].KORN_FLNM_S);
 				$("#regNM").val(info[0].REG_CD_NAME);
@@ -272,7 +96,6 @@ $(function(){
 			});
 		 
 		 
-	});
 	
 	
 	
@@ -288,7 +111,8 @@ $(function(){
 				
 				var STDNT_NO=$("#stdntNo").val();
 				var SBJCT_NO= el.getAttribute("data-value");
-				$.post({
+
+	 			$.post({
 					url : "/addApplyAjax",
 					data : {
 						"STDNT_NO" : STDNT_NO,
@@ -323,8 +147,6 @@ $(function(){
 				});
 				
 				
-				
-				
 			});
 			
 		}
@@ -354,7 +176,7 @@ $(function(){
 				
 				var STDNT_NO=$("#stdntNo").val();
 				var SBJCT_NO= el.getAttribute("data-value");
-				   $.post({
+				 $.post({
 						url : "/delApplyAjax",
 						data : {
 							"STDNT_NO" : STDNT_NO,
@@ -584,7 +406,7 @@ $(function(){
 			<main>
 				<div class="container-fluid px-4">
 					<div class="mt-3">
-						<h5 class="fw-bolder">수강신청(관리자)</h5>
+						<h5 class="fw-bolder">수강신청(학생)</h5>
 					</div>
 					<hr class="m-0 mb-2">
 					<div class="float-start mb-2"
@@ -594,20 +416,18 @@ $(function(){
 					<!-- 검색 -->
 					<div class="mb-3 d-flex justify-content-center">
 						<div class="row"
-							style="width: 100%; height: 120px; /* background-color: #F3FAFE; */ border: 1px solid #c0c0c0;">
+							style="width: 100%; height: 120px; background-color: #F3FAFE; border: 1px solid #c0c0c0;">
 							<div class="row col-4">
 								<div class="col-4 mt-4 d-flex justify-content-end fw-bolder"
 									style="font-size: 14px;">학번(이름)</div>
+								<input type="hidden" id="loginID" value="${sessionScope.id}">
 								<div class="col-8 mt-3">
 									<div class="input-group">
 										<input type="text" class="form-control form-control-sm"
-											id="stdntNo" disabled> <input type="text"
-											class="form-control form-control-sm" placeholder="이름"
-											id="searchNM">
-										<button class="btn btn-dark btn-sm" type="button"
-											id="searchbtn">
-											<i class="fas fa-search"></i>
-										</button>
+											id="stdntNo" disabled placeholder="학번"> <input
+											type="text" class="form-control form-control-sm"
+											placeholder="이름" id="searchNM" disabled>
+
 									</div>
 								</div>
 							</div>
@@ -687,7 +507,7 @@ $(function(){
 							</div>
 						</div>
 					</div>
-					<div class="row mt-4">
+					<div class="row">
 						<div class="col-6">
 							<div class="row">
 								<div class="col-3">

@@ -30,4 +30,8 @@ public interface ApplyDAO {
 
 	List<Map<String, Object>> applyHist(Map<String, Object> map);
 
+	int classTMChk(Map<String, Object> map);
+
+	int esntl(Map<String, Object> map);
+
 }
