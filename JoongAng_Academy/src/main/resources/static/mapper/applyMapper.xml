@@ -114,7 +114,7 @@
 	</insert>
 	<select id="applyHist" parameterType="HashMap"
 		resultType="HashMap">
-		SELECT * FROM applyhistview
+		SELECT *, DATE_FORMAT(DT, '%Y/%m/%d %H:%i:%s') as DT2 FROM applyhistview
 		WHERE 1=1 AND
 		CRCLM_CD=#{CRCLM_CD} AND
 		CRCLM_YEAR=#{CRCLM_YEAR} AND
