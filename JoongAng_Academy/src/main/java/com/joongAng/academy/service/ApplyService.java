@@ -43,5 +43,11 @@ public class ApplyService {
 	public List<Map<String, Object>> applyHist(Map<String, Object> map) {
 		return applyDAO.applyHist(map);
 	}
+	public int classTMChk(Map<String, Object> map) {
+		return applyDAO.classTMChk(map);
+	}
+	public int esntl(Map<String, Object> map) {
+		return applyDAO.esntl(map);
+	}
 
 }
