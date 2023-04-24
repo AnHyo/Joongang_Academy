@@ -292,7 +292,6 @@ $(function(){
 		
 	});
 
-	
 	var applyHist = new tui.Grid({
   		el : document.getElementById('applyHist'),
 		scrollX : false,
@@ -359,11 +358,12 @@ $(function(){
 			
 		},{
 			header:'신청일자',
-			name : 'DT',
+			name : 'DT2',
 			width:220,
 			align:'center',
 			sortable: true,
-		    sortingType: 'desc'
+		    sortingType: 'desc',
+
 			
 		}] 
 	}); //applyHist grid
@@ -498,7 +498,7 @@ $(function(){
 						<div class="col-10">
 							<div class="float-start"
 								style="width: 10px; height: 32px; background-color: #498c5f; margin-top: -5px; margin-right: 10px;"></div>
-							<h6 class="fw-bolder" style="margin-top:2px;">수강신청내역</h6>
+							<h6 class="fw-bolder" style="margin-top: 2px;">수강신청내역</h6>
 						</div>
 						<div class="col-2" style="margin-top: 2px;">
 							<div class="input-group" style="margin-top: -5px;">
