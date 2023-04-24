@@ -24,4 +24,20 @@
 		WHERE  USER_ID = #{ckid}
 	</select>
 	
+	<select id="ckTemp" parameterType="Hashmap" resultType="Integer">
+		SELECT COUNT(*) as count 
+		FROM USER_INFO 
+		WHERE PSWD_TEMPNUM =#{tmpNo} AND USER_ID =#{ckid}
+	</select>
+	
+	<update id="updatePW" parameterType="Hashmap" >
+		UPDATE USER_INFO SET
+		PSWD = #{newPW},
+		PSWD_CHG_DT = CURDATE(),
+		PSWD_CHG_YN ='Y'
+		WHERE USER_ID = #{hiddenId }
+	
+	</update>
+	
+	
 </mapper>

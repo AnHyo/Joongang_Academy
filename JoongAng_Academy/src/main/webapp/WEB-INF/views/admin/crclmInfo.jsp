@@ -23,11 +23,12 @@
 <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js"
 	crossorigin="anonymous"></script>
 <style>
-	.tui-grid-cell {
-  font-size: 14px;
+.tui-grid-cell {
+	font-size: 14px;
 }
+
 .selected1 {
-    background-color: pink;
+	background-color: pink;
 }
 </style>
 <script>
@@ -105,7 +106,7 @@
 				dataType : "json"
 			}).done(function(data) {
 				listCrclm = data.listCrclm;
-				grid.resetData(data.listCrclm);
+				grid.resetData(listCrclm);
 
 			}).fail(function(xhr, status, errorThrown) {
 				alert("문제가 발생했습니다.");
@@ -456,92 +457,6 @@
 
 		});//신규버튼
 
-		//grid 행 클릭시    	
-	/* 	grid.on('click', function(ev) {
-			
-			var rowKey = ev.rowKey; // 클릭한 행의 키값
-			var rowData = grid.getRow(rowKey); // 클릭한 행의 데이터
-
-				//사용자 입력칸 입력가능
-				const inputTags = $("tbody input");
-				inputTags.each(function() {
-					$(this).prop('disabled', false);
-				});
-				const inputTags1 = $("tbody select");
-				inputTags1.each(function() {
-					$(this).prop('disabled', false);
-				});
-
-				$(".econtent").prop('disabled', false);
-				$(".ccd").prop('disabled', true);
-				$(".cyear").prop('disabled', true);
-				$(".crclmNameList").prop('disabled', false);
-			
-
-			var ccd = rowData.CRCLM_CD; // 과정코드 
-			var cyear = rowData.CRCLM_YEAR; // 연도
-			var chalf = rowData.CRCLM_HALF; // 상/하반기
-			var crclmname = rowData.CRCLM_NM; // 과정명
-			var econtent = rowData.EDU_CN; // 훈련내용
-			var ecost1 = rowData.EDU_COST; // 훈련비용
-			var ecost = Number(ecost1.replace(/[^0-9.-]+/g,"")).toLocaleString();
-			var efnYN = rowData.EDU_FNSH_YN; // 종료여부
-			var schedule = rowData.CRCLM_SCHDL_CD; // 과정현황
-			var instrname = rowData.KORN_FLNM; //강사명
-			var epeople = rowData.EDU_NOPE; //모집인원
-			var crclmNo = rowData.CRCLM_NO;
-			//alert(crclmNo);
-			var bgYMD1 = rowData.EDU_BGNG_YMD; // 시작일
-			var endYMD1 = rowData.EDU_END_YMD; // 종료일
-			
-			//날짜 포맷 (YYYY-MM-DD 형태)
-			var bgYMD = bgYMD1.replace(/^(\d{4})(\d{2})(\d{2})$/, "$1-$2-$3");
-			var endYMD = endYMD1.replace(/^(\d{4})(\d{2})(\d{2})$/, "$1-$2-$3");
-
-			$(".cno").val(crclmNo);
-			$(".cyear").val(cyear);
-			$(".chalf").val(chalf);
-			$(".ccd").val(ccd);
-			$(".crclmNameList").val(ccd);
-			$(".crclmNameSet").val(crclmname);
-			$(".bgYMD").val(bgYMD);
-			$(".endYMD").val(endYMD);
-			$(".ecost").val(ecost+"원");
-			$(".econtent").val(econtent);
-			$(".instrname").val(instrname);
-			$(".schedule").val(schedule);
-			$(".efnYN").val(efnYN);
-			$(".epeople").val(epeople+"명");
-			
-			//$(".bgYMD").attr('min',year+'-01-01');	
-			//$(".bgYMD").attr('max',year+'-12-31');	
-			$(".bgYMD").on("blur", function() {
-				var  begin = $(".bgYMD").val();
-				$(".endYMD").attr('min',begin);	
-				if(begin.length > 10){
-					alert("잘못된 날짜 형식입니다.");
-			    	$(".bgYMD").val("");
-				}
-			});
-				
-			$(".endYMD").on("blur", function() {
-				var  begin = $(".bgYMD").val();
-				var  end = $(".endYMD").val();
-			
-			  	if (end < begin) {
-			    	alert("종료일이 시작일보다 이전입니다.");
-			    	$(".endYMD").val("");
-			    
-				  }
-			  	if(end.length > 10){
-					alert("잘못된 날짜 형식입니다.");
-			    	$(".endYMD").val("");
-				}
-			 }); 
-			
-
-		}); */
-		
 		// 그리드 클릭시
 		grid.on('click', () => {
 			//사용자 입력칸 입력가능
@@ -767,12 +682,6 @@
 					});
 			
 			
-			
-			
-			
-			
-			
-			
 		}); //grid click
 		
 		
@@ -961,7 +870,7 @@
 									style="margin-left: 10px;" value="2023" id="inputYear"
 									numberOnly> <select class="form-select form-select-sm"
 									name="crclm_half">
-									<option value="" >상/하반기</option>
+									<option value="">상/하반기</option>
 									<option value="0010">상반기</option>
 									<option value="0020">하반기</option>
 								</select>
@@ -1002,123 +911,164 @@
 						<div id="grid"></div>
 					</div>
 
-					<div>
-						<div class="float-start"
+					<div class="mt-3">
+						<!--탭설정 -->
+						<nav>
+							<div class="nav nav-tabs" id="nav-tab" role="tablist">
+								<button class="nav-link active" id="nav-home-tab"
+									data-bs-toggle="tab" data-bs-target="#nav-home" type="button"
+									role="tab" aria-controls="nav-home" aria-selected="true">훈련과정정보</button>
+								<button class="nav-link" id="nav-schedule-tab"
+									data-bs-toggle="tab" data-bs-target="#nav-schedule"
+									type="button" role="tab" aria-controls="nav-schedule"
+									aria-selected="false">과정일정설정</button>
+							</div>
+						</nav>
+						<!--  <div class="float-start"
 							style="width: 10px; height: 27px; background-color: #498c5f; margin-right: 10px;"></div>
-						<h6 class="mt-3 fw-bolder">훈련과정정보</h6>
-						<div class="mb-5 inputTotal"
-							style="width: 100%; background-color: #F3FAFE; height: 430px; border: 1px solid #c0c0c0; position: relative;">
+						<h6 class="mt-3 fw-bolder">훈련과정정보</h6>  -->
+						<div class="tab-content" id="nav-tabContent">
+							<!--훈련과정정보  -->
+							<div class="tab-pane fade show active" id="nav-home"
+								role="tabpanel" aria-labelledby="nav-home-tab">
+								<div class="mb-5 inputTotal"
+									style="width: 100%; background-color: #F3FAFE; height: 430px; border: 1px solid #c0c0c0; position: relative;">
 
-							<table
-								style="width: 90%; position: absolute; top: 50%; transform: translateY(-50%) translateX(5%);">
-								<tr style="height: 50px">
-									<td class="col-1" style="text-align: right;">학년도</td>
-									<td class="col-1" colspan="2"><input type="text"
-										numberOnly class="form-control form-control-sm cyear"
-										disabled="disabled"></td>
-									<td class="col-1" style="text-align: right;">훈련과정코드</td>
-									<td class="col-4" colspan="2"><input type="hidden"
-										class="cno">
-										<div class="input-group"
-											style="display: flex; flex-wrap: wrap;">
-											<input type="text" class="form-control form-control-sm ccd"
-												style="width: calc(20%);"
-												aria-describedby="sel" readonly disabled="disabled">
-											<select class="form-select form-select-sm crclmNameList"
-												disabled="disabled" id="sel" style="width: calc(80%);">
-												<option value="">선택</option>
-												<c:forEach items="${crclmName}" var="cn">
-													<option value="${cn.CD}">${cn.CD_NM}</option>
-												</c:forEach>
-											</select>
-										</div></td>
-									<td class="col-1" style="text-align: right;">훈련과정명</td>
-									<td class="col-4" colspan="5"><input type="text"
-										class="form-control form-control-sm  crclmNameSet "
-										disabled="disabled"></td>
-								</tr>
-								<tr style="height: 50px">
-									<td style="text-align: right;">상/하반기</td>
-									<td colspan="2"><select
-										class="form-select form-select-sm chalf" disabled="disabled">
-											<option value="" >선택</option>
-											<option value="0010">상반기</option>
-											<option value="0020">하반기</option>
-									</select></td>
+									<table
+										style="width: 90%; position: absolute; top: 50%; transform: translateY(-50%) translateX(5%);">
+										<tr style="height: 50px">
+											<td class="col-1" style="text-align: right;">학년도</td>
+											<td class="col-1" colspan="2"><input type="text"
+												numberOnly class="form-control form-control-sm cyear"
+												disabled="disabled"></td>
+											<td class="col-1" style="text-align: right;">훈련과정코드</td>
+											<td class="col-4" colspan="2"><input type="hidden"
+												class="cno">
+												<div class="input-group"
+													style="display: flex; flex-wrap: wrap;">
+													<input type="text" class="form-control form-control-sm ccd"
+														style="width: calc(20%);" aria-describedby="sel" readonly
+														disabled="disabled"> <select
+														class="form-select form-select-sm crclmNameList"
+														disabled="disabled" id="sel" style="width: calc(80%);">
+														<option value="">선택</option>
+														<c:forEach items="${crclmName}" var="cn">
+															<option value="${cn.CD}">${cn.CD_NM}</option>
+														</c:forEach>
+													</select>
+												</div></td>
+											<td class="col-1" style="text-align: right;">훈련과정명</td>
+											<td class="col-4" colspan="5"><input type="text"
+												class="form-control form-control-sm  crclmNameSet "
+												disabled="disabled"></td>
+										</tr>
+										<tr style="height: 50px">
+											<td style="text-align: right;">상/하반기</td>
+											<td colspan="2"><select
+												class="form-select form-select-sm chalf" disabled="disabled">
+													<option value="">선택</option>
+													<option value="0010">상반기</option>
+													<option value="0020">하반기</option>
+											</select></td>
 
-									<td style="text-align: right;">대표강사명</td>
-									<td colspan="2">
-										<div class="input-group "style="display: flex; flex-wrap: wrap;">
-										<input type="text" class="form-control form-control-sm "
-												style="width: calc(30%); "id="instrNo"
-												aria-describedby="sel" readonly disabled="disabled">
-											<input class="form-control form-control-sm instrname"
-												type="text" placeholder="강사명"  style="width: calc(55%)"
-												 disabled="disabled" />
-											<button class="btn btn-secondary btn-sm" type="button" id="btnInstrSearch" 
-											style="width: calc(15%); ">
-												<i class="fas fa-search"></i>
-											</button>
+											<td style="text-align: right;">대표강사명</td>
+											<td colspan="2">
+												<div class="input-group "
+													style="display: flex; flex-wrap: wrap;">
+													<input type="text" class="form-control form-control-sm "
+														style="width: calc(30%);" id="instrNo"
+														aria-describedby="sel" readonly disabled="disabled">
+													<input class="form-control form-control-sm instrname"
+														type="text" placeholder="강사명" style="width: calc(55%)"
+														disabled="disabled" />
+													<button class="btn btn-secondary btn-sm" type="button"
+														id="btnInstrSearch" style="width: calc(15%);">
+														<i class="fas fa-search"></i>
+													</button>
+												</div>
+											<td style="text-align: right;">시작일</td>
+											<td colspan="2"><input type="date"
+												class="form-control form-control-sm bgYMD"
+												disabled="disabled"></td>
+											<td style="text-align: right;">종료일</td>
+											<td colspan="2"><input type="date"
+												class="form-control form-control-sm endYMD"
+												disabled="disabled"></td>
+
+										</tr>
+										<tr style="height: 50px">
+											<td style="text-align: right;">모집인원</td>
+											<td colspan="2"><input type="text" numberOnly
+												class="form-control form-control-sm epeople"
+												disabled="disabled"></td>
+											<td style="text-align: right;">훈련비용</td>
+											<td colspan="2"><input type="text" numberOnly
+												class="form-control form-control-sm ecost"
+												disabled="disabled"></td>
+
+
+											<td style="text-align: right;">과정현황</td>
+											<td colspan="2"><select
+												class="form-select form-select-sm schedule"
+												disabled="disabled">
+													<option value="">선택</option>
+													<option value="0010">모집</option>
+													<option value="0020">훈련</option>
+													<option value="0030">수료</option>
+											</select></td>
+											<td style="text-align: right;">종료여부</td>
+											<td colspan="2"><select
+												class="form-select form-select-sm efnYN" disabled="disabled">
+													<option value="">선택</option>
+													<option value="N">N</option>
+													<option value="Y">Y</option>
+											</select></td>
+										</tr>
+
+										<tr>
+											<td style="text-align: right;">훈련내용</td>
+										</tr>
+										<tr>
+											<td></td>
+											<td colspan="11"><textarea class="form-control econtent"
+													style="height: 200px; resize: none;" disabled="disabled"></textarea></td>
+										</tr>
+
+									</table>
+								</div>
+							</div>
+							<!--과정일정설정  -->
+							<div class="tab-pane fade" id="nav-schedule" role="tabpanel"
+								aria-labelledby="nav-schedule-tab">
+								<div>
+									<div style="width: 100%;"  class="mt-3 " position: relative;">
+										<div style="position: absolute; right: 25px">
+											<button class="btn btn-secondary btn-sm" id="SnewBtn"
+												disabled="disabled">신규</button>
+											<button class="btn btn-secondary btn-sm" id="SdeleteBtn"
+												disabled="disabled">삭제</button>
+											<button class="btn btn-secondary btn-sm" id="SsaveBtn"
+												disabled="disabled">저장</button>
 										</div>
-									<td style="text-align: right;">시작일</td>
-									<td colspan="2"><input type="date"
-										class="form-control form-control-sm bgYMD" disabled="disabled">
-									</td>
-									<td style="text-align: right;">종료일</td>
-									<td colspan="2"><input type="date"
-										class="form-control form-control-sm endYMD"
-										disabled="disabled"></td>
+									</div>
 
-								</tr>
-								<tr style="height: 50px">
-									<td style="text-align: right;">모집인원</td>
-									<td colspan="2"><input type="text" numberOnly
-										class="form-control form-control-sm epeople"
-										disabled="disabled"></td>
-									<td style="text-align: right;">훈련비용</td>
-									<td colspan="2"><input type="text" numberOnly
-										class="form-control form-control-sm ecost" disabled="disabled"></td>
+								</div>
+							</div>
 
 
-									<td style="text-align: right;">과정현황</td>
-									<td colspan="2"><select
-										class="form-select form-select-sm schedule"
-										disabled="disabled">
-											<option value="">선택</option>
-											<option value="0010">모집</option>
-											<option value="0020">훈련</option>
-											<option value="0030">수료</option>
-									</select></td>
-									<td style="text-align: right;">종료여부</td>
-									<td colspan="2"><select
-										class="form-select form-select-sm efnYN" disabled="disabled">
-											<option value="">선택</option>
-											<option value="N">N</option>
-											<option value="Y">Y</option>
-									</select></td>
-								</tr>
 
-								<tr>
-									<td style="text-align: right;">훈련내용</td>
-								</tr>
-								<tr>
-									<td></td>
-									<td colspan="11"><textarea class="form-control econtent"
-											style="height: 200px; resize: none;" disabled="disabled"></textarea></td>
-								</tr>
 
-							</table>
 						</div>
 
 
 					</div>
 
-			<%@ include file="./crclmInstrModal.jsp"%>
+					<%@ include file="./crclmInstrModal.jsp"%>
 				</div>
 			</main>
 		</div>
 	</div>
-			<%@include file="../bar/footer.jsp"%>
+	<%@include file="../bar/footer.jsp"%>
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
 		crossorigin="anonymous"></script>

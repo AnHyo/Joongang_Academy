@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -108,7 +108,7 @@
 							<div class="text-center my-4 mt-5"
 								style="font-family: 'Noto Sans KR', sans-serif; font-weight: 700; font-size: 48px;">중앙정보처리학원</div>
 							<div class="card shadow-lg border-0 rounded-lg mt-5">
-								<div class="card-body" style="height:300px;">
+								<div class="card-body" style="height: 300px;">
 									<form action="/login" method="post">
 										<div class="form-floating mb-3 mt-3">
 											<input class="form-control" id="userid" name="userid"
@@ -127,7 +127,7 @@
 													class="form-check-label" for="rememberId">아이디 저장</label>
 											</div>
 											<div class="mb-1 mt-2">
-												<a class="small" id ="btnFindPW"href="/findPW">비밀번호 찾기</a>
+												<a class="small" id="btnFindPW" href="/findPW">비밀번호 찾기</a>
 											</div>
 										</div>
 										<div class="mt-4 mb-0">
@@ -145,7 +145,6 @@
 											alert("입력한 아이디 또는 비밀번호가 올바르지 않습니다. \n다시 확인해주세요.");
 										</script>
 									</c:if>
-
 								</div>
 							</div>
 						</div>

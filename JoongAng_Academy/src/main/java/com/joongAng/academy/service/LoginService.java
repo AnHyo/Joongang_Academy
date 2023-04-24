@@ -27,6 +27,14 @@ public class LoginService {
 		return loginDAO.ckid(ckid);
 	}
 
+	public int ckTemp(Map<String, Object> paramap) {
+		return loginDAO.ckTemp(paramap);
+	}
+
+	public int updatePW(Map<String, Object> paramap) {
+		return loginDAO.updatePW(paramap);
+	}
+
 
 
 
