@@ -24,8 +24,20 @@
 		$("input").on("input", function() {
 			var inputVal = $(this).val().trim();
 			$(this).val(inputVal);
-		});
-
+			
+		});	
+			
+		$("#idCKBtn").click(function() {
+			var ckid = $("#ckid").val();
+			if(ckid==""){
+				alert("아이디를 입력해주세요.");
+				 $("#ckid").focus();
+				return false;
+			}
+		});	
+			
+	});//func
+		
 </script>
 </head>
 <body class="bg-light">
@@ -51,7 +63,6 @@
 												type="text" placeholder="아이디" /> <label
 												for="inputPassword">아이디</label>
 										</div>
-										
 										<div class=" mb-0">
 											<button class="btn btn-success col-12" type="submit"
 												id="idCKBtn">다음</button>
@@ -62,6 +73,7 @@
 											alert("입력하신 아이디를 찾을 수 없습니다.");
 										</script>
 									</c:if>
+									
 
 								</div>
 							</div>

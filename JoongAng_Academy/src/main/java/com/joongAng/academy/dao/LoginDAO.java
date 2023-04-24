@@ -21,4 +21,10 @@ public interface LoginDAO {
 	public int ckid(String ckid);
 
 
+	public int ckTemp(Map<String, Object> paramap);
+
+
+	public int updatePW(Map<String, Object> paramap);
+
+
 }

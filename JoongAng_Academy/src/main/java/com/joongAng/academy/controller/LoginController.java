@@ -4,16 +4,19 @@ import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.joongAng.academy.dto.LoginDTO;
 import com.joongAng.academy.service.LoginService;
+import com.joongAng.academy.service.SMSService;
 
 @Controller
 public class LoginController {
@@ -126,10 +129,12 @@ public class LoginController {
 	
 	//등록된 아이디확인
 	@PostMapping("/ckid")
-	public String ckid(@RequestParam("ckid") String ckid) {
+	public String ckid(@RequestParam("ckid") String ckid, Model model) {
 		int result = loginService.ckid(ckid);
 		System.err.println("아이디 확인:"+result);
 		if(result ==1) {
+			 // login/setPW로 ckid 값을 전달하여 모델에 저장
+	        model.addAttribute("ckid", ckid);
 			return "login/setPW";
 		}else {
 			return "redirect:/findPW?error=1223";
@@ -137,14 +142,41 @@ public class LoginController {
 		}
 	}
 	
-	@PostMapping("/resetPW")
-	public String resetPW(@RequestParam("phNo") String phNo) {
-		//등록된 휴대폰번호
-		//int result = loginService.phNo(phNo);  
-		return "";
+	//인증번호 대조후 비밀번호 변경 화면이동
+	@ResponseBody
+	@PostMapping(value ="/ckTemp" , produces = "application/json;charset=UTF-8")
+	public String ckTemp(@RequestParam Map<String, Object> paramap ) {
+		System.err.println(paramap);
+		int result = loginService.ckTemp(paramap);
+		System.err.println("인증번호 조회 :" +result);
+		JSONObject json = new JSONObject();
+		String changingID = (String) paramap.get("ckid");
+		if(result==1) {
+			json.put("changingID", changingID);
+			json.put("result", result);
+			return json.toString();
+			//return "redirect:/changePW?id="+changingID;
+		} else {
+			json.put("result", result);
+			return json.toString();
+		}
+		
 	}
 	
+	@GetMapping("/changePW")
+	public String changePW() {
+		
+		return "login/changePW";
+	}
 	
-	
+	//비밀번호 변경
+	@PostMapping("/updatePW")
+	public String updatePW(@RequestParam Map<String, Object> paramap, Model model) {
+		int result = loginService.updatePW(paramap);
+		System.err.println(paramap);
+		System.err.println("!!비밀번호 변경 :"+result);
+		model.addAttribute("result", result);
+		return "/login/setPW";
+	}
 	
 }

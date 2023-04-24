@@ -26,6 +26,7 @@
 	<%@include file="./bar/topbar.jsp"%>
 	<div id="layoutSidenav">
 		<%@include file="./bar/sidebar.jsp"%>
+		
 		<div id="layoutSidenav_content">
 			<main>
 				<!-- 탭 메뉴 -->

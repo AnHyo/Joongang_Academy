@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.joongAng.academy.dao.SMSDAO">
+	<select id="checkUser" parameterType="Hashmap" resultType="Integer">
+		SELECT COUNT(*) as count 
+		FROM USER_INFO
+		WHERE KORN_FLNM=#{uname} AND TELNO =#{phNo} AND USER_ID=#{hiddenId}
+	</select>
+	
+	<update id="saveTmepNo" parameterType="Hashmap">
+		UPDATE USER_INFO
+		SET PSWD_TEMPNUM =#{tempno}
+		WHERE KORN_FLNM=#{uname} AND TELNO =#{phNo} AND USER_ID=#{hiddenId}
+	</update>
+	
+	
+</mapper>
