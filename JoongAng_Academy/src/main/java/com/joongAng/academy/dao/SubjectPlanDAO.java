@@ -20,4 +20,8 @@ public interface SubjectPlanDAO {
 
 	int saveDetail(Map<String, Object> map);
 
+	int updatePlanDetail(Map<String, Object> map);
+
+	int deleteDetail(Map<String, Object> map);
+
 }

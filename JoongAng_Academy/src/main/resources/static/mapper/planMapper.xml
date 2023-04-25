@@ -39,6 +39,14 @@
 		#{detailCount}+1
 		,#{ttl},#{tpc},#{cn})		
 	</insert>
+	<update id="updatePlanDetail">
+		UPDATE SBJCT_PLAN_DTL 
+		SET
+		LECT_TTL_NM = #{ttl},
+		LECT_TPC_NM = #{tpc},
+		LECT_CN = #{cn}
+		WHERE CRCLM_CD=#{crc} AND CRCLM_YEAR=#{year} AND CRCLM_HALF=#{hlf} AND SBJCT_NO=#{sbj} AND DTL_NO=#{dtlno}
+	</update>
 	<update id="estOn" parameterType="HashMap">
 		UPDATE ESTBL_SBJCT
 		SET
@@ -48,4 +56,8 @@
 			AND CodeFind('0018',CRCLM_HALF) = #{hlf} 
 			AND SBJCT_NO = #{sbj} 
 	</update>
+	<delete id="deleteDetail" parameterType="HashMap">
+		DELETE FROM SBJCT_PLAN_DTL 
+		WHERE CRCLM_CD=#{crc} AND CRCLM_YEAR=#{year} AND CRCLM_HALF=#{hlf} AND SBJCT_NO=#{sbj} AND DTL_NO=#{dtlno}
+	</delete>
 </mapper>

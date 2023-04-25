@@ -38,6 +38,17 @@ public class SubjectPlanService {
 		// TODO Auto-generated method stub
 		return planDAO.saveDetail(map);
 	}
+
+
+	public int updatePlanDetail(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return planDAO.updatePlanDetail(map);
+	}
+
+	public int deleteDetail(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return planDAO.deleteDetail(map);
+	}
 	
 	
 }

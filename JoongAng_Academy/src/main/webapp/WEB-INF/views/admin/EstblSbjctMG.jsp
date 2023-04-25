@@ -377,8 +377,9 @@
 					}
 					var timeSaved;
 					$.each(data.timeInfo,function(index,element){
-						cls[parseInt(element.CLS_CD)-1][parseInt(element.LECT_DAY_CD)-1] = element.SBJ;
-						if(element.SBJCT_NO==grid.getValue(ev.rowKey,"SBJCT_NO")){
+						cls[parseInt(element.CLS_CD)-1][parseInt(element.LECT_DAY_CD)-1] = 1;
+						if(element.SBJCT_NO==grid.getValue(ev.rowKey,"SBJCT_NO") && element.CRCLM_CD==grid.getValue(ev.rowKey,"CRCLM_CD")){
+							cls[parseInt(element.CLS_CD)-1][parseInt(element.LECT_DAY_CD)-1] = 2;
 							timeSaved = 1;
 						}
 					})
@@ -386,7 +387,7 @@
 					for(var j=0;j<8;j++){
 						tableHTML += "<tr><td>"+ (j+1) +"교시</td>"
 						for(var k=0;k<5;k++){
-							if(cls[j][k]==$("#z").val()){
+							if(cls[j][k]==2){
 								tableHTML += "<td><input type='checkbox' checked disabled></td>";
 							}
 							else if(cls[j][k]!=0){								
@@ -461,12 +462,11 @@
 			sbjxp = $("#f").val();
 			sbjxp = $.fn.changetag(sbjxp);
 			hrs = $("#g").val();
+			weekhrs = $("#h").val();
 			room = $("#i").val();
-			startHour = $("#j").val();
-			endHour = $("#k").val();
 			kornm = $("#m").val();
 			insno = $("#n").val();
-			if(year==''||hlf==''||crc==''||sbjcd==''||sbjnm==''||insno==''){
+			if(year==''||hlf==''||crc==''||sbjcd==''||sbjnm.trim()==''||insno==''||weekhrs==''){
 				alert("!");
 				return false;
 			}
@@ -487,11 +487,10 @@
 					sbjxp : sbjxp,
 					hrs : hrs,
 					room : room,
-					startHour : startHour,
-					endHour : endHour,
 					kornm : kornm,
 					insno : insno,
-					esntl : esntl
+					esntl : esntl,
+					weekhrs : weekhrs
 				},
 				dataType : "json"
 			}).done(function(data) {
@@ -601,8 +600,12 @@
 		
 // 		과목검색모달 내 조회버튼
 		$("#estSubShow").click(function(){
+			var searchWord = $("#sub_Search_text").val();
 			$.post({
 				url : "/estSubjectListAjax",
+				data : {
+					searchWord : searchWord
+				},
 				dataType : "json"
 			}).done(function(data) {
 				subgrid.refreshLayout();
@@ -613,8 +616,12 @@
 		});
 // 		강사검색모달 내 조회버튼
 		$("#estInsShow").click(function(){
+			var searchWord = $("#ins_Search_text").val();
 			$.post({
 				url : "/estInstructorListAjax",
+				data : {
+					searchWord : searchWord
+				},
 				dataType : "json"
 			}).done(function(data) {
 				insgrid.refreshLayout();
@@ -740,7 +747,7 @@
 				var timeSaved;
 				$.each(data.timeInfo,function(index,element){
 					cls[parseInt(element.CLS_CD)-1][parseInt(element.LECT_DAY_CD)-1] = element.SBJ;
-					if(element.SBJCT_NO==sbjno){
+					if(element.SBJCT_NO==sbjno && element.CRCLM_CD==crc){
 						timeSaved = 1;
 						$("#")
 					}
@@ -772,6 +779,8 @@
 			});
 		});
 		
+		
+		//시간표 확정
 		$("#timeButton").hide(0);
 		$("#timeButton").click(function(){
 			var crc = $("#c").val();
@@ -839,7 +848,7 @@
 					}
 				}
 			}
-			if(confirm("이대로 시간표를 확정합니까?\n확정된 시간표는 수정할 수 없습니다")!=false){
+			if(confirm("이대로 시간표를 확정합니까?\n이후 시간표,강사,강의실을 변경할 수 없습니다")!=false){
 				$.each(dailyMap,function(index,element){
 					if(element.size>2){
 						
@@ -915,7 +924,15 @@
 						<button class="btn btn-info col-md-1" id="insertBtn">신규</button>
 						<button class="btn btn-secondary col-md-1" id="saveBtn">저장</button>
 						<button class="btn btn-danger col-md-1" id="deleteBtn">삭제</button>
-						<div id="grid" class="mb-3" style="width: 100%;"></div>
+
+						<div>
+							<div class="float-start"
+								style="width: 10px; height: 27px; background-color: #498c5f; margin-right: 10px;"></div>
+							<h6 class="mt-3 fw-bolder">개설교과목</h6>
+							<div id="grid" class="mb-3" style="width: 100%;"></div>
+						</div>
+
+
 					</div>
 					<div>
 						<div
@@ -1094,7 +1111,8 @@
 												</tbody>
 											</table>
 										</div>
-										<button type="button" class="btn btn-outline-primary" id="timeButton">time</button>
+										<button type="button" class="btn btn-outline-primary"
+											id="timeButton">시간표 저장</button>
 									</div>
 								</div>
 							</form>
@@ -1141,7 +1159,7 @@
 												<input type="text"
 													class="form-control form-control-sm dep_Search_text"
 													placeholder="검색어을 입력하세요" name="dep_Search_text"
-													id="dep_Search_text" aria-describedby="basic-addon3">
+													id="sub_Search_text" aria-describedby="basic-addon3">
 											</div>
 										</div>
 									</div>
@@ -1201,7 +1219,7 @@
 												<input type="text"
 													class="form-control form-control-sm dep_Search_text"
 													placeholder="검색어을 입력하세요" name="dep_Search_text"
-													id="dep_Search_text" aria-describedby="basic-addon3">
+													id="ins_Search_text" aria-describedby="basic-addon3">
 											</div>
 										</div>
 									</div>

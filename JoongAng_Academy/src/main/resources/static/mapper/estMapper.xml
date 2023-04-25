@@ -31,10 +31,16 @@
 		SELECT * FROM ROOM_INFO
 	</select>
 	<select id="estSubjectList" parameterType="HashMap" resultType="HashMap">
-		SELECT * FROM SBJCT_INFO WHERE DEL_YN = 'N'
+		SELECT * FROM SBJCT_INFO
+		<if test="searchWord != ''">
+			WHERE SBJCT_NM LIKE CONCAT('%',#{searchWord},'%')
+		</if>
 	</select>
 	<select id="estInstructorList" parameterType="HashMap" resultType="HashMap">
 		SELECT * FROM INSTR_INFO
+		<if test="searchWord != ''">
+			WHERE KORN_FLNM LIKE CONCAT('%',#{searchWord},'%')
+		</if>
 	</select>
 	<select id="estGetInstr" parameterType="HashMap" resultType="HashMap">
 		SELECT * FROM SBJCT_INSTR NATURAL JOIN INSTR_INFO
@@ -46,13 +52,14 @@
 	</select>
 	
 	<insert id="estSave" parameterType="HashMap">
-		INSERT INTO ESTBL_SBJCT (CRCLM_YEAR,CRCLM_HALF,CRCLM_CD,SBJCT_NO,SBJCT_NM,SBJCT_EXPLN,EDU_HR,ROOM_NO,ESNTL_YN)
-		VALUES (#{year},#{hlf},#{crc},#{sbjcd},#{sbjnm},#{sbjxp},#{hrs},#{room},#{esntl})
+		INSERT INTO ESTBL_SBJCT (CRCLM_YEAR,CRCLM_HALF,CRCLM_CD,SBJCT_NO,SBJCT_NM,SBJCT_EXPLN,EDU_HR,ROOM_NO,ESNTL_YN,EDU_WEEK_HR)
+		VALUES (#{year},#{hlf},#{crc},#{sbjcd},#{sbjnm},#{sbjxp},#{hrs},#{room},#{esntl, jdbcType=BOOLEAN},#{weekhrs})
 		ON DUPLICATE KEY UPDATE
 			ROOM_NO = #{room},
 			SBJCT_NM = #{sbjnm},
 			SBJCT_EXPLN = #{sbjxp},
-			ESNTL_YN = #{esntl, jdbcType=BOOLEAN}
+			ESNTL_YN = #{esntl, jdbcType=BOOLEAN},
+			EDU_WEEK_HR = #{weekhrs}
 	</insert>
 	<insert id="estPlan" parameterType="HashMap">
 		INSERT IGNORE INTO SBJCT_PLAN (CRCLM_YEAR,CRCLM_HALF,CRCLM_CD,SBJCT_NO)
@@ -67,7 +74,7 @@
 		VALUES (#{year},#{hlf},#{crc},#{sbjcd},#{dayCode},#{startCode},#{endCode},(SELECT SBJCT_MTHD_CD FROM SBJCT_PLAN WHERE CRCLM_YEAR=#{year} AND CRCLM_HALF=#{hlf} AND CRCLM_CD=#{crc} AND SBJCT_NO=#{sbjcd}),#{room},#{insno})
 	</insert>
 	<select id="estTimeInfo" parameterType="HashMap" resultType="HashMap">
-		SELECT *,SubjectFind(SBJCT_NO) AS SBJ FROM LECT_TM_DTL WHERE CRCLM_CD=#{crc} AND CRCLM_YEAR=#{year} AND CRCLM_HALF=#{hlf} AND ROOM_NO = #{room}
+		SELECT *,SubjectFind(SBJCT_NO) AS SBJ FROM LECT_TM_DTL WHERE CRCLM_YEAR=#{year} AND CRCLM_HALF=#{hlf} AND ROOM_NO = #{room}
 	</select>
 	<insert id="estTimeConfirm" parameterType="HashMap">
 		INSERT INTO LECT_TM_INFO (CRCLM_CD,CRCLM_YEAR,CRCLM_HALF,SBJCT_NO,LECT_DAY_CD,BGNG_CLS_CD,END_CLS_CD,SBJCT_MTHD_CD,ROOM_NO,ENDST_NO,INSTR_NO)

@@ -39,7 +39,6 @@ public class EstablishedSubjectController {
 		String crc = request.getParameter("crc");
 		String year = request.getParameter("year");
 		String hlf = request.getParameter("hlf");
-		System.out.println(hlf);
 		Map<String,Object> map = new HashMap<String, Object>();
 		map.put("crc", crc);
 		map.put("year",year);
@@ -54,6 +53,8 @@ public class EstablishedSubjectController {
 	public String estSubjectListAjax(HttpServletRequest request) {
 		JSONObject json = new JSONObject();
 		Map<String,Object> map = new HashMap<String, Object>();
+		String searchWord = request.getParameter("searchWord");
+		map.put("searchWord", searchWord);
 		List<Map<String, Object>> estSubjectList = estService.estSubjectList(map); 
 		JSONArray estSubjectListJ = new JSONArray(estSubjectList);
 		json.put("estSubjectList", estSubjectListJ);
@@ -65,6 +66,8 @@ public class EstablishedSubjectController {
 	public String estInstructorListAjax(HttpServletRequest request) {
 		JSONObject json = new JSONObject();
 		Map<String,Object> map = new HashMap<String, Object>();
+		String searchWord = request.getParameter("searchWord");
+		map.put("searchWord", searchWord);
 		List<Map<String, Object>> estInstructorList = estService.estInstructorList(map); 
 		JSONArray estInstructorListJ = new JSONArray(estInstructorList);
 		json.put("estInstructorList", estInstructorListJ);
@@ -132,7 +135,6 @@ public class EstablishedSubjectController {
 		for (String key : reqmap.keySet()) {
 			String[] values = reqmap.get(key);
 			for (String value : values) {
-				System.out.println(key + " = " + value);
 				map.put(key.toString(), value);
 			}
 		}
@@ -150,7 +152,6 @@ public class EstablishedSubjectController {
 		for (String key : reqmap.keySet()) {
 		      String[] values = reqmap.get(key);
 		      for (String value : values) {
-		        System.out.println(key + " = " + value);
 		        map.put(key.toString(), value);
 		      }
 		}
@@ -170,7 +171,6 @@ public class EstablishedSubjectController {
 		for (String key : reqmap.keySet()) {
 			String[] values = reqmap.get(key);
 			for (String value : values) {
-				System.out.println(key + " = " + value);
 				map.put(key.toString(), value);
 			}
 		}
@@ -187,7 +187,6 @@ public class EstablishedSubjectController {
 		for (String key : reqmap.keySet()) {
 			String[] values = reqmap.get(key);
 			for (String value : values) {
-				System.out.println(key + " = " + value);
 				map.put(key.toString(), value);
 			}
 		}
@@ -204,7 +203,6 @@ public class EstablishedSubjectController {
 		for (String key : reqmap.keySet()) {
 			String[] values = reqmap.get(key);
 			for (String value : values) {
-				System.out.println(key + " = " + value);
 				map.put(key.toString(), value);
 			}
 		}
@@ -221,7 +219,6 @@ public class EstablishedSubjectController {
 		for (String key : reqmap.keySet()) {
 			String[] values = reqmap.get(key);
 			for (String value : values) {
-				System.out.println(key + " = " + value);
 				map.put(key.toString(), value);
 			}
 		}
@@ -243,7 +240,6 @@ public class EstablishedSubjectController {
 		map.put("year", year);
 		map.put("hlf", hlf);
 		map.put("sbjno", sbjno);
-		System.out.println(map);
 		int result = estService.estDelete(map);
 		return json.toString();
 	}
