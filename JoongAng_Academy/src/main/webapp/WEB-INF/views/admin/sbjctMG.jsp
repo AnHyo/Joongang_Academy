@@ -95,13 +95,13 @@
 			const rowKey = grid.getFocusedCell().rowKey
 			var obj = grid.getRow(rowKey);
 			var keys = Object.values(obj);
-			var sbjno = keys[0];
-			var sbjnm = keys[1];
-			var sbjex = keys[2];
-			var eduhr = keys[3];
-			var useyn = keys[4];
-			var delyn = keys[5];
-			if(sbjno != "[object Object]"){
+			console.log(obj);
+			var sbjno = obj.SBJCT_NO;
+			var sbjnm = obj.SBJCT_NM;
+			var sbjex =obj.SBJCT_EXPLN;
+			var eduhr = obj.EDU_HR;
+			var useyn = obj.USE_YN;
+			if(sbjno != null){
 			$(".sbjnm").attr("disabled",false);
 			$(".sbjhr").attr("disabled",false);
 			$(".sbjex").attr("disabled",false);
@@ -342,7 +342,7 @@
 				var searchUSE = $("#searchUSE").val();
 				var sbjnov = $.trim($("#sbjno").val());
 				alert(sbjnov);
- 				if(sbjno != "[object Object]"){
+ 				if(sbjno != null){
 				if(confirm("삭제하시겠습니까?")){
 					$.post({
 						url : "/delsbjAjax",

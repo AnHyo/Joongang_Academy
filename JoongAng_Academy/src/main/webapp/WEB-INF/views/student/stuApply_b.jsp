@@ -400,7 +400,6 @@ $(function(){
 	<%@include file="../bar/topbar.jsp"%>
 	<div id="layoutSidenav">
 		<%@include file="../bar/sidebar.jsp"%>
-		<%@include file="./searchModal.jsp"%>
 
 		<div id="layoutSidenav_content">
 			<main>

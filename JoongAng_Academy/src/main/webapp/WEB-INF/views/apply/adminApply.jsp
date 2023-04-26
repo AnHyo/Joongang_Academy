@@ -28,6 +28,7 @@
 
 <script>
 $(function(){
+	
 	function loadData2(){
 	var searchNM = $.trim($("#searchNM2").val());
 	var searchyear = $.trim($("#crclm_year").val());
@@ -274,6 +275,32 @@ $(function(){
 		 
 	});
 	
+	// 기간외 수강신청 막기
+	const startTime ='2023-04-24 10:00:00';
+	const endTime ='2023-04-24 16:00:00' ;
+	var today = new Date();
+
+	var year = today.getFullYear();
+	var month = ('0' + (today.getMonth() + 1)).slice(-2);
+	var day = ('0' + today.getDate()).slice(-2);
+
+	var hours = ('0' + today.getHours()).slice(-2); 
+	var minutes = ('0' + today.getMinutes()).slice(-2);
+	var seconds = ('0' + today.getSeconds()).slice(-2); 
+
+	var dateString = year + '-' + month  + '-' + day;
+	var timeString = hours + ':' + minutes  + ':' + seconds;
+	var datetime= dateString + " " +timeString;
+	console.log(startTime);
+	console.log(endTime);
+	console.log(datetime);
+	
+	if(datetime>= startTime && datetime <= endTime){
+		console.log("수강신청기간입니다.");
+	}else{
+		console.log("수강신청기간이 아닙니다.")
+	}
+	// -- 막기 end
 	
 	
 	class buttonRenderer{
@@ -338,8 +365,8 @@ $(function(){
 			this.el.value="신청";
 			this.el.id="applybtn";
 			this.el.setAttribute("data-value", props.value);
-			this.el.setAttribute("class", "applybtn");
-		}
+			this.el.setAttribute("class", "applybtn btn btn-success rounded-1 fw-bold");
+			this.el.setAttribute("style","width:50px;")		}
 	}
 	
 	class buttonRenderer2{
@@ -396,7 +423,8 @@ $(function(){
 			this.el.value="삭제";
 			this.el.id="delbtn";
 			this.el.setAttribute("data-value", props.value);
-			this.el.setAttribute("class", " delbtn");
+			this.el.setAttribute("class", " delbtn btn btn-danger rounded-1 fw-bold");
+			this.el.setAttribute("style","width:50px;")
 		}
 	}
 	
@@ -588,11 +616,11 @@ $(function(){
 					</div>
 					<hr class="m-0 mb-2">
 					<div class="float-start mb-2"
-						style="width: 10px; height: 27px; background-color: #498c5f; margin-right: 10px;"></div>
+						style="width: 10px; height: 32px; background-color: #498c5f; margin-right: 10px;"></div>
 					<h6 class="fw-bolder" style="line-height: 27px;">기본정보</h6>
 
 					<!-- 검색 -->
-					<div class="mb-3 d-flex justify-content-center">
+					<div class="mt-3 mb-3 d-flex justify-content-center">
 						<div class="row"
 							style="width: 100%; height: 120px; /* background-color: #F3FAFE; */ border: 1px solid #c0c0c0;">
 							<div class="row col-4">
@@ -688,7 +716,7 @@ $(function(){
 						</div>
 					</div>
 					<div class="row mt-4">
-						<div class="col-6">
+						<div class="col-6 mb-2">
 							<div class="row">
 								<div class="col-3">
 									<div class="float-start"
