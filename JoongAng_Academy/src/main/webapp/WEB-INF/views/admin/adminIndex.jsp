@@ -22,14 +22,7 @@
 	crossorigin="anonymous"></script>
 <script type="text/javascript">
 $(function() {
-	
-	const currentUrl = window.location.href;
-	const menuUrl = "http://localhost/admin";
 
-	if (currentUrl !== menuUrl) {
-	  // 차단 코드
-		window.location.replace('menuUrl'); 
-	}
 	
 	$("#icon").hide();
 	
