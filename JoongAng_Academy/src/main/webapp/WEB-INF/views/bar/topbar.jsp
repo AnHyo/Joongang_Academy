@@ -2,7 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<nav class="sb-topnav navbar navbar-expand navbar-dark bg-success">
+<nav class="sb-topnav navbar navbar-expand navbar-dark bg-team2">
 	<!-- Navbar Brand-->
 	<a class="navbar-brand ps-3"
 		style="font-family: 'Noto Sans KR', sans-serif; font-weight: 500; font-size: 24px;"

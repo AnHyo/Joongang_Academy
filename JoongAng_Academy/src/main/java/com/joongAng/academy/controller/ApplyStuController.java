@@ -11,6 +11,8 @@ public class ApplyStuController {
 	
 	@GetMapping("/stuApply")
 	public String adminApply() {
-		return "apply/stuApply";
+		return "student/stuApply";
 	}
+
+
 }
