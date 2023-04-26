@@ -61,7 +61,6 @@ if (session.getAttribute("id") == null) {
         		var CRCLM_CD = "";
         		var CRCLM_YEAR ="";
         		var stdnt_no =$("#loginID").val();
-        		console.log(stdnt_no);
         		 $.post({
         				url : "/stuinfoAjax",
         				data : {
@@ -121,16 +120,14 @@ if (session.getAttribute("id") == null) {
         	class buttonRenderer{
         		constructor(props) {
         			const el = document.createElement('input');
-        			
         			el.type='button';
-        			
         			this.el = el;
         			this.render(props);
         			this.el.addEventListener('click', (event) => {
         				
         				var STDNT_NO=$("#stdntNo").text();
         				var SBJCT_NO= el.getAttribute("data-value");
-
+        				
         	 			$.post({
         					url : "/addApplyAjax",
         					data : {
@@ -248,12 +245,44 @@ if (session.getAttribute("id") == null) {
         			el.type='button';
         			const Nn = document.createElement('span');
         			Nn.textContent = 'N';
-        			this.value=props.value;
+        			this.value = props.value; 
+        			this.sbjctNo = props.sbjctNo;
         			this.el = el;
         			this.n = Nn;
         			this.render(props);
         			this.el.addEventListener('click', (event) => {
-						$("#sbjPlanModal").modal("show");
+        				const applybtn = el.parentNode.nextElementSibling.querySelector('.applybtn');
+        				const SBJCT_NO = applybtn.getAttribute('data-value');
+    
+        			 $.post({
+        					url : "/planAjax",
+        					data : {
+        						"SBJCT_NO" : SBJCT_NO,
+        						"CRCLM_HALF" : CRCLM_HALF,
+        						"CRCLM_CD" : CRCLM_CD,
+        						"CRCLM_YEAR" : CRCLM_YEAR
+        					},
+        					dataType : "json"
+
+        				}).done(function(data) {
+        					let planList = data.planList;
+        					$("#sbjnm").text(planList[0].SBJCT_NM);
+        					$("#sbjno").text(planList[0].SBJCT_NO);
+        					$(".crclmYear").html(planList[0].CRCLM_YEAR);
+        					$(".crclmHalf").html(planList[0].CRCLM_HALF_NM);
+        					$("#instrNm").text(planList[0].KORN_FLNM);
+        					$("#crclmNm").text(planList[0].CRCLM_NM);
+        					$("#sbjBook").text(planList[0].CRS_BOOK);
+        					$("#sbjtrgt").text(planList[0].SBJCT_TRGT);
+        					$("#sbjMthd").text(planList[0].MTHDNM);
+        					$("#sbjCN").text(planList[0].SBJCT_CN);
+							$("#sbjPlanModal").modal("show");
+        				}).fail(function() {
+        					alert("문제가 발생했습니다.");
+        				});
+        				
+        				
+        				
         			});
         			
         		}
@@ -271,7 +300,7 @@ if (session.getAttribute("id") == null) {
         		render(props){
         			this.el.value="보기";
         			this.el.id="planbtn";
-//         			this.el.setAttribute("data-value", $(".applybtn").attr("data-value"));
+        			this.el.setAttribute("data-value", this.sbjctNo);
         			this.el.setAttribute("class", "planbtn btn rounded-1 fw-bold");
         			this.el.setAttribute("style","width:50px; background-color:#6c757d; color:white;");
         		}
@@ -338,7 +367,7 @@ if (session.getAttribute("id") == null) {
         		    sortingType: 'desc',
 	        		renderer:{
 	        			type: buttonRenderer3
-	        		 }
+	        		}
         		},{ 	
         			header : '신청',
         			name: 'SBJCT_NO', 
@@ -455,27 +484,7 @@ if (session.getAttribute("id") == null) {
 </head>
 <body class="d-flex flex-column h-100 bg-light">
 	<main class="flex-shrink-0">
-		<!-- Navigation-->
-		<nav class="navbar navbar-expand-lg navbar-light bg-white py-3">
-			<div class="container px-5">
-				<a class="navbar-brand" href="index.html"><span
-					class="fw-bolder text-primary">Start Bootstrap</span></a>
-				<button class="navbar-toggler" type="button"
-					data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-					aria-controls="navbarSupportedContent" aria-expanded="false"
-					aria-label="Toggle navigation">
-					<span class="navbar-toggler-icon"></span>
-				</button>
-				<div class="collapse navbar-collapse" id="navbarSupportedContent">
-					<ul class="navbar-nav ms-auto mb-2 mb-lg-0 small fw-bolder">
-						<li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-						<li class="nav-item"><a class="nav-link" href="resume.html">Resume</a></li>
-						<li class="nav-item"><a class="nav-link" href="projects.html">Projects</a></li>
-						<li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
-					</ul>
-				</div>
-			</div>
-		</nav>
+		<%@include file="../portalbar/topbar.jsp"%>
 		<!-- Page Content-->
 		<div class="my-5">
 			<div class="text-center mb-5">
@@ -491,7 +500,6 @@ if (session.getAttribute("id") == null) {
 						class="d-flex align-items-center justify-content-between mb-4 px-3">
 						<h4 class="text-success fw-bolder mb-0">내 정보</h4>
 					</div>
-					<!-- Experience Card 1-->
 
 					<div class="card shadow border-0 rounded-2 mb-1 ">
 						<div class="card-body p-4">
@@ -500,8 +508,8 @@ if (session.getAttribute("id") == null) {
 									<div class="col-4 d-flex justify-content-end fw-bolder">학번(이름)</div>
 									<input type="hidden" id="loginID" value="${sessionScope.id}">
 									<div class="col-8">
-										<span id="stdntNo" class="col-6">dsf</span> (<span
-											id="searchNM" class="col-6">sfds</span>)
+										<span id="stdntNo" class="col-6"></span> (<span
+											id="searchNM" class="col-6"></span>)
 									</div>
 								</div>
 								<div class="col-2">
@@ -525,8 +533,8 @@ if (session.getAttribute("id") == null) {
 								<div class="row col-3">
 									<div class="col-4 d-flex fw-bolder">생년월일</div>
 									<div class="col-8 ">
-										<span id="userBrdT" class="col-8">dsf</span> (<span
-											id="genderNM" class="col-4">sfds</span>)
+										<span id="userBrdT" class="col-8"></span> (<span
+											id="genderNM" class="col-4"></span>)
 									</div>
 								</div>
 								<div class="row col-3">
@@ -638,25 +646,8 @@ if (session.getAttribute("id") == null) {
 			</div>
 		</div>
 	</main>
-	<!-- Footer-->
-	<footer class="bg-white py-4 mt-auto">
-		<div class="container px-5">
-			<div
-				class="row align-items-center justify-content-between flex-column flex-sm-row">
-				<div class="col-auto">
-					<div class="small m-0 text-muted">
-						서울 강남구 테헤란로 7길 7(역삼동 에스코빌딩 6층) / 대표자:정현경 / 사업자등록번호:220-90-07535 /
-						통신판매번호:제 강남-8062호 / TEL:02-561-1911 / FAX:02-538-2613<br>
-
-						학원설립/운영 등록번호: 제02197000003호 중앙정보처리학원 / 중앙정보기술인재개발원<br>
-
-						개인정보관리책임자:유창현, infoprotect@choongang.co.kr Copyright ⓒ 1969 by
-						CHOONGANG INSTITUTE, All Rights Reserved.
-					</div>
-				</div>
-			</div>
-		</div>
-	</footer>
+	
+	<%@include file="../portalbar/footer.jsp"%>
 	<%@include file="./planModal.jsp"%>
 	<!-- Bootstrap core JS-->
 	<script

@@ -15,24 +15,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.joongAng.academy.service.ApplyService;
 
 @Controller
-public class ApplyStuController {
+public class StuinfoModController {
 
 	@Autowired
 	private ApplyService applyService;
 
-	@GetMapping("/stuApply")
-	public String adminApply() {
-		return "student/stuApply";
+	@GetMapping("/stuinfoMod")
+	public String stuinfoMod() {
+		return "student/stuinfoMod";
 	}
 
-	@ResponseBody
-	@PostMapping(value = "/planAjax", produces = "application/json;charset=UTF-8")
-	public String planAjax(@RequestParam Map<String, Object> map) {
-		JSONObject json = new JSONObject();
-		List<Map<String, Object>> plan = applyService.planAjax(map);
-		JSONArray planList = new JSONArray(plan);
-		json.put("planList", plan);
-		return json.toString();
-	}
 
 }

@@ -34,4 +34,6 @@ public interface ApplyDAO {
 
 	int esntl(Map<String, Object> map);
 
+	List<Map<String, Object>> planAjax(Map<String, Object> map);
+
 }

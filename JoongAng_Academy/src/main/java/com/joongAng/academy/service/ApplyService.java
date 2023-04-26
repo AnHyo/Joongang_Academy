@@ -49,5 +49,8 @@ public class ApplyService {
 	public int esntl(Map<String, Object> map) {
 		return applyDAO.esntl(map);
 	}
+	public List<Map<String, Object>> planAjax(Map<String, Object> map) {
+		return applyDAO.planAjax(map);
+	}
 
 }
