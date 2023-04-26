@@ -149,4 +149,14 @@
 		ESNTL_YN ='Y'
 	</select> 
 	
+	<select id="planAjax" parameterType="HashMap" resultType="HashMap">
+		SELECT * FROM sbjctPlanview
+		WHERE 
+		CRCLM_CD=#{CRCLM_CD} AND
+		CRCLM_YEAR=#{CRCLM_YEAR} AND
+		CRCLM_HALF=#{CRCLM_HALF} AND
+		SBJCT_NO=#{SBJCT_NO}
+	
+	</select>
+	
 </mapper>
