@@ -101,10 +101,6 @@ $(function(){
 <script src="js/student/dep_search_modal.js"></script>
 </head>
 <body class="sb-nav-fixed">
-	<%@include file="../bar/topbar.jsp"%>
-	<div id="layoutSidenav">
-		<%@include file="../bar/sidebar.jsp"%>
-
 
 		<!-- 메인 -->
 		<div id="layoutSidenav_content">
@@ -265,7 +261,6 @@ $(function(){
 			</main>
 			<%@include file="../bar/footer.jsp"%>
 		</div>
-	</div>
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
 		crossorigin="anonymous"></script>

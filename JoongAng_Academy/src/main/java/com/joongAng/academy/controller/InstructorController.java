@@ -147,5 +147,10 @@ public class InstructorController {
 
 	}
 	
+	@GetMapping("/admin")
+	public String adminIndex() {
+		return "admin/adminIndex";
+	}
+	
 	
 }

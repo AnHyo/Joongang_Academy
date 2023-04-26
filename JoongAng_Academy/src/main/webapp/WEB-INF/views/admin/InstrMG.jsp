@@ -27,6 +27,7 @@
 <script src="js/student/studentpost.js"></script>
 <script>
 
+
 	$(function() {
 		
 		$("#deleteCenBtn").hide();
@@ -453,6 +454,16 @@
 		
 		
 	});
+	
+	
+	$(document).ready(function() {
+		  const currentUrl = window.location.href;
+		  const menuUrl = "http://localhost/admin";
+
+		  if (currentUrl !== menuUrl) {
+		    window.location.replace(menuUrl); // 변수를 사용하도록 변경
+		  }
+	});		
 </script>	
 <style type="text/css">
 span{
@@ -510,8 +521,11 @@ display: block;
 				   </div>	
 				  </nav>
 				</div>  
+				
+				
 					<form>
-					<div class="tab-content" id="nav-tabContent">
+					<div class="tab-content" id="nav-tabContent">						
+						
 						<!-- 강사조회 -->
 						<div class="tab-pane fade show active" id="nav-inquire" role="tabpanel" aria-labelledby="nav-home-tab">
 							<div class="mb-2">
