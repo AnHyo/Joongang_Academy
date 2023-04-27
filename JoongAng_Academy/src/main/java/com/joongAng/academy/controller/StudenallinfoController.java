@@ -64,12 +64,15 @@ public class StudenallinfoController {
 		List<StudentAllInfoDTO> studentDeInfo = studentAllInfoService.studentDeInfo(student);
 		//System.err.println(studentDeInfo);
 		List<StudentAllInfoDTO> studentDetail = studentAllInfoService.studentDetail(student);
+		List<StudentAllInfoDTO> elist = studentAllInfoService.elist(student);
 		
 		JSONArray listA = new JSONArray(studentDeInfo);
 		JSONArray listB = new JSONArray(studentDetail);
+		JSONArray listC = new JSONArray(elist);
 		
 		json.put("list", listA);
 		json.put("list2", listB);
+		json.put("elist", listC);
 		return json.toString();
 	}
 	

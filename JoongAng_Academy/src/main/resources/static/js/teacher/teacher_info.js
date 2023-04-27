@@ -56,6 +56,12 @@ $(function(){
 				}).done(function(data) {
 					tchGrid.resetData(data.unreglist);
 					tchGrid.on('click', () => {
+						$("#i").val("");
+						$("#postNum").val("");
+						$("#addrInfo").val("");
+						$("#addrDetail").val("");
+						$("#k").val("");
+
 						var rowKey = tchGrid.getFocusedCell().rowKey;
 						var obj = tchGrid.getRow(rowKey);
 						var keys = Object.values(obj);
@@ -94,7 +100,7 @@ $(function(){
 	
 		$("#newSaveBtn").on("click",function(){
 			if($("#j").val() == "" || $("#j").val() < 1){
-				alert("수정할 강사정보가 없습니다.");
+				alert("등록할 강사정보가 없습니다.");
 				return false;
 			} else {
 				//정규식 검사(email형식이 맞는지)
@@ -164,7 +170,7 @@ $(function(){
 					var newGender = $("#i").val();
 					var newPostNum = $("#postNum").val();
 					var newAddr = $("#addrInfo").val();
-					var newDaddr = $("#addrDetail").val();
+					var newDaddr = $.trim($("#addrDetail").val());
 					var newUserNo = $("#j").val();
 					var newEndstNo = $("#k").val();
 					
@@ -190,7 +196,9 @@ $(function(){
 							alert("강사등록이 완료되었습니다.");
 							$("form").on("reset", function() {
 								// input, select, textarea 요소 초기화
-								$(this).find("input, select, textarea").val("");
+								$(this).find("select, textarea").val("");
+								$(this).find('input[type="text"]').val("");
+		
 								// select 요소의 첫번째 옵션 선택
 								$(this).find("select").prop("selectedIndex", 0);
 							});
@@ -239,10 +247,11 @@ $(function(){
 			tchGrid.resetData([]);
 			
 			$("form").on("reset", function() {
-			  // input, select, textarea 요소 초기화
-			  $(this).find("input, select, textarea").val("");
-			  // select 요소의 첫번째 옵션 선택
-			  $(this).find("select").prop("selectedIndex", 0);
+				// input, select, textarea 요소 초기화
+				$(this).find("select, textarea").val("");
+				$(this).find('input[type="text"]').val("");
+	
+				$(this).find("select").prop("selectedIndex", 0);
 			});
 			
 			$("form").trigger("reset");

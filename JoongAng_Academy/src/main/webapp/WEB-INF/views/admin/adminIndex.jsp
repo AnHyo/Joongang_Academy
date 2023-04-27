@@ -31,7 +31,7 @@ $(function() {
     var tabs = {}; // 클릭한 메뉴에 대한 div 요소를 저장하는 객체
 	
     // 바 메뉴 클릭 시 탭에 메뉴명 띄우기
-    $('#collapseLayouts1 .add_tab').click(function() {
+    $('#collapseLayouts1 .nav-link').click(function() {
         var menuName = $(this).text();
         var menuHref = $(this).attr('href');
         addTab(menuName, menuHref);

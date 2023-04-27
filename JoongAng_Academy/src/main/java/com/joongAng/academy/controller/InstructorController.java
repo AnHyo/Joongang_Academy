@@ -40,13 +40,13 @@ public class InstructorController {
 	
 	@ResponseBody
 	@PostMapping(value = "/insListAjax", produces = "application/json;charset=UTF-8")
-	public String estListAjax(HttpServletRequest request) {
+	public String estListAjax(@RequestParam Map<String, Object> map) {
 		JSONObject json = new JSONObject();
-		Map<String,Object> map = new HashMap<String, Object>();                                                                                                                                                                                  
-		String name = request.getParameter("name");
-		map.put("name", name);
+		System.err.println(map);
+		
 		List<Map<String, Object>> insList = instrService.insList(map); 
 		JSONArray insListJ = new JSONArray(insList);
+		
 		json.put("insList", insListJ);
 		return json.toString();
 	}

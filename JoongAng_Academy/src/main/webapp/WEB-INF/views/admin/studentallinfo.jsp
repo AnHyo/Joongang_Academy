@@ -124,7 +124,7 @@ $(function(){
 					</div>
 					
 				<!-- 학생 검색 -->
-					<div class="p-1 mb-4 border position-relative container-fluid" style="background-color: #F3FAFE">
+					<div class="p-1 mb-4 border position-relative container-fluid" style="background-color: #F3FAFE; font-weight:bold;">
 						<div class="row">
 						<div class="col-4">
 						  <div class="row">
@@ -146,7 +146,7 @@ $(function(){
 
 
 					<!-- 학생 기본 정보 -->
-						<div class="p-1 mt-2 mb-4 border container-fluid" style="background-color: #F3FAFE">
+						<div class="p-1 mt-2 mb-4 border container-fluid" style="background-color: #F3FAFE; font-weight:bold;">
 						<div class="row">
 						<!-- 첫번째 줄 -->
 						  <div class="col-4">
@@ -279,7 +279,7 @@ $(function(){
 		</div>
 					
 				<!--  학과 정보 -->
-					<div class="p-1 mb-4 border position-relative container-fluid" style="background-color: #F3FAFE">
+					<div class="p-1 mb-4 border position-relative container-fluid" style="background-color: #F3FAFE; font-weight:bold;">
 						<div class="row">
 						  	<div class="col-6">
 							  	<div class="row">
@@ -306,7 +306,18 @@ $(function(){
 							</div>
 						 </div>
 					</div>
-					</div>	
+					</div>
+					
+					<!-- 수강이력 조회 -->
+					<div class="mt-3 position-relative"  style="display:flex; width:100%; height:27px;">
+							<div style="width:10px; height:27px; background-color:#498c5f;">
+							</div>
+							<div style="width:80px; height:27px; font-size:17px; font-weight: bold; line-height:30px; margin:0 10px;">
+								수강이력
+							</div>
+					</div>
+					<!-- 수강이력 그리드 -->
+					<div class="mt-2" id="enrolmentGrid"></div>
 					
 					<!-- 학생 검색모달  -->
 					<div class="modal fade" id="StuInfoModal" tabindex="-1"
