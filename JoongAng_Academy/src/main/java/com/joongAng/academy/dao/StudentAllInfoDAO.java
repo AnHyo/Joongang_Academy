@@ -24,6 +24,8 @@ public interface StudentAllInfoDAO {
 
 	public int studentUpdate(Map<String, Object> map);
 
+	public List<StudentAllInfoDTO> elist(StudentAllInfoDTO student);
+
 
 
 }

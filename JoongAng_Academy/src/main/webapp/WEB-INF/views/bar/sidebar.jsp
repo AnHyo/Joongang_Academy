@@ -19,8 +19,9 @@
 				<div class="collapse" id="collapseLayouts1"
 					aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
 					<nav class="sb-sidenav-menu-nested nav">
-						<div class="nav-link add_tab">공통코드관리</div> 
-						<div class="nav-link add_tab">교직원 관리</div>
+						<a class="nav-link" href="code">공통코드관리</a>
+						<a class="nav-link" href="instrmg">강사관리</a> 
+						<a class="nav-link" href="survey">설문관리</a> 
 					</nav>
 				</div>
 				<a class="nav-link collapsed" href="#" data-bs-toggle="collapse"
@@ -36,9 +37,10 @@
 				<div class="collapse" id="collapseLayouts2"
 					aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
 					<nav class="sb-sidenav-menu-nested nav">
-						<a class="nav-link" href="layout-static.html">학적부여관리</a> 
+						<a class="nav-link" href="stdntNo">학번부여관리</a> 
 						<a class="nav-link" href="studentallinfo">학적부관리</a>
 						<a class="nav-link" href="studentRecord">학생명단조회</a>
+						<a class="nav-link" href="atnd">출결관리</a>
 					</nav>
 				</div>
 				<a class="nav-link collapsed" href="#" data-bs-toggle="collapse"
@@ -54,9 +56,10 @@
 				<div class="collapse" id="collapseLayouts3"
 					aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
 					<nav class="sb-sidenav-menu-nested nav">
-						<a class="nav-link" href="layout-static.html">교육훈련과정 정보관리</a> 
-						<a class="nav-link" href="layout-sidenav-light.html">개설교과목관리</a>
+						<a class="nav-link" href="crclmInfo">교육훈련과정 정보관리</a> 
+						<a class="nav-link" href="estmg">개설교과목관리</a>
 						<a class="nav-link" href="">과목관리</a>
+						<a class="nav-link" href="planmg">강의계획서관리</a>
 					</nav>
 				</div>
 

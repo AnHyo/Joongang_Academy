@@ -106,13 +106,13 @@ $(function(){
 		<div id="layoutSidenav_content">
 			<main>
 				<div class="container-fluid px-4">
-					<h5 class="mt-3"><img src="../image/joongang_logo.png" style="width: 25px; height: 25px; margin-right: 5px;">학생명단조회</h5>
+					<h5 class="mt-2" style="font-weight: bold; color: #565757;"><img src="../image/joongang_logo.png" style="width: 25px; height: 25px; margin-right: 5px;">학생명단조회</h5>
 					<hr style="height: 2px;">
 					<div class="mb-3" style="height: 26px;">
 						<button type="button" class="btn btn-sm btn-secondary float-end" id="stuSearch">조회</button>
 					</div>
 						<!-- 명단 검색 그룹 -->
-						<div class="p-4 mt-2 mb-5 border container-fluid" style="background-color: #F3FAFE">
+						<div class="p-4 mt-2 mb-5 border container-fluid" style="background-color: #F3FAFE; font-weight:bold;">
 						<div class="row mb-3">
 						<!-- 교육과정 -->
 						  <div class="col-6">

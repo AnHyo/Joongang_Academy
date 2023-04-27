@@ -26,6 +26,16 @@
 <script src="js/teacher/teacher_info.js"></script>	
 <script src="js/student/studentpost.js"></script>
 <script>
+//-- 공백 바로 제거
+function test(obj){
+	var a = $('#searchName').val().replace(/ /gi, '');
+	$('#searchName').val(a);
+	
+	var RegExp  = /[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/ A-Z\uAC00-\uD7A3\u3131-\u3163]/gim;
+	var b = $('#nameAndNum').val().replace(RegExp, '');
+	$('#nameAndNum').val(b);
+}
+
 
 
 	$(function() {
@@ -134,27 +144,29 @@
 		// -- 해더 부분 checkbox 막기
 		$('.tui-grid-cell-row-header input[type="checkbox"]').prop('disabled', true);
 		
-		 // -- 체크박스 1개만 체크되게 하기 
-		  var lastCheckedRowKey = null;
-		  grid.on('check', (ev) => {
-			  var checkedRows = grid.getCheckedRows();
-			  
-			  // 마지막으로 체크한 행의 체크를 해제
-			  if (lastCheckedRowKey !== null && ev.rowKey !== lastCheckedRowKey) {
-			    grid.uncheck(lastCheckedRowKey);
-			  }
-			  
-			  // 마지막으로 체크한 행의 키를 업데이트
-			  lastCheckedRowKey = ev.rowKey;
-		  });
-		
+		 
 		
 		// -- 조회 그리드 함수
 		function insListAjax (){
-			var name = $("#searchName").val();
+			var name = $.trim($("#searchName").val());
+			var tel = $.trim($("#nameAndNum").val());
+			var gender = $("#searchGender").val();
+			var school = $("#searchShc").val();
+			var tere = "";
+			if ($('#tenure').is(':checked')) {
+			  tere = $('#tenure').val();
+			} else if ($('#retirement').is(':checked')) {
+			  tere = $('#retirement').val();
+			}
+			
 			$.post({
 				url : "/insListAjax",
-				data : { name : name },
+				data : { "name" : name,
+					"tel" : tel,
+					"gender" : gender,
+					"school" : school,
+					"tere" : tere
+				},
 				dataType : "json"
 			}).done(function(data) {
 				grid.resetData(data.insList);
@@ -175,9 +187,14 @@
 		
 		grid.on('click', function(ev){
 			
-			var rowKey = grid.getFocusedCell().rowKey;
-			//alert(rowKey);
-			grid.check(rowKey);
+			var rowKey = ev.rowKey; // 클릭한 행의 rowKey
+		    grid.check(rowKey); // 해당 행의 체크박스를 체크
+		    var checkedRows = grid.getCheckedRows();
+		    checkedRows.forEach(function(checkedRow){
+		        if(checkedRow.rowKey !== rowKey) {
+		            grid.uncheck(checkedRow.rowKey); // 다른 체크박스는 모두 체크 해제
+		        }
+		    });
 			
 			if(ev.rowKey == null){
 				return false;
@@ -207,7 +224,6 @@
 					$("#deleteCenBtn").hide();
 				}	
 					
-					console.log(grid.getRow(ev.rowKey));
 					$("#a").val(grid.getValue(ev.rowKey,'INSTR_NO'));
 					$("#b").val(grid.getValue(ev.rowKey,'KORN_FLNM'));
 					$("#c").val(grid.getValue(ev.rowKey,'USER_BRDT'));
@@ -224,6 +240,21 @@
 			}
 			  
 		});
+		
+		// -- 체크박스 1개만 체크되게 하기 
+		  var lastCheckedRowKey = null;
+		  grid.on('check', (ev) => {
+			  var checkedRows = grid.getCheckedRows();
+			  
+			  // 마지막으로 체크한 행의 체크를 해제
+			  if (lastCheckedRowKey !== null && ev.rowKey !== lastCheckedRowKey) {
+			    grid.uncheck(lastCheckedRowKey);
+			  }
+			  
+			  // 마지막으로 체크한 행의 키를 업데이트
+			  lastCheckedRowKey = ev.rowKey;
+		  });
+		
 		
 
 		$("#saveBtn").click(function(){
@@ -279,11 +310,11 @@
 						}
 					
 					var instrNo = $("#a").val();
-					var email = $("#d").val();
-					var tel = $("#e").val();
+					var email = $.trim($("#d").val());
+					var tel = $.trim($("#e").val());
 					var postNumber = $("#postNum").val();
 					var addr = $("#addrInfo").val();
-					var daddr = $("#addrDetail").val();
+					var daddr = $.trim($("#addrDetail").val());
 					var endst = $("#k").val();
 					
 					 $.post({
@@ -369,11 +400,11 @@
 							}); // -- 삭제 처리
 						  }
 						} else if(SBJCT_INSTR != null && CRCLM_INFO == null){
-							alert("대표강사설정에 데이터가 존재하므로 삭제할 수 없습니다.");
+							alert("교과목강의교수정보에 데이터가 존재하므로 삭제할 수 없습니다.");
 						} else if(CRCLM_INFO != null && SBJCT_INSTR == null) {
-							alert('교육훈련과정설정에 데이터가 존재하므로 삭제할 수 없습니다');
+							alert('교육훈련과정정보에 데이터가 존재하므로 삭제할 수 없습니다');
 						} else if (SBJCT_INSTR != null && CRCLM_INFO != null){
-							alert('대표강사설정과 교육훈련과정설정에 데이터가 존재하므로 삭제 할 수 없습니다.');
+							alert('교과목강의교수정보과 교육훈련과정정보에 데이터가 존재하므로 삭제 할 수 없습니다.');
 						}
 						
 					}).fail(function() {
@@ -413,26 +444,22 @@
 			  }
 		});
 		
-	/* 	$(".tui-grid-row-checkbox").on("check", function() {
-			  if (this.checked) {
-			    $(".tui-grid-row-checkbox").not(this).prop("checked", false);
-			  }
-		}); */
-		
 		
 		// -- 탭바 클릭시 초기화
 		
 		$(document).on("click","#nav-profile-tab",function(){
 			grid.resetData([]);
 			
-			$("form").on("reset", function() {
+			 $("form").on("reset", function() {
 				  // input, select, textarea 요소 초기화
-				  $(this).find("input, select, textarea").val("");
+				$(this).find("select, textarea").val("");
+				$(this).find('input[type="text"]').val("");
+				 
 				  // select 요소의 첫번째 옵션 선택
 				  $(this).find("select").prop("selectedIndex", 0);
 			});
 			
-			$("form").trigger("reset");
+			$("form").trigger("reset"); 
 			
 			$("#d").prop("disabled", true);
 			$("#postNum").prop("disabled", true);
@@ -451,19 +478,17 @@
 				$("#postSearch").click();
 			} 
 		});
-		
+	  
+	  // -- 엔터 처리
+	 	$("#searchName, #nameAndNum").keydown(function(key) {
+	 	    if (key.keyCode == 13) {
+	 	        $("#searchBtn").click();
+	 	    }
+	 	});
 		
 	});
 	
-	
-	$(document).ready(function() {
-		  const currentUrl = window.location.href;
-		  const menuUrl = "http://localhost/admin";
-
-		  if (currentUrl !== menuUrl) {
-		    window.location.replace(menuUrl); // 변수를 사용하도록 변경
-		  }
-	});		
+		
 </script>	
 <style type="text/css">
 span{
@@ -477,7 +502,7 @@ display: block;
 	font-size: 14px;
 }
 .div-padding{
-	padding: 10px;
+	padding: 11px;
 }
 .head{
 	margin: 0 auto;
@@ -488,18 +513,15 @@ display: block;
 .tui-grid-cell {
   font-size: 14px;
 }
+.yb{
+ 	margin-left: -15px;
+}
 </style>
 </head>
 <body class="sb-nav-fixed">
-	<%@include file="../bar/topbar.jsp"%>
-		<div id="layoutSidenav">
-		<%@include file="../bar/sidebar.jsp"%>
-		<div id="layoutSidenav_content">
+
+		<div id="layoutSidenav_content" style="margin-top: -19px;">
 			<main>
-				<!-- 탭 메뉴 -->
-				<div class="bg-dark text-white" style="width: 100%; height: 40px;">
-					
-				</div>
 	
 				<div class="container-fluid px-4">
 					<div class="mt-4 position-relative row">
@@ -524,26 +546,99 @@ display: block;
 				
 				
 					<form>
-					<div class="tab-content" id="nav-tabContent">						
+					<div class="tab-content" id="nav-tabContent">
 						
 						<!-- 강사조회 -->
 						<div class="tab-pane fade show active" id="nav-inquire" role="tabpanel" aria-labelledby="nav-home-tab">
-							<div class="mb-2">
-								<div class="row mb-2">
-									<div class="col-5">
-										<div class="input-group input-group-sm">
-											<input type="text" class="form-control form-control-sm col-md-2" id="searchName" aria-describedby="basic-addon3" placeholder="이름 or 연락처">
-											<button class="btn btn-primary btn-sm col-md-1" id="searchBtn" type="button">조회</button>
-										</div>
-									</div>
-									<div class="col-7">
-										<button class="btn btn-sm btn-danger col-md-1 float-end" id="deleteBtn" type="button" style="margin-left: 5px;">삭제</button>
-										<button class="btn btn-sm btn-danger col-md-1 float-end" id="deleteCenBtn" type="button" style="margin-left: 5px;">삭제취소</button>
-										<button class="btn btn-sm btn-secondary col-md-1 float-end" id="saveBtn" type="button" style="margin-left: 5px;">저장</button>
+						<div class="mb-2" style="height: 32px;">
+							<button class="btn btn-sm btn-danger float-end" id="deleteBtn" type="button" style="margin-left: 5px;">삭제</button>
+							<button class="btn btn-sm btn-danger float-end" id="deleteCenBtn" type="button" style="margin-left: 5px;">삭제취소</button>
+							<button class="btn btn-sm btn-secondary float-end" id="saveBtn" type="button" style="margin-left: 5px;">저장</button>
+							<button class="btn btn-primary btn-sm float-end" id="searchBtn" type="button">조회</button>
+						</div>						
+							
+						<!-- 명단 검색 그룹 -->
+						<div class="p-2 mb-2 border container-fluid" style="background-color: #F3FAFE; font-weight:bold; font-size: 14px;">
+						
+						<div class="row" style="margin-left: 20px; margin-top:5px; ">
+							<!-- 이름(사번) -->
+						  <div class="col-3">
+						  <div class="row">
+								<span class="col-4 text-center ta font-set">이름(사번)</span>
+								<div class="col-8 div-padding yb">
+									<div class="input-group input-group-sm">
+										<input type="text" class="form-control form-control-sm col-10" id="searchName" aria-describedby="basic-addon3" placeholder="이름 or 사번" onkeyup="test(this);" maxlength="10">
 									</div>
 								</div>
+						  </div>
+						  </div>
+						  <!-- 전화번호 -->
+						  <div class="col-2 yb">
+						  	<div class="row">
+							  		<span class="col-3 text-center ta font-set">연락처</span>
+							  		<div class="col-9 div-padding">
+							  		<input type="text" id="nameAndNum" name="searchTel" class="form-control form-control-sm" aria-describedby="passwordHelpInline" onkeyup="test(this);" maxlength="11">
+	  								</div>
+	  							</div>
+						 </div>
+						  <!-- 성별 -->
+						   <div class="col-2 yb">
+						  	<div class="row">
+								<span class="col-5 text-center ta font-set">성별구분</span>
+								<div class="col-7 div-padding yb">
+								<select class="form-select form-select-sm" id="searchGender" name="searchGender" aria-label=".form-select-sm example">
+											<option selected value="">선택</option>
+										<c:forEach items="${gender }" var="g" varStatus="status">
+											<option value="${g.CD }">${g.CD_NM }</option>
+										</c:forEach>
+								</select>
+						  	</div>
+							</div>
+						 </div>
+						 
+						 <!-- 교육기관 -->
+						 <div class="col-3 yb">
+						  	<div class="row">
+								<span class="col-3 text-center ta font-set">교육기관</span>
+								<div class="col-9 div-padding">
+								<select class="form-select form-select-sm" id="searchShc" name="searchShc" aria-label=".form-select-sm example">
+										<option selected value="">선택</option>
+										<c:forEach items="${endst }" var="e" varStatus="status">
+											<option value="${e.ENDST_NO}">${e.ENDST_NM }</option>
+										</c:forEach>
+								</select>
+						  	</div>
+							</div>
+						 </div>
+						 
+						 <!-- 재직여부 -->
+						 <div class="col-2 yb">
+						  	<div class="row">
+								<span class="col-5 text-center ta font-set">재직여부</span>
+								<div class="col-7" style="padding: 16px;">
+								  <div class="row">
+									<div class="form-check col-6">
+										<input class="form-check-input" type="radio" name="tenure" id="tenure" value="Y"> 
+										<label class="form-check-label" for="tenure"> 재직 </label>
+									</div>
+									<div class="form-check col-6">
+										<input class="form-check-input" type="radio" name="tenure" id="retirement" value="N"> 
+										<label class="form-check-label" for="retirement"> 퇴직 </label>
+									</div>
+								  </div>
+								</div>
+							</div>
+						 </div>
+						  
+						  </div>
+						  
+					</div>
+							
+							
+							<div class="mb-2">
 								<div id="grid" class="mb-3" style="width: 100%;"></div>
 							</div>
+						
 						</div>
 						
 						<!-- 강사등록 -->
@@ -563,7 +658,7 @@ display: block;
 					
 					<!-- 정보 -->
 					
-						<div class="p-1 mt-4 mb-4 border container-fluid" style="background-color: #F3FAFE">
+						<div class="p-1 mb-4 border container-fluid" style="background-color: #F3FAFE">
 						<div style="width: auto; height: auto;margin-left: 100px;">
 						<div class="row">
 						<!-- 첫번째 줄 -->
@@ -694,7 +789,7 @@ display: block;
 			</main>
 			<%@include file="../bar/footer.jsp"%>
 		</div>
-	</div>
+
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
 		crossorigin="anonymous"></script>

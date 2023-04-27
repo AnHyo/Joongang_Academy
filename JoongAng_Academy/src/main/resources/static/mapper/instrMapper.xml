@@ -5,10 +5,24 @@
 	<select id="insList" parameterType="HashMap" resultType="HashMap">
 		SELECT * 
 		FROM instrendsttview
+		<where>
 		<if test="name != ''">
-			WHERE KORN_FLNM LIKE CONCAT('%', #{name }, '%')
-			or TELNO LIKE CONCAT('%', #{name }, '%')
+			AND (KORN_FLNM LIKE CONCAT('%', #{name }, '%')
+			or INSTR_NO LIKE CONCAT('%', #{name }, '%'))
 		</if>
+		<if test="tel != ''">
+			AND (TELNO LIKE CONCAT('%', #{tel }, '%'))
+		</if>
+		<if test="gender != ''">
+			AND GENDER_CD = #{gender }
+		</if>
+		<if test="school != ''">
+			AND ENDST_NO = #{school }
+		</if>
+		<if test="tere != ''">
+			AND INSTR_DEL = #{tere }
+		</if>
+		</where>
 	</select>
 	
 	<select id="teacherUnreg" resultType="InstrDTO">

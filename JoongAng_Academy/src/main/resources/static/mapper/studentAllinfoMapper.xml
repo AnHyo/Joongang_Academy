@@ -51,4 +51,16 @@
 	WHERE STDNT_NO=#{studentID }
 </update>
 
+<select id="elist" resultType="StudentAllInfoDTO" parameterType="StudentAllInfoDTO">
+	SELECT SBJCT_NO, SBJCT_NM, KORN_FLNM, 
+    CASE 
+        WHEN ESNTL_YN = 'Y' THEN '교필' 
+        WHEN ESNTL_YN = 'N' THEN '교선' 
+        ELSE '기타'
+    END AS ESNTL_TYPE, 
+    CLASSTM, ROOM_NM
+	FROM applyclsview
+	WHERE STDNT_NO = #{student_ID }
+</select>
+
 </mapper>

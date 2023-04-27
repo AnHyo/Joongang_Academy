@@ -55,6 +55,9 @@ $(function(){
 									}).done(function(data) {
 										//alert("성공");
 										var list = data.list[0];
+										var elist = data.elist;
+										enrolGrid.resetData(elist);
+										
 										//alert(list.CRCLM_YEAR);
 										var tel = list.TELNO;
 										var etel = list.REL_TELNO;
@@ -210,6 +213,8 @@ $(function(){
 			}
 			
 			
+			
+			
 			var studentID = $("#StudentID").val();
 			
 			var telinfo = $("#telInfo").val();
@@ -218,7 +223,7 @@ $(function(){
 			var relationinfo = $("#relation").val();
 			var postinfo = $("#postNum").val();
 			var addrinfo = $("#addrInfo").val();
-			var addrdeinfo = $("#addrDetail").val();
+			var addrdeinfo = $.trim($("#addrDetail").val());
 			
 			$.post({
 				url: "/studentInfoUpdate",
@@ -331,6 +336,61 @@ $(function(){
 					header : '학적상태',
 					name : 'REG_CD_NAME',
 					width:150,
+				    align:'center',
+				    sortingType: 'asc',
+				    sortable: true
+				}
+				],
+			selectionUnit: 'row'
+			
+			});
+			
+			var enrolGrid = new tui.Grid({
+		      el: document.getElementById('enrolmentGrid'),
+		      bodyHeight: 190,
+		      scrollX: true,
+		      scrollY: true,
+		      rowHeaders: ['rowNum'],
+		      columns: [
+		        {
+		          header: '과목코드',
+		          name: 'SBJCT_NO',
+		          align:'center',
+				  sortingType: 'asc',
+				  sortable: true
+		        },
+		        {
+		          header: '과목명',
+		          name: 'SBJCT_NM',
+		          align:'center',
+				  sortingType: 'asc',
+				  sortable: true
+		        },
+		        {
+		          header: '강사명',
+		          name: 'KORN_FLNM',
+		          align:'center',
+				  sortingType: 'asc',
+				  sortable: true
+		        },
+		        {
+		          header: '교과구분',
+		          name: 'ESNTL_TYPE',
+		          align:'center',
+				  sortingType: 'asc',
+				  sortable: true
+		        },
+		       
+				{
+					header : '강의시간',
+					name : 'CLASSTM',
+			        align:'center',
+				    sortingType: 'asc',
+				    sortable: true
+				}, 
+				{
+					header : '강의실',
+					name : 'ROOM_NM',
 				    align:'center',
 				    sortingType: 'asc',
 				    sortable: true

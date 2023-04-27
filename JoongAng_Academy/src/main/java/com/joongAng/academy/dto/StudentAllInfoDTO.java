@@ -11,7 +11,7 @@ public class StudentAllInfoDTO {
 	
 	private int AGE;
 	
-	private String student_ID, STDNT_NO;
+	private String student_ID, STDNT_NO, SBJCT_NO, SBJCT_NM, ESNTL_YN, CLASSTM, ROOM_NM,ESNTL_TYPE;
 
 }
 

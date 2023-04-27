@@ -39,6 +39,10 @@ public class StudentAllInfoService {
 	public int studentUpdate(Map<String, Object> map) {
 		return studentAllInfoDAO.studentUpdate(map);
 	}
+
+	public List<StudentAllInfoDTO> elist(StudentAllInfoDTO student) {
+		return studentAllInfoDAO.elist(student);
+	}
 	
 	
 
