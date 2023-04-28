@@ -52,5 +52,8 @@ public class ApplyService {
 	public List<Map<String, Object>> planAjax(Map<String, Object> map) {
 		return applyDAO.planAjax(map);
 	}
+	public List<Map<String, Object>> timetableAjax(Map<String, Object> map) {
+		return applyDAO.timetableAjax(map);
+	}
 
 }

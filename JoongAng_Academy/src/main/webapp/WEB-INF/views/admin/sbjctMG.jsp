@@ -160,7 +160,6 @@
 				
 				$("#crclmCount").html(String(rowCount).padStart(3, "0"));
 				
-				let selectedRowKey = null;
 				// cell 하나 클릭시 한 줄 전체 범위 지정
 				grid.on('focusChange', (ev) => {
 					  grid.setSelectionRange({

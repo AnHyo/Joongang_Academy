@@ -49,8 +49,8 @@
                                 <h1 class="display-3 fw-bolder mb-5"><span class="text-gradient d-inline">포털 시스템</span></h1>
                                 <div class="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-xxl-start mb-3">
                                     <!-- <a class="btn btn-team2 btn-lg px-5 py-3 me-sm-3 fs-6 fw-bolder" href="resume.html">학생용</a>-->
-									  <a class="btn btn-team2 btn-lg px-5 py-3 me-sm-3 fs-6 fw-bolder" href="resume.html">학생용</a>
-                                    <a class="btn btn-team2_2 btn-lg px-5 py-3 fs-6 fw-bolder" href="projects.html">강사용</a>
+									  <a class="btn btn-team2 btn-lg px-5 py-3 me-sm-3 fs-6 fw-bolder" href="/login">학생</a>
+                                    <a class="btn btn-team2_2 btn-lg px-5 py-3 fs-6 fw-bolder" href="/login">직원</a>
                                 </div>
                             </div>
                         </div>
@@ -60,7 +60,7 @@
                                 <div class="profile bg-gradient-primary-to-secondary">
                                     <!-- TIP: For best results, use a photo with a transparent background like the demo example below-->
                                     <!-- Watch a tutorial on how to do this on YouTube (link)-->
-                                    <img  src="assets/indexlogo.png" style="width:400px; height:90px; margin-left:67px; margin-top:200px;"alt="..." />
+                                    <img  src="assets/indexlogo.png" style="width:400px; height:90px; margin-left:100px; margin-top:250px;"alt="..." />
                                     <div class="dots-1">
                                         <!-- SVG Dots-->
                                         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 191.6 1215.4" style="enable-background: new 0 0 191.6 1215.4" xml:space="preserve">

@@ -158,5 +158,14 @@
 		SBJCT_NO=#{SBJCT_NO}
 	
 	</select>
+	<select id="timetableAjax"  parameterType="HashMap" resultType="HashMap">
+		SELECT * FROM timetable2
+		WHERE 
+		CRCLM_CD=#{CRCLM_CD} AND
+		CRCLM_YEAR=#{CRCLM_YEAR} AND
+		CRCLM_HALF=#{CRCLM_HALF} AND
+		STDNT_No=#{STDNT_NO}
+	
+	</select>
 	
 </mapper>

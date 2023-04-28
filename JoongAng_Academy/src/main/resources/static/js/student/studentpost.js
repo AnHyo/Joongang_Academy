@@ -30,7 +30,7 @@ function stuent_post(){
                 
                 // 참고항목 문자열이 있을 경우 해당 필드에 넣는다.
                 if(roadAddr !== ''){
-                    document.getElementById("addrDetail").value = extraRoadAddr;
+                    document.getElementById("addrDetail").value = extraRoadAddr.trim();
                 } else {
                     document.getElementById("addrDetail").value = '';
                 }
@@ -52,5 +52,5 @@ function stuent_post(){
                 }
             }
         }).open();
-	
+	$("#addrDetail").focus();
 }

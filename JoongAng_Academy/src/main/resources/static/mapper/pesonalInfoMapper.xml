@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.joongAng.academy.dao.PesonalInfoDAO">
+
+	<select id="pwCheckAjax" parameterType="HashMap" resultType="Integer">
+		SELECT COUNT(*) FROM USER_INFO
+		WHERE 
+		USER_ID = #{user_id} AND
+		PSWD = #{nowPw}
+	</select>
+	<update id="pwChangeAjax" parameterType="HashMap">
+		UPDATE USER_INFO SET
+		PSWD = #{newPw}
+		WHERE 
+		USER_ID = #{user_id}
+	</update>
+	<select id="gradeCheck" parameterType="HashMap" resultType="String">
+		SELECT USER_GROUP_CD FROM USER_INFO
+		WHERE 
+		USER_ID = #{userID};
+	</select>
+	<select id="info" parameterType="HashMap" resultType="HashMap">
+		SELECT * FROM instrinfoview 
+		WHERE
+		INSTR_NO = #{user_id}
+	</select>
+	<update id="instrInfoUpdate"  parameterType="HashMap">
+		UPDATE INSTR_INFO SET
+		TELNO = #{telinfo},
+		EML_ADDR =#{emailinfo},
+		ZIP =#{postinfo},
+		DADDR =#{addrdeinfo},
+		ADDR =#{addrinfo}
+		WHERE INSTR_NO=#{user_id}
+	</update>
+</mapper>
