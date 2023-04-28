@@ -6,21 +6,33 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
+import com.joongAng.academy.dto.CrclmInfoDTO;
+
 @Repository
 @Mapper
 public interface CrclmInfoDAO {
 
-	public List<Map<String, Object>> listCrclmAjax(Map<String, String> paramap);
+	public List<Map<String, Object>> listCrclmAjax(CrclmInfoDTO crclmInfoDTO);
 
-	public int saveCrclmAjax(Map<String, String> paramap);	
+	public int saveCrclmAjax(CrclmInfoDTO crclmInfoDTO);	
 
 	public List<Map<String, Object>> crclmNameList();
 
-	public int newCrclmAjax(Map<String, String> paramap);
+	public int newCrclmAjax(CrclmInfoDTO crclmInfoDTO);
 
 	public List<Map<String, Object>> saveAfter();
 
-	public int checkCrclmAjax(Map<String, String> paramap);
+	public int checkCrclmAjax(CrclmInfoDTO crclmInfoDTO);
 
 	public List<Map<String, Object>> instrSearchM(Map<String, String> paramap);
+
+	public List<Map<String, Object>> crclmSchdl(CrclmInfoDTO crclmInfoDTO);
+
+	public int countCodeNum();
+
+	public void newSchedule(CrclmInfoDTO crclmInfoDTO2);
+
+	public List<Map<String, Object>> scheduleName();
+
+	public int updateSchedule(List<Map<String, Object>> updateRow);
 }

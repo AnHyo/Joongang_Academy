@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -17,8 +18,10 @@
 <link href="css/styles.css" rel="stylesheet" />
 <link rel="stylesheet"
 	href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+<link rel="stylesheet" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css" />
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
 <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
 <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js"
 	crossorigin="anonymous"></script>
@@ -33,6 +36,10 @@
 </style>
 <script>
 	$(function() {
+		//과정일정설정 버튼그룹 숨기기
+		$("#buttonGroup").hide();
+		
+		
 		$('#inputYear, .cyear').attr('maxlength', '4');
 		$('#inputYear, .cyear').attr('minlength', '4');
 
@@ -96,14 +103,15 @@
 			$.post({
 				url : "/listCrclmAjax",
 				cache : false,
-				data : {
+				data: JSON.stringify({
 					"year" : year,
 					"half" : selectval,
-					"radioval" : radioval,
-					"crclmname" : crclmname,
+					"radioVal" : radioval,
+					"crclmName" : crclmname,
 
-				},
-				dataType : "json"
+				}),
+				dataType : "json",
+				contentType: 'application/json'
 			}).done(function(data) {
 				listCrclm = data.listCrclm;
 				grid.resetData(listCrclm);
@@ -411,9 +419,6 @@
 						grid2.off('click');
 				});
 
-				
-				
-				
 			var Grid = tui.Grid;
 				
 				Grid.applyTheme('clean', { 
@@ -457,8 +462,8 @@
 
 		});//신규버튼
 
-		// 그리드 클릭시
-		grid.on('click', () => {
+	//--- 그리드 클릭시
+		grid.on("click",function(ev){
 			//사용자 입력칸 입력가능
 			const inputTags = $("tbody input");
 			inputTags.each(function() {
@@ -478,23 +483,22 @@
 			
 			const rowKey = grid.getFocusedCell().rowKey
 			var obj = grid.getRow(rowKey);
-			var keys = Object.values(obj);
-			
-			var ccd = keys[0];
-			var crclmname = keys[1];
-			var chalf = keys[2];
-			var bgYMD1 = keys[3];
-			var endYMD1 = keys[4];
-			var instrname = keys[5];
-			var epeople = keys[6];
-			var schedule = keys[7];
-			var efnYN = keys[8];
-			var instrno = keys[9];
-			var ecost = keys[10];
-			var econtent = keys[11];
-			var cyear = keys[12];
-			var crclmNo = keys[14]; //db상 crclm_no
-		//	console.log(keys);
+			console.log(obj);
+			var ccd = obj.CRCLM_CD;
+			alert(ccd);
+			var cyear = obj.CRCLM_YEAR;
+			var chalf = obj.CRCLM_HALF;
+			var crclmname = obj.CRCLM_NM;
+			var bgYMD1 = obj.EDU_BGNG_YMD;
+			var endYMD1 = obj.EDU_END_YMD;
+			var instrname = obj.KORN_FLNM;
+			var epeople = obj.EDU_NOPE;
+			var schedule = obj.CRCLM_SCHDL_CD;
+			var efnYN = obj.EDU_FNSH_YN;
+			var instrno = obj.RPRS_INSTR_NO;
+			var ecost = obj.EDU_COST;
+			var econtent = obj.EDU_CN;
+			var crclmNo = obj.CRCLM_NO;
 			
 			 if(crclmNo != null){
 				//날짜 포맷 (YYYY-MM-DD 형태)
@@ -536,6 +540,10 @@
 				
 			}
 			
+			 
+			 
+			 
+		//---훈련과정정보 인풋---
 			$(".bgYMD").on("blur", function() {
 				var  begin = $(".bgYMD").val();
 				$(".endYMD").attr('min',begin);	
@@ -583,7 +591,7 @@
 					
 				})
 				
-				//교육과정 검색
+				//대표강사 검색
 					$(document).on("click",'#depShow', function(){
 						$("#depChoose").attr("disabled", false);
 						var instrSearchName = $("#dep_Search_text").val();
@@ -610,9 +618,9 @@
 							grid3.on('click', () => {
 								const rowKey = grid3.getFocusedCell().rowKey;
 								var obj = grid3.getRow(rowKey);
-								var keys = Object.values(obj);
-								var inNo = keys[0];
-								var inName = keys[1];
+								
+								var inNo = obj.INSTR_NO;
+								var inName = obj.KORN_FLNM;
 								
 								$("#depChoose").off().on("click",function(){
 									//alert(keys);
@@ -643,8 +651,7 @@
 				
 				
 				
-			var Grid = tui.Grid;
-				
+				var Grid = tui.Grid;
 				Grid.applyTheme('clean', { 
 					  row: { 
 						    hover: { 
@@ -652,8 +659,6 @@
 						    }
 						  }
 						});
-				
-			
 				
 				var grid3 = new tui.Grid({
 				      el: document.getElementById('searchGrid'),
@@ -680,12 +685,173 @@
 					selectionUnit: 'row'
 					
 					});
+		
 			
-			
-		}); //grid click
+				//과정일정설정 클릭시
+				$("#nav-schedule-tab").click(function() {
+					//$("#SsveBtn").hide(); 저장 버튼 비활성화
+					grid5.refreshLayout();
+				});
+					$("#scheduleGrid").empty();
+				
+		
+		//과정일정 설정 
 		
 		
-		//저장버튼 
+		/* const DatePicker = tui.DatePicker; */
+		
+		var Grid = tui.Grid;
+				Grid.applyTheme('clean', { 
+					  row: { 
+						    hover: { 
+						      background: '#e9ecef' 
+						    }
+						  }
+						});
+			var grid5 = new Grid({
+			      el: document.getElementById('scheduleGrid'),
+			      bodyHeight: 250,
+			      scrollX: true,
+			      scrollY: true,
+			      contextMenu: null,
+			      columns: [
+				        {
+				          header: '일정명',
+				          name: 'CRCLM_SCHDL_CD',
+				          width:300,
+				          align:'center'
+				        },
+				        {
+				          header: '시작일',
+				          name: 'SCHDL_BGNG_DT',
+				          width:400,
+				          align:'center',
+				          editor:{type:'datePicker', options:{format:'yyyy-MM-dd'}}
+				        },
+				        {
+				          header: '종료일',
+				          name: 'SCHDL_END_DT',
+				          width:400,
+				          align:'center',
+				          editor:{type:'datePicker', options:{format:'yyyy-MM-dd'}}
+				        },
+				        
+				        {
+				          header: '일정설명',
+				          name: 'SCHDL_EXPLN',
+				          width:300,
+				          align:'center',
+				          editor:'text'
+				         
+				        },
+				        
+				        {
+				          header: '종료여부',
+				          name: 'SCHDL_FIN',
+				          width:150,
+				          align:'center',
+				          editor: {
+				              type: 'radio',
+				              options: {
+				                listItems: [
+				                  { text: 'Y', value: 'Y' },
+				                  { text: 'N', value: 'N' },
+				                ]
+								}
+				       		 }
+				        }
+					],
+				
+				});
+		
+	 	$.post({
+			url :"/crclmSchdl",
+			cache : false,
+			data: JSON.stringify({
+				"ccd" : ccd,
+				"chalf" : chalf,
+				"cyear" : cyear
+
+			}),
+			dataType : "json",
+			contentType: 'application/json'
+		 }).done(function(data) {
+			 grid5.resetData(data.sList);
+			//$("#buttonGroup").show();
+			//alert(data.sList);
+			
+			
+		}).fail(function(xhr, status, errorThrown) {
+			alert("문제가 발생했습니다.");
+		}); 
+		
+		
+			
+		//과정일정설정 - 저장버튼
+		$("#SsaveBtn").off("click").on("click",function () {
+			//var ccd = obj.CRCLM_CD;
+			//var cyear = obj.CRCLM_YEAR;
+			//var chalf = obj.CRCLM_HALF;
+			
+			
+			var modifiedRows = grid5.getModifiedRows(); //추가/수정/삭제된 값 
+
+			// 배열로 변환
+			if (!Array.isArray(modifiedRows)) {
+			  modifiedRows = [modifiedRows];
+			}
+			
+			  // __modified__ 속성 제거 후 반환
+			  var data = modifiedRows.map(function(row) {
+			    delete row['__modified__'];
+			    return row;
+			  }); 
+			
+			 // console.log(JSON.stringify(data)); //ok
+			var updatedRows = modifiedRows[0].updatedRows;
+			
+			//console.log(updatedRows.length);
+			//console.log(updatedRows[0].CRCLM_SCHDL_CD);
+			//var updatedRows = modifiedRows[].updatedRows;
+			  var updateRow1 = [];
+			for (let i = 0; i < updatedRows.length; i++) {
+				//const UR = updatedRows[i];
+				 updateRow1.push({
+						 "schdlCode": updatedRows[i].CRCLM_SCHDL_CD,
+						    "schdlBegin": updatedRows[i].SCHDL_BGNG_DT,
+						    "schdlEnd" : updatedRows[i].SCHDL_END_DT,
+						    "schdlEx": updatedRows[i].SCHDL_EXPLN,
+						    "schdlFin" : updatedRows[i].SCHDL_FIN,	
+						    "ccd": ccd,
+						    "cyear": cyear,
+						    "chalf": chalf
+				});
+			}//for 끝
+				// updateRow1.push({"ccd":ccd, "cyear":cyear,"chalf":chalf});
+			
+			$.post({
+				url :"/updateSchedule",
+				cache : false,
+				data: JSON.stringify(updateRow1 ),
+				dataType : "json",
+				contentType: 'application/json'
+			 }).done(function(data) {
+				alert("저장성공");
+				 // grid5.resetData(data.sList);
+				//$("#buttonGroup").show();
+				//alert(data.sList);
+			}).fail(function() {
+				alert("문제가 발생했습니다.");
+				
+			});  
+			  
+		});//저장버튼 끝
+		
+	}); //grid click
+		
+	
+	
+		//상단 - 저장버튼 
 		$("#saveBtn").click(
 				function() {
 					const rowKey = grid.getFocusedCell().rowKey
@@ -700,20 +866,21 @@
 					var instrname = $(".instrname").val();
 					var schedule = $(".schedule").val();
 					var efnYN = $(".efnYN").val();
-					var epeople = $(".epeople").val();
+					var epeople= $(".epeople").val();
+					var epeople1 = epeople.split("명");
+					var epeopleUpdate = epeople1[0]; //명 제거
 					var ccd = $(".ccd").val();
 					var crname = $(".crclmNameList option:selected").text();
 					var crnameset = $(".crclmNameSet").val()
 					//상단
 					var year = $("#inputYear").val(); //입력한년도
 					var selectval = $('select[name=crclm_half]').val(); //상/하반기 선택
-					var radioval = $('input:radio[name=radioStatus]:checked')
-							.val(); //과정현황 선택
+					var radioval = $('input:radio[name=radioStatus]:checked').val(); //과정현황 선택
 					var crclmname = $("#inputCrclmSearch").val();
 					var insname = $("#inputInstrSearch").val();
 
 					//날짜 포맷
-					 const bgval = $(".bgYMD").val(); // (YYYY-MM-DD 형태)
+					const bgval = $(".bgYMD").val(); // (YYYY-MM-DD 형태)
 					const endval = $(".endYMD").val(); 
 
 					const dateArray1 = bgval.split("-"); // "-"를 기준으로 분리
@@ -759,7 +926,7 @@
 						$.post({
 							url : "/newCrclmAjax",
 							cache : false,
-							data : {
+							data: JSON.stringify({
 								"year":year,
 								"cyear" : cyear,
 								"bgYMD" : bgYMD,
@@ -767,13 +934,14 @@
 								"endYMD" : endYMD,
 								"ecost" : ecost,
 								"econtent" : econtent,
-								"instrname" : instrNo,
+								"instrName" : instrNo,
 								"schedule" : schedule,
 								"efnYN" : efnYN,
 								"epeople" : epeople,
 								"ccd" : ccd,
-								"crname" : crnameset
-							},
+								"crName" : crnameset
+							}),
+							contentType: 'application/json',
 							dataType : "json"
 						}).done(function(data) {
 							//alert(data.ck);
@@ -797,7 +965,7 @@
 						$.post({
 							url : "/saveCrclmAjax",
 							cache : false,
-							data : {
+							data: JSON.stringify({
 								"cno" : cno,
 								"cyear" : cyear,
 								"bgYMD" : bgYMD,
@@ -805,18 +973,19 @@
 								"endYMD" : endYMD,
 								"ecost" : ecost,
 								"econtent" : econtent,
-								"instrname" : instrNo,
+								"instrName" : instrNo,
 								"schedule" : schedule,
 								"efnYN" : efnYN,
-								"epeople" : epeople,
+								"epeople" : epeopleUpdate,
 								"year" : year,
 								"half" : selectval,
 								"radioval" : radioval,
-								"crclmname" : crclmname,
-								"insname" : insname,
-								"crname" : crnameset
-							},
-							dataType : "json"
+								"crclmName" : crclmname,
+								"insName" : insname,
+								"crName" : crnameset
+							}),
+							dataType : "json",
+							contentType: 'application/json'
 						}).done(function(data) {
 							alert("수정이 완료되었습니다.");
 							grid.resetData(data.updateAfter);
@@ -867,7 +1036,7 @@
 							<div class="input-group fw-bolder  "
 								style="width: calc(20%); float: left;">
 								학년도 <input type="text" class="form-control form-control-sm"
-									style="margin-left: 10px;" value="2023" id="inputYear"
+									style="margin-left: 10px;" value="2001" id="inputYear"
 									numberOnly> <select class="form-select form-select-sm"
 									name="crclm_half">
 									<option value="">상/하반기</option>
@@ -881,25 +1050,19 @@
 									placeholder="과정명" id="inputCrclmSearch" />
 							</div>
 							<div class="input-group fw-bolder "
-								style="width: calc(30%); margin-left: 10px; float: left;">
+								style="width: calc(40%); margin-left: 10px; float: left;">
 								과정현황
 								<div class="form-check form-check-inline"
 									style="margin-left: 5px;">
 									<input class="form-check-input fw-bolder" type="radio"
 										name="radioStatus" checked="checked" value="">전체
 								</div>
-								<div class="form-check form-check-inline">
+								<c:forEach items="${scheduleName }" var="SN">
+									<div class="form-check form-check-inline"">
 									<input class="form-check-input fw-bolder" type="radio"
-										name="radioStatus" value="0010">모집
-								</div>
-								<div class="form-check form-check-inline">
-									<input class="form-check-input fw-bolder" type="radio"
-										name="radioStatus" value="0020"> 훈련
-								</div>
-								<div class="form-check form-check-inline">
-									<input class="form-check-input fw-bolder" type="radio"
-										name="radioStatus" value="0030">수료
-								</div>
+										name="radioStatus" value="${SN.CD }">${SN.CD_NM }
+									</div>
+								</c:forEach>
 							</div>
 						</div>
 					</div>
@@ -924,9 +1087,6 @@
 									aria-selected="false">과정일정설정</button>
 							</div>
 						</nav>
-						<!--  <div class="float-start"
-							style="width: 10px; height: 27px; background-color: #498c5f; margin-right: 10px;"></div>
-						<h6 class="mt-3 fw-bolder">훈련과정정보</h6>  -->
 						<div class="tab-content" id="nav-tabContent">
 							<!--훈련과정정보  -->
 							<div class="tab-pane fade show active" id="nav-home"
@@ -1040,19 +1200,17 @@
 							<!--과정일정설정  -->
 							<div class="tab-pane fade" id="nav-schedule" role="tabpanel"
 								aria-labelledby="nav-schedule-tab">
-								<div>
-									<div style="width: 100%;"  class="mt-3 " position: relative;">
-										<div style="position: absolute; right: 25px">
-											<button class="btn btn-secondary btn-sm" id="SnewBtn"
-												disabled="disabled">신규</button>
-											<button class="btn btn-secondary btn-sm" id="SdeleteBtn"
-												disabled="disabled">삭제</button>
-											<button class="btn btn-secondary btn-sm" id="SsaveBtn"
-												disabled="disabled">저장</button>
+								
+										<div class="d-flex justify-content-end mt-2 mb-2 "  id="buttonGroup"> 
+											<button class="btn btn-secondary btn-sm" id="SsaveBtn">
+												저장</button>
+												<!-- disabled="disabled" -->
 										</div>
-									</div>
+								<div id="scheduleGrid"></div>
 
 								</div>
+								
+								
 							</div>
 
 
