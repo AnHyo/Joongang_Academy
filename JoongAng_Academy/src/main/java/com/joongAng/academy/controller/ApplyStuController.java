@@ -24,6 +24,11 @@ public class ApplyStuController {
 	public String adminApply() {
 		return "student/stuApply";
 	}
+	
+	@GetMapping("/timetable")
+	public String timetable() {
+		return "student/timetable";
+	}
 
 	@ResponseBody
 	@PostMapping(value = "/planAjax", produces = "application/json;charset=UTF-8")
@@ -32,6 +37,15 @@ public class ApplyStuController {
 		List<Map<String, Object>> plan = applyService.planAjax(map);
 		JSONArray planList = new JSONArray(plan);
 		json.put("planList", plan);
+		return json.toString();
+	}
+	@ResponseBody
+	@PostMapping(value = "/timetableAjax", produces = "application/json;charset=UTF-8")
+	public String timetableAjax(@RequestParam Map<String, Object> map) {
+		JSONObject json = new JSONObject();
+		List<Map<String, Object>> TT = applyService.timetableAjax(map);
+		JSONArray timetable = new JSONArray(TT);
+		json.put("timetable", timetable);
 		return json.toString();
 	}
 

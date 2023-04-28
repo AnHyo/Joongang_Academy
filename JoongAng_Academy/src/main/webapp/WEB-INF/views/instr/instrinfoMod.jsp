@@ -46,12 +46,12 @@ if (session.getAttribute("id") == null) {
 		var CRCLM_HALF = "";
 		var CRCLM_CD = "";
 		var CRCLM_YEAR = "";
-		var stdnt_no = $("#loginID").val();
+		var user_id = $("#loginID").val();
 		//정규식 검사(email형식이 맞는지)
 		var filter = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
 		//전화번호 정규식
 		var RegExp = /[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/ A-Z\uAC00-\uD7A3\u3131-\u3163]/gim;
-		
+
 		$("#pwCheckbtn").click(function() {
 			var nowPw = $("#nowPw").val();
 
@@ -60,7 +60,7 @@ if (session.getAttribute("id") == null) {
 			$.post({
 				url : "/pwCheckAjax",
 				data : {
-					"user_id" : stdnt_no,
+					"user_id" : user_id,
 					"nowPw" : nowPw
 				},
 				dataType : "json"
@@ -80,39 +80,36 @@ if (session.getAttribute("id") == null) {
 			});
 
 		});
-		
-		
+
 		$.post({
-			url : "/stuinfoAjax",
+			url : "/instrinfoAjax",
 			data : {
-				"stdnt_no" : stdnt_no
+				"user_id" : user_id
 			},
 			dataType : "json"
 
 		}).done(function(data) {
 			var info = data.info;
-			$("#stdntNo").text(info[0].STDNT_NO);
-			$("#stuNM").text(info[0].KORN_FLNM_S);
-			$("#regNM").text(info[0].REG_CD_NAME);
-			$("#crclmYear").text(info[0].CRCLM_YEAR);
-			$("#crclmHalf").text(info[0].CRCLM_HALF_NAME);
-			$("#crclmNM").text(info[0].CRCLM_CD_NAME);
+			$("#instrNO").text(info[0].INSTR_NO);
+			$("#instrNM").text(info[0].KORN_FLNM);
 			$("#userBrdT").text(info[0].USER_BRDT);
-			$("#genderNM").text(info[0].GENDER_CD_NAME);
+			$("#genderNM").text(info[0].GENDER);
 			$("#telNo").val(info[0].TELNO.replace(RegExp, ''));
-			$("#relTel").val(info[0].REL_TELNO.replace(RegExp, ''));
-			$('#relation option[value="'+info[0].REL_CD+'"]').prop('selected', true);
 			$("#emailAddr").val(info[0].EML_ADDR);
 			$("#postNum").val(info[0].ZIP);
-			$("#addrInfo").val(info[0].address);
+			$("#addrInfo").val(info[0].ADDR);
 			$("#addrDetail").val(info[0].DADDR);
+			$("#ENDST_NM").text(info[0].ENDST_NM);
+			if (info[0].INSTR_DEL == 'Y') {
+				$("#INSTR_DEL").text("재직");
+			} else {
+				$("#INSTR_DEL").text("퇴직");
+
+			}
 		}).fail(function() {
 			alert("문제가 발생했습니다.");
 		});
 
-		
-
-	
 		//저장 버튼
 		$(document).on(
 				"click",
@@ -127,7 +124,9 @@ if (session.getAttribute("id") == null) {
 						return false;
 					}
 
-					if ($("#telNo").val() == ""|| $("#telNo").val().length > 11 | RegExp.test($("#telNo").val())) {
+					if ($("#telNo").val() == ""
+							|| $("#telNo").val().length > 11
+							| RegExp.test($("#telNo").val())) {
 						alert("전화번호는 숫자만 입력해 주세요.");
 						var b = $('#telNo').val().replace(RegExp, '');
 						$('#telNo').val(b);
@@ -135,46 +134,18 @@ if (session.getAttribute("id") == null) {
 						return false;
 					}
 
-					if ($("#relTel").val().length > 11
-							|| RegExp.test($("#relTel").val())) {
-						alert("전화번호는 숫자만 입력해 주세요.");
-						var c = $('#emerTel').val().replace(RegExp, '');
-						$('#relTel').val(c);
-						$("#relTel").focus();
-						return false;
-					}
-
-					if ($("#relTel").val() != "") {
-						if ($("#relation").val() == "") {
-							alert("관계를 선택해 주세요.");
-							$("#relation").focus();
-							return false;
-						}
-					} else {
-						if ($("#relation").val() != "") {
-							alert("비상연락처를 입력해 주세요.");
-							$("#relation").val("");
-							$("#relTel").focus();
-							return false;
-						}
-					}
-
 					var telinfo = $("#telNo").val();
-					var etelinfo = $("#relTel").val();
 					var emailinfo = $("#emailAddr").val();
-					var relationinfo = $("#relation").val();
 					var postinfo = $("#postNum").val();
 					var addrinfo = $("#addrInfo").val();
 					var addrdeinfo = $.trim($("#addrDetail").val());
 
 					$.post({
-						url : "/studentInfoUpdate",
+						url : "/instrInfoUpdate",
 						data : {
-							"studentID" : stdnt_no,
+							"user_id" : user_id,
 							"telinfo" : telinfo,
-							"etelinfo" : etelinfo,
 							"emailinfo" : emailinfo,
-							"relationinfo" : relationinfo,
 							"postinfo" : postinfo,
 							"addrinfo" : addrinfo,
 							"addrdeinfo" : addrdeinfo
@@ -264,33 +235,25 @@ if (session.getAttribute("id") == null) {
 						<div class="card-body p-4">
 							<table class="table table-borderless m-0">
 								<tr>
-									<td class="col-1 text-center fw-bolder">학번</td>
-									<td class="col-1" id="stdntNo"></td>
+									<td class="col-2 text-center fw-bolder">강사번호</td>
+									<td class="col-3" id="instrNO"></td>
 
-									<td class="col-1 text-center fw-bolder">이름</td>
-									<td class="col-1" id="stuNM"></td>
+									<td class="col-2 text-center fw-bolder">이름</td>
+									<td class="col-1" id="instrNM"></td>
 
 									<td class="col-1 text-center fw-bolder">생년월일</td>
-									<td class="col-4" id="userBrdT"></td>
+									<td class="col-2" id="userBrdT"></td>
 
-									<td class="col-1 text-center fw-bolder">성별</td>
-									<td class="col-1" id="genderNM"></td>
 								</tr>
 								<tr>
-									<td class="text-center fw-bolder">교육연도</td>
-									<td id="crclmYear"></td>
+									<td class="text-center fw-bolder">소속기관</td>
+									<td id="ENDST_NM"></td>
+									<td class="text-center fw-bolder">인사상태</td>
+									<td id="INSTR_DEL"></td>
+									<td class=" text-center fw-bolder">성별</td>
+									<td id="genderNM"></td>
 
-									<td class="text-center fw-bolder">교육반기</td>
-									<td id="crclmHalf"></td>
-
-									<td class="text-center fw-bolder">훈련과정</td>
-									<td id="crclmNM"></td>
-
-									<td class="text-center fw-bolder">학적상태</td>
-									<td id="regNM"></td>
 								</tr>
-
-
 							</table>
 
 
@@ -307,27 +270,7 @@ if (session.getAttribute("id") == null) {
 												style="line-height: 40px;">연락처</td>
 											<td><input type="text" class="form-control" id="telNo"></td>
 										</tr>
-										<tr>
-											<td class="text-end fw-bolder col-3"
-												style="line-height: 40px;">비상연락처</td>
-											<td>
-												<div class="row">
-													<div class="col-8">
-														<input type="text" class="form-control" id="relTel">
-													</div>
-													<div class="col-4">
-														<select class="form-select" id="relation"
-															name="relation">
-															<option selected value="">관계</option>
-															<c:forEach items="${relationship }" var="r"
-																varStatus="status">
-																<option value="${r.CD }">${r.CD_NM }</option>
-															</c:forEach>
-														</select>
-													</div>
-												</div>
-											</td>
-										</tr>
+
 										<tr>
 											<td class="text-end fw-bolder col-3"
 												style="line-height: 40px;">이메일</td>
@@ -364,7 +307,8 @@ if (session.getAttribute("id") == null) {
 								</div>
 							</div>
 							<div class="d-flex justify-content-center mt-3">
-								<button type="button" id="infoSave" class="btn btn-success col-2">수정</button>
+								<button type="button" id="infoSave"
+									class="btn btn-success col-2">수정</button>
 							</div>
 
 						</div>

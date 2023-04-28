@@ -36,4 +36,6 @@ public interface ApplyDAO {
 
 	List<Map<String, Object>> planAjax(Map<String, Object> map);
 
+	List<Map<String, Object>> timetableAjax(Map<String, Object> map);
+
 }
