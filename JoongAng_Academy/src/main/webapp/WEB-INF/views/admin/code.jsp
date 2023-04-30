@@ -32,22 +32,13 @@
 </style>
 <script type="text/javascript">
 $(function() {
-	//전역변수
-// 	var dataSource = {
-// 			  api: {
-// 			    readData: { url: '/codeListAjax', method: 'POST' },
-// 			    createData: { url: '/codeCreateData', method: 'POST' },
-// 			    modifyData: { url: '/api/modifyData', method: 'PUT' },
-// 			    deleteData: { url: '/api/deleteData', method: 'DELETE' }
-// 			  }
-// 			};
-	
+	var list = "";
+	var detaillist = "";
  	var grid1 = new tui.Grid({
 		el : document.getElementById('grid'),
 		scrollX : false,
 		scrollY : true,
 		bodyHeight: 280,
-// 		data: dataSource,
 		rowHeaders : [ 'checkbox' ],
 		columns : [ 
 		{
@@ -88,9 +79,9 @@ $(function() {
              type: 'radio',
              options: {
                listItems: [
-                 { text: 'Y'},
-                 { text: 'N'}
-               ], defaultValue: "'Y'"
+                 { text: 'Y', value : 'Y'},
+                 { text: 'N', value : 'N'}
+               ], defaultValue: "'N'"
              }
            } 
 		}, 
@@ -135,21 +126,21 @@ $(function() {
 		grid1.disableColumn('CD');
 	    //grid1.setReadOnlyCell('CD_NM', true);
 	    
-	      grid.on('beforeChange', ev => {
-		    console.log('before change:', ev);
-		  });
-		  grid.on('afterChange', ev => {
-		    console.log('after change:', ev);
-		  });
+// 	      grid.on('beforeChange', ev => {
+// 		    console.log('before change:', ev);
+// 		  });
+// 		  grid.on('afterChange', ev => {
+// 		    console.log('after change:', ev);
+// 		  });
 		  
 
   		// cell 하나 클릭시 한 줄 전체 범위 지정
-		grid1.on('focusChange', (ev) => {
-			  grid1.setSelectionRange({
-			    start: [ev.rowKey, 0],
-			    end: [ev.rowKey, grid1.getColumns().length]
-			  });
-		});
+// 		grid1.on('focusChange', (ev) => {
+// 			  grid1.setSelectionRange({
+// 			    start: [ev.rowKey, 0],
+// 			    end: [ev.rowKey, grid1.getColumns().length]
+// 			  });
+// 		});
 	}).fail(function() {
 		alert("문제가 발생했습니다.");
 	});
@@ -227,14 +218,31 @@ $(function() {
 	
 	// 신규 버튼
 	$("#add_btn1").click(function(){
-	    grid1.prependRow();
-		
+	    grid1.appendRow(list, { //상단에 detaillist을 전역변수로 선언해줘야함
+			focus : true //포커스
+		});
 	    var rowKey = grid1.getRowCount() - 1;
 	    grid1.enableCell(rowKey, 'CD_CLSF');
 	    grid1.enableCell(rowKey, 'CD');
 	    $(this).addClass("disabled"); 
 	    
-	    
+		//신규행 삭제(저장전)
+		var deletedRows = [];
+		$("#del_btn1").off().click(function(){
+			var selectedRows = grid1.getCheckedRows();// 선택된 행들의 정보를 가져옴
+			if(selectedRows.length > 0){
+			  // 선택된 행들의 rowKey 값을 추출하여 배열로 변환
+			  var rowKeys = selectedRows.map(function(row) {
+			    return row.rowKey;
+			  });
+			  // 선택된 행들을 삭제
+			  grid1.removeRows(rowKeys);
+			 // createdRows = [];
+			  $("#add_btn1").removeClass("disabled");
+			} else {
+				alert("행을 선택해주세요");
+			}
+		});
 	});
 	//검색버튼
 	$("#search_btn").click(function(){
@@ -255,12 +263,33 @@ $(function() {
 	
 	// 신규2 버튼
 	$("#add_btn2").click(function(){
-	  grid2.prependRow();
+	  grid2.appendRow(detaillist, { //상단에 detaillist을 전역변수로 선언해줘야함
+			focus : true //포커스
+		});
 	    var rowKey = grid2.getRowCount() - 1;
 	    grid2.enableCell(rowKey, 'CD_CLSF');
 	    grid2.enableCell(rowKey, 'CD');
 	    $(this).addClass("disabled"); 
+	    
+	    
+		//신규행 삭제(저장전)
+		//var deletedRows = [];
+		$("#del_btn2").off().click(function(){
+			var selectedRows = grid2.getCheckedRows();// 선택된 행들의 정보를 가져옴
+			if(selectedRows.length > 0){
+			  // 선택된 행들의 rowKey 값을 추출하여 배열로 변환
+			  var rowKeys = selectedRows.map(function(row) {
+			    return row.rowKey;
+			  });
+			  // 선택된 행들을 삭제
+			  grid2.removeRows(rowKeys);
+			 // createdRows = [];
+			  $("#add_btn2").removeClass("disabled");
+			} else {
+				alert("행을 선택해주세요");
+			}
 		});
+	});
 
 	//삭제1
 	var deletedRows = [];
@@ -383,9 +412,11 @@ $(function() {
 					else if(data.result == 1){
 						alert("(신규)저장되었습니다.");
 						grid1.resetData(data.list);
+						var rowKey = createdRows[0].rowKey;
+						alert(rowKey);
+						grid1.focus(rowKey, "CD_CLSF");
+						grid2.resetData([]);
 						$("#add_btn1").removeClass("disabled");
-						// 신규 저장 후 focus
-						grid1.focus(createdRows[0].rowKey); //안됨. 마지막로우가 포커스됨
 					}
 				}).fail(function() {
 					alert("문제가 발생했습니다.");
@@ -410,7 +441,7 @@ $(function() {
 					url : "/codeUpdate",
 					    contentType: 'application/json;charset=UTF-8',
 					    data: JSON.stringify(updateData),
-					dataType : "json"
+						dataType : "json"
 				}).done(function(data) {
 					if(data.result2 == 2){
 						alert("이미 존재하는 코드입니다.");
@@ -418,7 +449,8 @@ $(function() {
 					else if(data.result > 0){
 						alert("수정 되었습니다.");
 						updatedRows = [];
-						grid1.resetData(data.list);
+						grid1.resetData(data.list, {focus:true});
+						grid2.resetData([]);
 						//grid1.focus(updatedRows[0].rowKey); //안됨. 마지막로우가 포커스됨
 					}
 				}).fail(function() {
@@ -446,12 +478,13 @@ $(function() {
 					url : "/codeDelete",
 					    contentType: 'application/json;charset=UTF-8',
 					    data: JSON.stringify(deleteData),
-					dataType : "json"
+						dataType : "json"
 				}).done(function(data) {
 					if(data.result > 0){
 						alert("삭제 되었습니다.");
 						deletedRows = [];
 						grid1.resetData(data.list);
+						grid2.resetData([]);
 						//grid1.focus(updatedRows[0].rowKey); //안됨. 마지막로우가 포커스됨
 					}
 				}).fail(function() {
@@ -492,12 +525,12 @@ $(function() {
 			grid2.disableColumn('CD_CLSF');
 			grid2.disableColumn('CD');
 			
-		  grid2.on('focusChange', (ev) => {
-				  grid2.setSelectionRange({
-				    start: [ev.rowKey, 0],
-				    end: [ev.rowKey, grid2.getColumns().length]
-				  });
-			});
+// 		  grid2.on('focusChange', (ev) => {
+// 				  grid2.setSelectionRange({
+// 				    start: [ev.rowKey, 0],
+// 				    end: [ev.rowKey, grid2.getColumns().length]
+// 				  });
+// 			});
 		  $("#add_btn2").removeClass("disabled");
 		}).fail(function() {
 			alert("문제가 발생했습니다!");
@@ -614,10 +647,8 @@ $(function() {
 					else if(data.result == 1){
 						alert("(신규)저장되었습니다.");
 						grid1.resetData(data.list);
-						grid2.resetData(data.detaillist);
-						$("#add_btn1").removeClass("disabled");
-						// 신규 저장 후 focus
-						grid2.focus(createdRows[0].rowKey); //안됨. 마지막로우가 포커스됨
+						grid2.resetData([]);
+						$("#add_btn2").removeClass("disabled");
 					}
 				}).fail(function() {
 					alert("문제가 발생했습니다.");
@@ -685,7 +716,7 @@ $(function() {
 						alert("삭제 되었습니다.");
 						deletedRows = [];
 						grid1.resetData(data.list);
-						grid2.resetData(data.detaillist);
+						grid2.resetData([]);
 						//grid1.focus(updatedRows[0].rowKey); //안됨. 마지막로우가 포커스됨
 					}
 				}).fail(function() {
@@ -699,14 +730,14 @@ $(function() {
 		} 
 }); //save_btn1 끝
 	//grid hover
-	/* 	const grid = tui.Grid;
+	 	const grid = tui.Grid;
 		grid.applyTheme('clean', { 
 			  row: { 
 				    hover: { 
 				      background: '#e9ecef' 
 				    }
 				  }
-				}); */
+				}); 
 		
 		//우클릭, 드래그 방지(그리드 X)
 	/* 	function fn_control_mouse(){
@@ -737,9 +768,9 @@ button {
 }
 </style>
 <body class="sb-nav-fixed">
-	<%@include file="../bar/topbar.jsp"%>
-	<div id="layoutSidenav">
-		<%@include file="../bar/sidebar.jsp"%>
+<%-- 	<%@include file="../bar/topbar.jsp"%> --%>
+<!-- 	<div id="layoutSidenav"> -->
+<%-- 		<%@include file="../bar/sidebar.jsp"%> --%>
 		<div id="layoutSidenav_content">
 			<main>
 				<div class="container-fluid px-4">
@@ -785,7 +816,7 @@ button {
 			</main>
 			<%@include file="../bar/footer.jsp"%>
 		</div>
-	</div>
+<!-- 	</div> -->
 	
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"

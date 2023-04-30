@@ -2,29 +2,124 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.joongAng.academy.dao.SurveyDAO">
-	
-	
 	<select id="list" parameterType="HashMap" resultType="HashMap"> 
 		SELECT * FROM surveylist
-		<where>		
-		<if test="SBJCT_NM !='' and SBJCT_NM !=null">
-			AND SBJCT_NM LIKE CONCAT('%',#{SBJCT_NM},'%');		
-		</if>
-		<if test="s_CRCLM_CD !='' and s_CRCLM_CD !=null">
-			AND s_CRCLM_CD LIKE CONCAT('%',#{s_CRCLM_CD},'%');		
-		</if>
-		<if test="s_CRCLM_YEAR !='' and s_CRCLM_YEAR !=null">
-			AND s_CRCLM_YEAR = #{s_CRCLM_YEAR}
-		</if>
-		<if test="s_CRCLM_HALF !='' and s_CRCLM_HALF !=null">
-			AND s_CRCLM_HALF = #{s_CRCLM_HALF}
-		</if>
-		</where>
+		WHERE 1=1
+			<if test="s_CRCLM_YEAR !='' and s_CRCLM_YEAR !=null">
+				AND CRCLM_YEAR = #{s_CRCLM_YEAR}
+			</if>
+			<if test="s_CRCLM_HALF !='' and s_CRCLM_HALF !=null">
+				AND CRCLM_HALF = #{s_CRCLM_HALF}
+			</if>
+			<if test="s_SBJCT_NM !='' and s_SBJCT_NM !=null">
+				AND SBJCT_NM LIKE CONCAT('%',#{s_SBJCT_NM},'%')		
+			</if>
+			<if test="s_CRCLM_CD !='' and s_CRCLM_CD !=null">
+				AND CRCLM_CD = #{s_CRCLM_CD}		
+			</if>
 	</select>
-		
-	<!-- <select id="list" parameterType="HashMap" resultType="HashMap"> 
-		SELECT * FROM surveylist
+	
+	<!--수정  -->
+	<update id="update" parameterType="Hashmap">
+		UPDATE APPL_DGSTFN_LIST set
+		DGSTFN_RGDATE =#{u_DGSTFN_RGDATE},
+		DGSTFN_OP_YN =#{u_DGSTFN_OP_YN},
+		DGSTFN_TITLE =#{u_DGSTFN_TITLE},
+		DGSTFN_SDATE =#{u_DGSTFN_SDATE},
+		DGSTFN_FDATE =#{u_DGSTFN_FDATE},
+		DGSTFN_INTRO =#{u_DGSTFN_INTRO}
+		WHERE (CRCLM_YEAR=#{CRCLM_YEAR} and CRCLM_HALF=#{CRCLM_HALF} and CRCLM_CD=#{CRCLM_CD} and SBJCT_NO=#{SBJCT_NO})
+	</update>
+	
+	<select id="detaillist" parameterType="HashMap" resultType="HashMap"> 
+		SELECT * FROM surveydetail
 		WHERE (CRCLM_CD = #{CRCLM_CD} AND CRCLM_HALF = #{CRCLM_HALF} AND 
 		CRCLM_YEAR = #{CRCLM_YEAR} AND SBJCT_NO = #{SBJCT_NO})
-	</select>	 -->
+		ORDER BY DGSTFN_NO ASC
+	</select>
+	
+	<insert id="ITEMCreate" parameterType="HashMap">
+		INSERT INTO APPL_DGSTFN_ITEM
+		SET
+		DGSTFN_NO = #{DGSTFN_NO},
+		QITEM_CD = #{QITEM_CD},
+		DGSTFN_CN = #{DGSTFN_CN},
+		CRCLM_CD = #{CRCLM_CD},
+		CRCLM_YEAR=#{CRCLM_YEAR},
+		CRCLM_HALF=#{CRCLM_HALF},
+		SORT_SN=#{DGSTFN_NO},
+		SBJCT_NO=#{SBJCT_NO}
+	</insert>
+	
+		<update id="ITEMUpdate" parameterType="java.util.List">
+   		UPDATE APPL_DGSTFN_ITEM SET
+        DGSTFN_CN = CASE
+            <foreach collection="list" item="item" index="index" separator=" ">
+                WHEN CRCLM_CD = #{item.CRCLM_CD} AND 
+                CRCLM_YEAR = #{item.CRCLM_YEAR} AND 
+                CRCLM_HALF = #{item.CRCLM_HALF} AND
+                SBJCT_NO = #{item.SBJCT_NO} AND
+                DGSTFN_NO = #{item.DGSTFN_NO}
+                THEN #{item.DGSTFN_CN}
+            </foreach>
+            ELSE DGSTFN_CN
+        END,
+        QITEM_CD = CASE
+            <foreach collection="list" item="item" index="index" separator=" ">
+                WHEN CRCLM_CD = #{item.CRCLM_CD} AND 
+                CRCLM_YEAR = #{item.CRCLM_YEAR} AND 
+                CRCLM_HALF = #{item.CRCLM_HALF} AND
+                SBJCT_NO = #{item.SBJCT_NO} AND
+                DGSTFN_NO = #{item.DGSTFN_NO}
+                THEN #{item.QITEM_CD}
+            </foreach>
+            ELSE QITEM_CD
+        END,
+        SORT_SN = CASE
+            <foreach collection="list" item="item" index="index" separator=" ">
+                WHEN CRCLM_CD = #{item.CRCLM_CD} AND 
+                CRCLM_YEAR = #{item.CRCLM_YEAR} AND 
+                CRCLM_HALF = #{item.CRCLM_HALF} AND
+                SBJCT_NO = #{item.SBJCT_NO} AND
+                DGSTFN_NO = #{item.DGSTFN_NO}
+                THEN #{item.DGSTFN_NO}
+            </foreach>
+        	ELSE SORT_SN
+        END
+	    	<where>
+		        <foreach collection="list" item="item" separator="OR">
+			        CRCLM_CD = #{item.CRCLM_CD} AND 
+	                CRCLM_YEAR = #{item.CRCLM_YEAR} AND 
+	                CRCLM_HALF = #{item.CRCLM_HALF} AND
+	                SBJCT_NO = #{item.SBJCT_NO} AND
+	                DGSTFN_NO = #{item.DGSTFN_NO} 
+		        </foreach>
+	        </where>
+	</update>
+	
+	<delete id="ITEMdelete" parameterType="java.util.List">
+	    DELETE FROM APPL_DGSTFN_ITEM
+	    <where> 
+			 <foreach collection="list" item="item" separator="OR">
+			        CRCLM_CD = #{item.CRCLM_CD} AND 
+	                CRCLM_YEAR = #{item.CRCLM_YEAR} AND 
+	                CRCLM_HALF = #{item.CRCLM_HALF} AND
+	                SBJCT_NO = #{item.SBJCT_NO} AND
+	                DGSTFN_NO = #{item.DGSTFN_NO} 
+		        </foreach>
+		</where> 
+	</delete>
+	
+	<select id="anslist" parameterType="HashMap" resultType="HashMap"> 
+		SELECT CD_SORT_SN, CD_NM FROM CODE_INFO
+		WHERE CD_CLSF = '0016'
+		ORDER BY CD_SORT_SN ASC
+	</select>
+	
+	<select id="stdntlist" parameterType="HashMap" resultType="HashMap"> 
+		SELECT * FROM surveystdnt
+		WHERE (CRCLM_CD = #{CRCLM_CD} AND CRCLM_HALF = #{CRCLM_HALF} AND 
+		CRCLM_YEAR = #{CRCLM_YEAR} AND SBJCT_NM = #{SBJCT_NM})
+		ORDER BY STDNT_NO ASC
+	</select>
 </mapper>
