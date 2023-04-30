@@ -38,7 +38,7 @@
 		WHERE CD_CLSF = #{CD_CLSFValue}
 	</select>	
 	
-	<insert id="code_create" parameterType="HashMap">
+	<!-- <insert id="code_create" parameterType="HashMap">
 		INSERT INTO CODE_INFO
 		SET
 		CD_CLSF = #{CD_CLSF},
@@ -47,30 +47,37 @@
 		CD_USE_YN = #{CD_USE_YN},
 		CD_EXPLN=#{CD_EXPLN},
 		CD_SORT_SN=#{CD_SORT_SN}
+	</insert> -->
+	
+	<!-- CD_USE_YN의 디폴트값 설정 -->
+	<insert id="code_create" parameterType="HashMap">
+		INSERT INTO CODE_INFO (CD_CLSF, CD, CD_NM, CD_USE_YN, CD_EXPLN, CD_SORT_SN)
+		VALUES (#{CD_CLSF}, #{CD}, #{CD_NM}, COALESCE(NULLIF(#{CD_USE_YN}, ''), 'N'), #{CD_EXPLN}, #{CD_SORT_SN});
 	</insert>
+	
 	
 	<update id="code_update" parameterType="java.util.List">
    		UPDATE CODE_INFO SET
         CD_NM = CASE
-            <foreach collection="list" item="item" index="index" separator=" ">
+            <foreach collection="list" item="item" index="index">
                 WHEN CD_CLSF = #{item.CD_CLSF} AND CD = #{item.CD} THEN #{item.CD_NM}
             </foreach>
             ELSE CD_NM
         END,
         CD_USE_YN = CASE
-            <foreach collection="list" item="item" index="index" separator=" ">
+            <foreach collection="list" item="item" index="index">
                 WHEN CD_CLSF = #{item.CD_CLSF} AND CD = #{item.CD} THEN #{item.CD_USE_YN}
             </foreach>
             ELSE CD_USE_YN
         END,
         CD_EXPLN = CASE
-            <foreach collection="list" item="item" index="index" separator=" ">
+            <foreach collection="list" item="item" index="index">
                 WHEN CD_CLSF = #{item.CD_CLSF} AND CD = #{item.CD} THEN #{item.CD_EXPLN}
             </foreach>
             ELSE CD_EXPLN
         END,
         CD_SORT_SN = CASE
-            <foreach collection="list" item="item" index="index" separator=" ">
+            <foreach collection="list" item="item" index="index">
                 WHEN CD_CLSF = #{item.CD_CLSF} AND CD = #{item.CD} THEN #{item.CD_SORT_SN}
             </foreach>
             ELSE CD_SORT_SN

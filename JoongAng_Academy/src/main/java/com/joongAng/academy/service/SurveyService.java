@@ -14,12 +14,35 @@ public class SurveyService {
 	@Autowired
 	private SurveyDAO surveyDAO;
 	
-	public List<Map<String, Object>> list(Map<String, String> searchcmap) {
-		return surveyDAO.list(searchcmap);
+	public List<Map<String, Object>> list(Map<String, String> map) {
+		return surveyDAO.list(map);
 	}
 
-//	public List<Map<String, Object>> surveyList() {
-//		return surveyDAO.surveyList();
-//	}
+	public int update(Map<String, String> map) {
+		return surveyDAO.update(map);
+	}
 
+	public List<Map<String, Object>> detaillist(Map<String, String> map) {
+		return surveyDAO.detaillist(map);
+	}
+
+	public List<Map<String, Object>> anslist() {
+		return surveyDAO.anslist();
+	}
+
+	public int ITEMCreate(Map<String, Object> map) {
+		return surveyDAO.ITEMCreate(map);
+	}
+
+	public int ITEMUpdate(List<Map<String, Object>> updateData) {
+		return surveyDAO.ITEMUpdate(updateData);
+	}
+
+	public int ITEMdelete(List<Map<String, Object>> deleteData) {
+		return surveyDAO.ITEMdelete(deleteData);
+	}
+
+	public List<Map<String, Object>> stdntlist(Map<String, String> map) {
+		return surveyDAO.stdntlist(map);
+	}
 }
