@@ -18,5 +18,11 @@ public interface AttendanceDAO {
 
 	List<Map<String, Object>> stuAtndList(Map<String, Object> map);
 
+	void setStuAtnd(Map<String, Object> map);
+
+	List<Map<String, Object>> dayAtndList(Map<String, Object> map);
+
+	Map<String, Object> checkSchdlYN(Map<String, Object> map);
+
 
 }

@@ -30,5 +30,17 @@ public class AttendanceService {
 		return atndDAO.stuAtndList(map);
 	}
 
+	public void setStuAtnd(Map<String, Object> map) {
+		atndDAO.setStuAtnd(map);
+	}
+
+	public List<Map<String, Object>> dayAtndList(Map<String, Object> map) {
+		return atndDAO.dayAtndList(map);
+	}
+
+	public Map<String, Object> checkSchdlYN(Map<String, Object> map) {
+		return atndDAO.checkSchdlYN(map);
+	}
+
 
 }

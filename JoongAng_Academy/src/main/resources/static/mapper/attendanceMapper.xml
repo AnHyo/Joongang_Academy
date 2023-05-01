@@ -8,6 +8,15 @@
 			, EDU_HR as edu_hr, cls_stdntNum, KORN_FLNM as instr_name, cls_dayhour, ROOM_NO as cls_room
 		FROM atndSbjctListView
 		WHERE CRCLM_YEAR = #{crclm_year } AND CRCLM_HALF = #{crclm_half }
+		<if test="searchCrclm != null">
+			AND CRCLM_NM LIKE CONCAT('%',#{searchCrclm },'%')
+		</if>
+		<if test="searchSbjct != null">
+			AND SBJCT_NM LIKE CONCAT('%',#{searchSbjct },'%')
+		</if>
+		<if test="searchInstr != null">
+			AND KORN_FLNM LIKE CONCAT('%',#{searchInstr },'%')
+		</if>
 	</select>
 	
 	<select id="dayList" parameterType="HashMap" resultType="HashMap">
@@ -15,21 +24,47 @@
 		FROM LECT_TM_DTL
 		WHERE CRCLM_CD = #{crclm_cd } AND CRCLM_YEAR = #{crclm_year } AND CRCLM_HALF = #{crclm_half } AND SBJCT_NO = #{sbjct_no }
 		GROUP BY LECT_YMD
+		ORDER BY lec_day
 	</select>
 	
 	<select id="stdntList" parameterType="HashMap" resultType="HashMap">
 		SELECT CRCLM_CD as crclm_cd, CRCLM_YEAR as crclm_year, CRCLM_HALF as crclm_half, SBJCT_NO as sbjct_no
-			, STDNT_NO as stdnt_no, (SELECT KORN_FLNM FROM APPL_INFO ai WHERE ai.STDNT_NO = APPL_CLS.STDNT_NO) as stdnt_name
-		FROM APPL_CLS
+			, STDNT_NO as stdnt_no, (SELECT KORN_FLNM FROM APPL_INFO ai WHERE ai.STDNT_NO = APPL_ATND.STDNT_NO) as stdnt_name
+			, CAST(COUNT(CASE WHEN ATND_CD != '0030' THEN 1 END) AS CHAR(1)) AS atnd_hour, CAST(COUNT(CASE WHEN ATND_CD = '0030' THEN 1 END) AS CHAR(1)) AS notAtnd_hour
+		FROM APPL_ATND
 		WHERE CRCLM_CD = #{crclm_cd } AND CRCLM_YEAR = #{crclm_year } AND CRCLM_HALF = #{crclm_half } AND SBJCT_NO = #{sbjct_no }
+		GROUP BY STDNT_NO
 	</select>
 	
+	<select id="dayAtndList" parameterType="HashMap" resultType="HashMap">
+		SELECT STDNT_NO,(SELECT KORN_FLNM FROM APPL_INFO ai WHERE ai.STDNT_NO = APPL_ATND.STDNT_NO) as stdnt_name
+				, (CONCAT(SUBSTR(LECT_YMD, 5, 2), '.', SUBSTR(LECT_YMD, 7, 2))) AS lec_day, CAST(SUBSTR(SUM(ATND_CD),1,1) AS CHAR(1)) AS ATND_DAY
+		FROM APPL_ATND
+		WHERE CRCLM_CD = #{crclm_cd } AND CRCLM_YEAR = #{crclm_year } AND CRCLM_HALF = #{crclm_half } AND SBJCT_NO = #{sbjct_no }
+		GROUP BY STDNT_NO, LECT_YMD	
+	</select>
+	
+<!-- 			, CodeFind('0017', CLS_CD) AS cls_hour, ATND_CD AS atnd_stt -->
 	<select id="stuAtndList" parameterType="HashMap" resultType="HashMap">
 		SELECT CRCLM_CD, CRCLM_YEAR, CRCLM_HALF, SBJCT_NO, STDNT_NO, (CONCAT(SUBSTR(LECT_YMD, 5, 2), '.', SUBSTR(LECT_YMD, 7, 2))) AS lec_day
 			, CodeFind('0017', CLS_CD) AS cls_hour, CodeFind('0014', ATND_CD) AS atnd_stt
 		FROM APPL_ATND
-		WHERE CRCLM_CD = #{crclm_cd } AND CRCLM_YEAR = #{crclm_year } AND CRCLM_HALF = #{crclm_half } AND SBJCT_NO = #{sbjct_no } AND STDNT_NO = #{stdnt_no }
+		WHERE CRCLM_CD = #{crclm_cd } AND CRCLM_YEAR = #{crclm_year } AND CRCLM_HALF = #{crclm_half } AND SBJCT_NO = #{sbjct_no } 
+				AND STDNT_NO = #{stdnt_no } AND LECT_YMD = #{lectureDay }
 		ORDER BY lec_day
+	</select>
+	
+	<update id="setStuAtnd" parameterType="HashMap">
+		UPDATE APPL_ATND
+		SET ATND_CD = #{atnd_stt }
+		WHERE CRCLM_CD = #{CRCLM_CD } AND CRCLM_YEAR = #{CRCLM_YEAR } AND CRCLM_HALF = #{CRCLM_HALF } AND SBJCT_NO = #{SBJCT_NO } 
+				AND STDNT_NO = #{STDNT_NO } AND LECT_YMD = #{lec_day } AND CLS_CD = #{cls_hour }
+	</update>
+	
+	<select id="checkSchdlYN" parameterType="HashMap" resultType="HashMap">
+		SELECT COUNT(CASE WHEN CRCLM_SCHDL_CD = '0020' THEN 1 END) AS countCrclm, COUNT(CASE WHEN SCHDL_FIN = 'Y' THEN 1 END) AS countY
+		FROM CRCLM_SCHDL
+		WHERE CRCLM_YEAR = #{crclm_year } AND CRCLM_HALF = #{crclm_half }
 	</select>
 
 </mapper>
