@@ -340,9 +340,6 @@ body {
 </script>
 </head>
 <body class="sb-nav-fixed">
-	<%@include file="../bar/topbar.jsp"%>
-	<div id="layoutSidenav">
-		<%@include file="../bar/sidebar.jsp"%>
 		<div id="layoutSidenav_content">
 			<main>
 				<div class="container-fluid px-4">
