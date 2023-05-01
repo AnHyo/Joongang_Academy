@@ -17,6 +17,11 @@ dependencies {
     implementation 'javax.servlet:jstl:1.2'
     implementation "org.apache.tomcat.embed:tomcat-embed-jasper"
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	// json - https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple
+   	//implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+   	// https://mvnrepository.com/artifact/net.sf.json-lib/json-lib
+	implementation 'net.sf.json-lib:json-lib:2.3'
+   	
 	implementation 'org.json:json:20220924'
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.3.0'
 	implementation 'org.mariadb.jdbc:mariadb-java-client:3.0.8'
