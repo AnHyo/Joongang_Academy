@@ -202,6 +202,8 @@ $(function(){
 	var CRCLM_CD = "";
 	var CRCLM_YEAR ="";
 	var stdnt_no ="";
+	var startTime ="";
+	var endTime="";
 
 
 	 $("#stuSearchModal").on("keydown", function(key) {
@@ -218,7 +220,6 @@ $(function(){
 		var obj = stuList.getRow(rowKey);
 		var values = Object.values(obj);
 		stdnt_no = values[0];
-		
 		 $.post({
 				url : "/stuinfoAjax",
 				data : {
@@ -268,6 +269,25 @@ $(function(){
 					}).fail(function() {
 						alert("문제가 발생했습니다.");
 					}); //estblSBJAjax 
+					
+					$.post({
+						url : "/scheduleAjax",
+						data : {
+							
+							"CRCLM_HALF" : CRCLM_HALF,
+							"CRCLM_CD" : CRCLM_CD,
+							"CRCLM_YEAR" : CRCLM_YEAR
+						},
+						dataType : "json"
+
+					}).done(function(data) {
+						var schedule = data.schedule; 
+						startTime = schedule[0].SCHDL_BGNG_DT;
+	        			endTime =  schedule[0].SCHDL_END_DT;
+	        			
+					}).fail(function() {
+						alert("문제가 발생했습니다.");
+					}); //scheduleAjax 
 			}).fail(function() {
 				alert("문제가 발생했습니다.");
 			});
@@ -276,8 +296,7 @@ $(function(){
 	});
 	
 	// 기간외 수강신청 막기
-	const startTime ='2023-04-24 10:00:00';
-	const endTime ='2023-04-24 16:00:00' ;
+
 	var today = new Date();
 
 	var year = today.getFullYear();
@@ -291,15 +310,7 @@ $(function(){
 	var dateString = year + '-' + month  + '-' + day;
 	var timeString = hours + ':' + minutes  + ':' + seconds;
 	var datetime= dateString + " " +timeString;
-	console.log(startTime);
-	console.log(endTime);
-	console.log(datetime);
-	
-	if(datetime>= startTime && datetime <= endTime){
-		console.log("수강신청기간입니다.");
-	}else{
-		console.log("수강신청기간이 아닙니다.")
-	}
+
 	// -- 막기 end
 	
 	
@@ -312,45 +323,53 @@ $(function(){
 			this.el = el;
 			this.render(props);
 			this.el.addEventListener('click', (event) => {
-				
-				var STDNT_NO=$("#stdntNo").val();
-				var SBJCT_NO= el.getAttribute("data-value");
-				$.post({
-					url : "/addApplyAjax",
-					data : {
-						"STDNT_NO" : STDNT_NO,
-						"SBJCT_NO" : SBJCT_NO,
-						"CRCLM_HALF" : CRCLM_HALF,
-						"CRCLM_CD" : CRCLM_CD,
-						"CRCLM_YEAR" : CRCLM_YEAR
-					},
-					dataType : "json"
+				/* console.log(startTime);
+				console.log(endTime); */
+// 				if(datetime>= startTime && datetime <= endTime){
+					alert("수강신청기간입니다.");
+					
+					var STDNT_NO=$("#stdntNo").val();
+					var SBJCT_NO= el.getAttribute("data-value");
+					$.post({
+						url : "/addApplyAjax",
+						data : {
+							"STDNT_NO" : STDNT_NO,
+							"SBJCT_NO" : SBJCT_NO,
+							"CRCLM_HALF" : CRCLM_HALF,
+							"CRCLM_CD" : CRCLM_CD,
+							"CRCLM_YEAR" : CRCLM_YEAR
+						},
+						dataType : "json"
 
-				}).done(function(data) {
-					let check = data.check;
-					let result = data.result;
-					let classTMChk = data.classTMChk;
-					if(check == 0){
-						if(classTMChk == 0){
-							if(result == 1){
-							alert("신청을 완료했습니다.");
-							var apply = data.applySBJ;
-							applySBJ.resetData(apply);
+					}).done(function(data) {
+						let check = data.check;
+						let result = data.result;
+						let classTMChk = data.classTMChk;
+						if(check == 0){
+							if(classTMChk == 0){
+								if(result == 1){
+								alert("신청을 완료했습니다.");
+								var apply = data.applySBJ;
+								applySBJ.resetData(apply);
+								} else{
+									alert("문제가 발생했습니다. 다시 시도 해주세요.");
+								}
 							} else{
-								alert("문제가 발생했습니다. 다시 시도 해주세요.");
+								alert("시간이 중복됩니다.");
 							}
 						} else{
-							alert("시간이 중복됩니다.");
+							alert("이미 신청한 과목입니다.");
 						}
-					} else{
-						alert("이미 신청한 과목입니다.");
-					}
-				}).fail(function() {
-					alert("문제가 발생했습니다.");
-				});
+					}).fail(function() {
+						alert("문제가 발생했습니다.");
+					});
+// 				}else{
+// 					alert("수강신청기간이 아닙니다.");
+// 				}	
 				
+			
 				
-				
+			
 				
 			});
 			
@@ -378,35 +397,40 @@ $(function(){
 			this.el = el;
 			this.render(props);
 			this.el.addEventListener('click', (event) => {
-				
-				var STDNT_NO=$("#stdntNo").val();
-				var SBJCT_NO= el.getAttribute("data-value");
-				   $.post({
-						url : "/delApplyAjax",
-						data : {
-							"STDNT_NO" : STDNT_NO,
-							"SBJCT_NO" : SBJCT_NO,
-							"CRCLM_HALF" : CRCLM_HALF,
-							"CRCLM_CD" : CRCLM_CD,
-							"CRCLM_YEAR" : CRCLM_YEAR
-						},
-						dataType : "json"
+				if(datetime>= startTime && datetime <= endTime){
+					alert("수강신청기간입니다.");
+					var STDNT_NO=$("#stdntNo").val();
+					var SBJCT_NO= el.getAttribute("data-value");
+					   $.post({
+							url : "/delApplyAjax",
+							data : {
+								"STDNT_NO" : STDNT_NO,
+								"SBJCT_NO" : SBJCT_NO,
+								"CRCLM_HALF" : CRCLM_HALF,
+								"CRCLM_CD" : CRCLM_CD,
+								"CRCLM_YEAR" : CRCLM_YEAR
+							},
+							dataType : "json"
 
-					}).done(function(data) {
-						let result = data.result;
-						let esntl = data.esntl;
-						if(esntl == 0){
-							if(result == 1){
-								alert("신청을 취소했습니다.");
-								var apply = data.applySBJ;
-								applySBJ.resetData(apply);
+						}).done(function(data) {
+							let result = data.result;
+							let esntl = data.esntl;
+							if(esntl == 0){
+								if(result == 1){
+									alert("신청을 취소했습니다.");
+									var apply = data.applySBJ;
+									applySBJ.resetData(apply);
+								}
+							} else{
+								alert("필수과목입니다.");
 							}
-						} else{
-							alert("필수과목입니다.");
-						}
-					}).fail(function() {
-						alert("문제가 발생했습니다.");
-					});  
+						}).fail(function() {
+							alert("문제가 발생했습니다.");
+						});  
+				}else{
+					alert("수강신청기간이 아닙니다.");
+				} 
+				
 				
 				
 				
@@ -603,16 +627,18 @@ $(function(){
 </head>
 
 <body class="sb-nav-fixed">
-	<%@include file="../bar/topbar.jsp"%>
-	<div id="layoutSidenav">
-		<%@include file="../bar/sidebar.jsp"%>
 		<%@include file="./searchModal.jsp"%>
 
-		<div id="layoutSidenav_content">
+		<div id="layoutSidenav_content" style="margin-top: -19px;">
 			<main>
 				<div class="container-fluid px-4">
-					<div class="mt-3">
-						<h5 class="fw-bolder">수강신청(관리자)</h5>
+					<div class="mt-4 mb-1 position-relative row">
+						<div style="width:30px;">
+						<img src="./image/joongang_logo.png" style="width:25px;">
+						</div>
+						<div style="width:200px; height:30px;  "> 
+							<h5 style="font-weight: bold; color:#565757; line-height:30px;">수강신청(관리자)</h5>
+						</div>
 					</div>
 					<hr class="m-0 mb-2">
 					<div class="float-start mb-2"
@@ -796,8 +822,6 @@ $(function(){
 
 				</div>
 			</main>
-			<%@include file="../bar/footer.jsp"%>
-		</div>
 	</div>
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"

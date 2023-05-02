@@ -390,16 +390,17 @@
 </head>
 
 <body class="sb-nav-fixed">
-	<%@include file="../bar/topbar.jsp"%>
-	<div id="layoutSidenav">
-		<%@include file="../bar/sidebar.jsp"%>
 
-		<div id="layoutSidenav_content">
+		<div id="layoutSidenav_content"  style="margin-top: -19px;">
 			<main>
 				<div class="container-fluid px-4">
-					<div class="mt-3">
-
-						<h5 class="fw-bolder">과목관리</h5>
+					<div class="mt-4 mb-1 position-relative row">
+						<div style="width:30px;">
+						<img src="./image/joongang_logo.png" style="width:25px;">
+						</div>
+						<div style="width:200px; height:30px;  "> 
+							<h5 style="font-weight: bold; color:#565757; line-height:30px;">과목관리</h5>
+						</div>
 					</div>
 					<hr style="height: 4px;" class="m-0 mb-1">
 					<div class="d-flex justify-content-end pb-1 mb-1">
@@ -565,8 +566,6 @@
 
 				</div>
 			</main>
-			<%@include file="../bar/footer.jsp"%>
-		</div>
 	</div>
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"

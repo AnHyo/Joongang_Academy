@@ -52,6 +52,12 @@ if (session.getAttribute("id") == null) {
 		//전화번호 정규식
 		var RegExp = /[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/ A-Z\uAC00-\uD7A3\u3131-\u3163]/gim;
 
+		$("#nowPw").keydown(function(key){
+			  if(key.keyCode == 13){
+				$("#pwCheckbtn").click();
+			  }
+			});
+		
 		$("#pwCheckbtn").click(function() {
 			var nowPw = $("#nowPw").val();
 
@@ -171,7 +177,7 @@ if (session.getAttribute("id") == null) {
 </head>
 <body class="d-flex flex-column h-100 bg-light">
 	<main class="flex-shrink-0">
-		<%@include file="../portalbar/topbar.jsp"%>
+		<%@include file="../portalbar/instrtopbar.jsp"%>
 		<input type="hidden" id="loginID" value="${sessionScope.id}">
 		<!-- Page Content-->
 		<div class="container px-5  my-5" id="checkdiv">

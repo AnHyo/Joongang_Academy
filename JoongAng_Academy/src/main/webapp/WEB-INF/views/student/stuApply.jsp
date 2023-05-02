@@ -43,10 +43,6 @@ if (session.getAttribute("id") == null) {
 <script>
         $(function(){
         	
-        	
-        	
-        	
-        	
          	const Grid = tui.Grid;
         	
         	Grid.applyTheme('clean', { 
@@ -61,6 +57,8 @@ if (session.getAttribute("id") == null) {
         		var CRCLM_CD = "";
         		var CRCLM_YEAR ="";
         		var stdnt_no =$("#loginID").val();
+        		var startTime ="";
+        		var endTime ="" ;
         		 $.post({
         				url : "/stuinfoAjax",
         				data : {
@@ -109,12 +107,46 @@ if (session.getAttribute("id") == null) {
         					}).fail(function() {
         						alert("문제가 발생했습니다.");
         					}); //estblSBJAjax 
+        					
+        					$.post({
+        						url : "/scheduleAjax",
+        						data : {
+        							
+        							"CRCLM_HALF" : CRCLM_HALF,
+        							"CRCLM_CD" : CRCLM_CD,
+        							"CRCLM_YEAR" : CRCLM_YEAR
+        						},
+        						dataType : "json"
+
+        					}).done(function(data) {
+        						var schedule = data.schedule; 
+        						startTime = schedule[0].SCHDL_BGNG_DT;
+        	        			endTime =  schedule[0].SCHDL_END_DT;
+        	        			
+        					}).fail(function() {
+        						alert("문제가 발생했습니다.");
+        					}); //scheduleAjax 
+        					
         			}).fail(function() {
         				alert("문제가 발생했습니다.");
         			});
         		 
-        		 
-        	
+        			// 기간외 수강신청 막기
+        		
+        			var today = new Date();
+
+        			var year = today.getFullYear();
+        			var month = ('0' + (today.getMonth() + 1)).slice(-2);
+        			var day = ('0' + today.getDate()).slice(-2);
+
+        			var hours = ('0' + today.getHours()).slice(-2); 
+        			var minutes = ('0' + today.getMinutes()).slice(-2);
+        			var seconds = ('0' + today.getSeconds()).slice(-2); 
+
+        			var dateString = year + '-' + month  + '-' + day;
+        			var timeString = hours + ':' + minutes  + ':' + seconds;
+        			var datetime= dateString + " " +timeString;	 
+        			
         	
         	
         	class buttonRenderer{
@@ -124,7 +156,8 @@ if (session.getAttribute("id") == null) {
         			this.el = el;
         			this.render(props);
         			this.el.addEventListener('click', (event) => {
-        				
+        			if(datetime>= startTime && datetime <= endTime){
+        					alert("수강신청기간입니다.");
         				var STDNT_NO=$("#stdntNo").text();
         				var SBJCT_NO= el.getAttribute("data-value");
         				
@@ -161,7 +194,9 @@ if (session.getAttribute("id") == null) {
         				}).fail(function() {
         					alert("문제가 발생했습니다.");
         				});
-        				
+        				}else{
+        					alert("수강신청기간이 아닙니다.");
+        				}
         				
         			});
         			
@@ -190,7 +225,8 @@ if (session.getAttribute("id") == null) {
         			this.el = el;
         			this.render(props);
         			this.el.addEventListener('click', (event) => {
-        				
+        			if(datetime>= startTime && datetime <= endTime){
+        					alert("수강신청기간입니다.");
         				var STDNT_NO=$("#stdntNo").text();
         				var SBJCT_NO= el.getAttribute("data-value");
         				 $.post({
@@ -219,7 +255,9 @@ if (session.getAttribute("id") == null) {
         					}).fail(function() {
         						alert("문제가 발생했습니다.");
         					});  
-        				
+        			}else{
+    					alert("수강신청기간이 아닙니다.");
+    				}
         				
         				
         			});

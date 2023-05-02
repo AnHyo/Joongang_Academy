@@ -172,7 +172,7 @@ $(function(){
   		el : document.getElementById('stuList'),
 		scrollX : false,
 		scrollY : true,
-		bodyHeight : 400,
+		bodyHeight : 250,
 		rowHeaders: ['rowNum'],
 		columns : [ 
 		{
@@ -381,16 +381,18 @@ $(function(){
 </head>
 
 <body class="sb-nav-fixed">
-	<%@include file="../bar/topbar.jsp"%>
-	<div id="layoutSidenav">
-		<%@include file="../bar/sidebar.jsp"%>
 		<%@include file="./searchModal.jsp"%>
 
-		<div id="layoutSidenav_content">
+		<div id="layoutSidenav_content" style="margin-top: -19px;">
 			<main>
 				<div class="container-fluid px-4">
-					<div class="mt-3">
-						<h5 class="fw-bolder">수강신청내역</h5>
+					<div class="mt-4 position-relative row">
+						<div style="width:30px;">
+						<img src="./image/joongang_logo.png" style="width:25px;">
+						</div>
+						<div style="width:200px; height:30px;  "> 
+							<h5 style="font-weight: bold; color:#565757; line-height:30px;">수강신청내역</h5>
+						</div>
 					</div>
 					<hr class="m-0 mb-2">
 					<div class="float-start mb-2"
@@ -400,7 +402,7 @@ $(function(){
 					<!-- 검색 -->
 					<div class="mb-3 d-flex justify-content-center">
 						<div class="row"
-							style="width: 100%; height: 120px; background-color: #F3FAFE; border: 1px solid #c0c0c0;">
+							style="width: 100%; height: 120px; border: 1px solid #c0c0c0;">
 							<div class="row col-4">
 								<div class="col-4 mt-4 d-flex justify-content-end fw-bolder"
 									style="font-size: 14px;">학번(이름)</div>
@@ -523,8 +525,6 @@ $(function(){
 
 				</div>
 			</main>
-			<%@include file="../bar/footer.jsp"%>
-		</div>
 	</div>
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"

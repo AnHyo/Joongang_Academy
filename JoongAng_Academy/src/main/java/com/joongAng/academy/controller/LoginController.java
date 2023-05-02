@@ -27,14 +27,11 @@ public class LoginController {
 	public String login() {
 		return "/login/login";
 	}
-	@GetMapping("/index")
+	@GetMapping("/")
 	public String index() {
-		return "index";
+		return "admin/adminIndex";
 	}
-	@GetMapping("/index2")
-	public String index2() {
-		return "index2";
-	}
+
 	
 	
 	@PostMapping("/login")

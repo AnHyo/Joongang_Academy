@@ -71,114 +71,58 @@ if (session.getAttribute("id") == null) {
 
 			}).done(function(data) {
 				var timetable = data.timetable;
-				for (var i = 0; i < timetable.length; i++) {
+				var colors = ['#FFD1DC', '#FFF0B5', '#B2FAB4', '#BFE6FF', '#E9C6EC', '#D1FFC3', '#D5A6FF', '#A2F3C5', '#C0B6F2', '#B7F0B1', '#D7B9FF', '#D1FFA9'];
+				var colorIndex = 0;
+				var SBJcolors = {};
+				 for (var i = 0; i < timetable.length; i++) {
 					var SBJNO = timetable[i].SBJCT_NO;
 					var SBJNM = timetable[i].SBJCT_NM;
+					var ROOM_NM = timetable[i].ROOM_NM;
+					var INSTR_NM = timetable[i].KORN_FLNM;
 					var DOW = timetable[i].DOW;
 					var START = timetable[i].STARTt;
 					var END = timetable[i].ENDt;
 					var arr = ['M', 'T', 'W', 'Th','F']; 
+					var arr2 = ['월', '화', '수', '목','금']; 
 					if (DOW != null && START != null && END != null) {
 						for(var j = 1; j<= 8; j++){
-							if(DOW =="월요일"){
-								if(START == $("#"+j+"K").attr("data-value")){
-									$("#M"+j).html(' <div class="M'+j+'" style="line-height: 67px;" data-value='+SBJNO+'>'+SBJNM+'</div>')
-									$("#M"+j).attr("data-value",SBJNO);
-								}
-								if(END == $("#"+j+"K").attr("data-value")){
-									$("#M"+j).html(' <div class="M'+j+'" style=" line-height: 67px;" data-value='+SBJNO+'>'+SBJNM+'</div>')
-									$("#M"+j).attr("data-value",SBJNO);
-								}
-							}
-							if(DOW =="화요일"){
-								if(START == $("#"+j+"K").attr("data-value")){
-									$("#T"+j).html(' <div class="T'+j+'" style=" line-height: 67px;" data-value='+SBJNO+'>'+SBJNM+'</div>')
-									$("#T"+j).attr("data-value",SBJNO);
+							for(var x = 0; x < arr.length; x++){
+								if(DOW == arr2[x]+"요일"){
+									if(START == $("#"+j+"K").attr("data-value")){
+										$("#"+arr[x]+j).html('<div style="line-height: 26px; background-color: '+ SBJColor(SBJNM) +';">'
+												+'<div class="fw-bolder" style="font-size:15px;">'+SBJNM+'</div>'
+												+'<div class="text-muted"  style="font-size:11px;">'+INSTR_NM+'</div>'
+												+'<div class="text-muted" style="font-size:11px;">'+ROOM_NM+'</div>'
+												+'</div>')
 									}
-								if(END == $("#"+j+"K").attr("data-value")){
-									$("#T"+j).html(' <div class="T'+j+'" style=" line-height: 67px;" data-value='+SBJNO+'>'+SBJNM+'</div>')
-									$("#T"+j).attr("data-value",SBJNO);
-								}
-							}
-							if(DOW =="수요일"){
-								if(START == $("#"+j+"K").attr("data-value")){
-									$("#W"+j).html(' <div class="W'+j+'" style=" line-height: 67px;" data-value='+SBJNO+'>'+SBJNM+'</div>')
-									$("#W"+j).attr("data-value",SBJNO);
-								}
-								if(END == $("#"+j+"K").attr("data-value")){
-									$("#W"+j).html(' <div class="W'+j+'" style=" line-height: 67px;" data-value='+SBJNO+'>'+SBJNM+'</div>')
-									$("#W"+j).attr("data-value",SBJNO);
-								}
-							}
-							if(DOW =="목요일"){
-								if(START == $("#"+j+"K").attr("data-value")){
-									$("#Th"+j).html(' <div class="Th'+j+'" style=" line-height: 67px;" data-value='+SBJNO+'>'+SBJNM+'</div>')
-									$("#Th"+j).attr("data-value",SBJNO);
-								}
-								if(END == $("#"+j+"K").attr("data-value")){
-									$("#Th"+j).html(' <div class="Th'+j+'" style=" line-height: 67px;" data-value='+SBJNO+'>'+SBJNM+'</div>')
-									$("#Th"+j).attr("data-value",SBJNO);
-								}
-							}
-							if(DOW =="금요일"){
-								if(START == $("#"+j+"K").attr("data-value")){
-									$("#F"+j).html(' <div class="F'+j+'" style=" line-height: 67px;" data-value='+SBJNO+'>'+SBJNM+'</div>')
-									$("#F"+j).attr("data-value",SBJNO);
-								}
-								if(END == $("#"+j+"K").attr("data-value")){
-									$("#F"+j).html(' <div class="F'+j+'" style=" line-height: 67px;" data-value='+SBJNO+'>'+SBJNM+'</div>')
-									$("#F"+j).attr("data-value",SBJNO);
+									if(END == $("#"+j+"K").attr("data-value")){
+										$("#"+arr[x]+j).html('<div style="line-height: 26px;  background-color: '+ SBJColor(SBJNM) +';">'
+												+'<div class="fw-bolder" style="font-size:15px;">'+SBJNM+'</div>'
+												+'<div class="text-muted" style="font-size:11px;">'+INSTR_NM+'</div>'
+												+'<div class="text-muted" style="font-size:11px;">'+ROOM_NM+'</div>'
+												+'</div>');
+									}
 								}
 							}
 						}
 
-					}	
-				}
-				//색 지정
-				var DVArr = {};
-				var colorarr = ['#FSDF4D','#939597','#0F4C81','#FF6F61','#88B04B','#F7CAC9','#92A8D1','#955251','#B163A3','#00A170'];
-				var usedColors = [];
+						}
+					}
+					function SBJColor(SBJNM) {
+						if (!SBJcolors[SBJNM]) {
+							SBJcolors[SBJNM] = colors[colorIndex];
+							colorIndex = (colorIndex + 1) % colors.length;
+						}
+							return SBJcolors[SBJNM];
+					}
 
-				// data-value 값을 key로 하고, 해당 값과 같은 div 요소들의 배열을 value로 가지는 객체 생성
-				$("[data-value]").each(function() {
-				  var dv = $(this).attr("data-value");
-				  if (!DVArr[dv]) {
-					  DVArr[dv] = [this];
-				  } else {
-					  DVArr[dv].push(this);
-				  }
+					}).fail(function() {
+						alert("문제가 발생했습니다.");
+					}); 
+				}).fail(function() {
+					alert("문제가 발생했습니다.");
 				});
 
-				// 객체에서 배열 길이가 2 이상인 요소들에 대해 같은 배경색을 적용
-				for (var dv in DVArr) {
-				  var a = DVArr[dv];
-				  if (a.length >= 2) {
-				    var colorCode = getRandomColor();
-				    for (var i = 0; i < a.length; i++) {
-				      $(a[i]).css("background-color", colorCode);
-				    }
-				  }
-				}
-
-				//colorarr에서 중복없이 색깔 뽑는 함수
-				function getRandomColor() {
-				  var colorCode = colorarr[Math.floor(Math.random() * colorarr.length)];
-				  if (usedColors.indexOf(colorCode) !== -1) {
-				    return getRandomColor();
-				  } else {
-				    usedColors.push(colorCode);
-				    return colorCode;
-				  }
-				}
-			}).fail(function() {
-				alert("문제가 발생했습니다.");
-			}); //estblSBJAjax 
-		}).fail(function() {
-			alert("문제가 발생했습니다.");
-		});
-		
-		
-		
 	});
 </script>
 </head>
@@ -214,10 +158,9 @@ if (session.getAttribute("id") == null) {
 									for (int i = 1; i <= 8; i++) {
 									%>
 									<tr>
-										<td class="text-center" style="line-height: 50px;" id="<%=i%>K" data-value="<%=i%>교시"><%=i%>교시</td>
-										<td class="text-center p-0" id="M<%=i%>">
-											<!-- <div style="background-color: gray; line-height: 67px;">JAVA</div> -->
-										</td>
+										<td class="text-center" style="line-height: 60px;"
+											id="<%=i%>K" data-value="<%=i%>교시"><%=i%>교시</td>
+										<td class="text-center p-0" id="M<%=i%>"></td>
 										<td class="text-center p-0" id="T<%=i%>"></td>
 										<td class="text-center p-0" id="W<%=i%>"></td>
 										<td class="text-center p-0" id="Th<%=i%>"></td>

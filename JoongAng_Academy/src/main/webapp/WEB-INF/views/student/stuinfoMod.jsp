@@ -287,7 +287,7 @@ if (session.getAttribute("id") == null) {
 									<td id="crclmNM"></td>
 
 									<td class="text-center fw-bolder">학적상태</td>
-									<td id="regNM"></td>
+									<td id="regNM" style="color:red;"></td>
 								</tr>
 
 

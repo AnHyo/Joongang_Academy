@@ -2,7 +2,14 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.joongAng.academy.dao.ApplyDAO">
-
+	<select id="schedule" resultType="HashMap" parameterType="HashMap">
+		SELECT SCHDL_BGNG_DT,SCHDL_END_DT FROM CRCLM_SCHDL
+		WHERE 
+		CRCLM_YEAR =#{CRCLM_YEAR}
+		AND CRCLM_HALF =#{CRCLM_HALF}
+		AND CRCLM_CD =#{CRCLM_CD}
+		AND CRCLM_SCHDL_CD = '0020';
+	</select>
 	<select id="list" resultType="HashMap" parameterType="HashMap">
 		SELECT * FROM applinfoview
 		WHERE 1=1
