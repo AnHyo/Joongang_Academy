@@ -11,4 +11,12 @@ public class PortalController {
 	public String portal() {
 		return "portalIndex";
 	}
+	@GetMapping("/stuIndex")
+	public String stuIndex() {
+		return "student/stuIndex";
+	}
+	@GetMapping("/instrIndex")
+	public String instrIndex() {
+		return "instr/instrIndex";
+	}
 }

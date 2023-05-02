@@ -82,21 +82,21 @@ if (session.getAttribute("id") == null) {
 					var DOW = timetable[i].DOW;
 					var START = timetable[i].STARTt;
 					var END = timetable[i].ENDt;
-					var arr = ['M', 'T', 'W', 'Th','F']; 
-					var arr2 = ['월', '화', '수', '목','금']; 
+					var DOWarr = ['M', 'T', 'W', 'Th','F']; 
+					var DOWarr2 = ['월', '화', '수', '목','금']; 
 					if (DOW != null && START != null && END != null) {
 						for(var j = 1; j<= 8; j++){
-							for(var x = 0; x < arr.length; x++){
-								if(DOW == arr2[x]+"요일"){
+							for(var x = 0; x < DOWarr.length; x++){
+								if(DOW == DOWarr2[x]+"요일"){
 									if(START == $("#"+j+"K").attr("data-value")){
-										$("#"+arr[x]+j).html('<div style="line-height: 26px; background-color: '+ SBJColor(SBJNM) +';">'
+										$("#"+DOWarr[x]+j).html('<div style="line-height: 26px; background-color: '+ SBJColor(SBJNM) +';">'
 												+'<div class="fw-bolder" style="font-size:15px;">'+SBJNM+'</div>'
 												+'<div class="text-muted"  style="font-size:11px;">'+INSTR_NM+'</div>'
 												+'<div class="text-muted" style="font-size:11px;">'+ROOM_NM+'</div>'
 												+'</div>')
 									}
 									if(END == $("#"+j+"K").attr("data-value")){
-										$("#"+arr[x]+j).html('<div style="line-height: 26px;  background-color: '+ SBJColor(SBJNM) +';">'
+										$("#"+DOWarr[x]+j).html('<div style="line-height: 26px;  background-color: '+ SBJColor(SBJNM) +';">'
 												+'<div class="fw-bolder" style="font-size:15px;">'+SBJNM+'</div>'
 												+'<div class="text-muted" style="font-size:11px;">'+INSTR_NM+'</div>'
 												+'<div class="text-muted" style="font-size:11px;">'+ROOM_NM+'</div>'
@@ -106,8 +106,8 @@ if (session.getAttribute("id") == null) {
 							}
 						}
 
-						}
 					}
+				}
 					function SBJColor(SBJNM) {
 						if (!SBJcolors[SBJNM]) {
 							SBJcolors[SBJNM] = colors[colorIndex];

@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+
+	
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -282,8 +284,8 @@ $(function(){
 
 					}).done(function(data) {
 						var schedule = data.schedule; 
-						startTime = schedule[0].SCHDL_BGNG_DT;
-	        			endTime =  schedule[0].SCHDL_END_DT;
+						startTime = schedule[0].BGNG_DT;
+	        			endTime =  schedule[0].END_DT;
 	        			
 					}).fail(function() {
 						alert("문제가 발생했습니다.");
@@ -307,7 +309,7 @@ $(function(){
 	var minutes = ('0' + today.getMinutes()).slice(-2);
 	var seconds = ('0' + today.getSeconds()).slice(-2); 
 
-	var dateString = year + '-' + month  + '-' + day;
+	var dateString = year + '/' + month  + '/' + day;
 	var timeString = hours + ':' + minutes  + ':' + seconds;
 	var datetime= dateString + " " +timeString;
 
@@ -323,9 +325,10 @@ $(function(){
 			this.el = el;
 			this.render(props);
 			this.el.addEventListener('click', (event) => {
-				/* console.log(startTime);
-				console.log(endTime); */
-// 				if(datetime>= startTime && datetime <= endTime){
+				/* console.log(datetime);
+				console.log(startTime);
+				console.log(endTime);  */
+				if(datetime>= startTime && datetime <= endTime){
 					alert("수강신청기간입니다.");
 					
 					var STDNT_NO=$("#stdntNo").val();
@@ -363,9 +366,9 @@ $(function(){
 					}).fail(function() {
 						alert("문제가 발생했습니다.");
 					});
-// 				}else{
-// 					alert("수강신청기간이 아닙니다.");
-// 				}	
+				}else{
+					alert("수강신청기간이 아닙니다.");
+				}	
 				
 			
 				

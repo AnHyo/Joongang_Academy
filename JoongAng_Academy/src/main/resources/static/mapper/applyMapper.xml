@@ -3,7 +3,7 @@
 
 <mapper namespace="com.joongAng.academy.dao.ApplyDAO">
 	<select id="schedule" resultType="HashMap" parameterType="HashMap">
-		SELECT SCHDL_BGNG_DT,SCHDL_END_DT FROM CRCLM_SCHDL
+		SELECT DATE_FORMAT(SCHDL_BGNG_DT, '%Y/%m/%d %H:%i:%s') as BGNG_DT,DATE_FORMAT(SCHDL_END_DT, '%Y/%m/%d %H:%i:%s') as END_DT FROM CRCLM_SCHDL
 		WHERE 
 		CRCLM_YEAR =#{CRCLM_YEAR}
 		AND CRCLM_HALF =#{CRCLM_HALF}
