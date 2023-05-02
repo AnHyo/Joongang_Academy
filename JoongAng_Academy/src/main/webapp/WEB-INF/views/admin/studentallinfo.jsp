@@ -291,7 +291,7 @@ $(function(){
 						  	</div>
 						  <div class="col-3">
 						  	<div class="row">
-								<span class="col-4 text-center ta font-set">학적상태</span>
+								<span class="col-4 text-center ta font-set">교육년도</span>
 								<div class="col-6 div-padding">
 									<input class="form-control form-control-sm" type="text" id="statusInfo" name="statusInfo" aria-label=".form-control-sm example" disabled>
 								</div>
