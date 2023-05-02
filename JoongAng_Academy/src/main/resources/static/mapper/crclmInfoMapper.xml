@@ -97,7 +97,9 @@
 	
 	<!-- 과정일정설정 - 리스트출력 -->
 	<select id="crclmSchdl" resultType="Hashmap" parameterType="CrclmInfoDTO">
-		SELECT SCHDL_BGNG_DT, SCHDL_END_DT, CodeFind('0003',CRCLM_SCHDL.CRCLM_SCHDL_CD) AS CRCLM_SCHDL_CD, SCHDL_EXPLN, SCHDL_FIN
+		SELECT CodeFind('0003',CRCLM_SCHDL.CRCLM_SCHDL_CD) AS CRCLM_SCHDL_CD, SCHDL_EXPLN,
+		DATE_FORMAT( SCHDL_END_DT, '%Y-%m-%d %H:%i:%s') as  SCHDL_END_DT,SCHDL_FIN,
+		DATE_FORMAT( SCHDL_BGNG_DT, '%Y-%m-%d %H:%i:%s') as SCHDL_BGNG_DT
 		FROM CRCLM_SCHDL
 		WHERE CRCLM_YEAR = #{cyear} AND CRCLM_HALF =#{chalf} AND CRCLM_CD =#{ccd}
 	</select>

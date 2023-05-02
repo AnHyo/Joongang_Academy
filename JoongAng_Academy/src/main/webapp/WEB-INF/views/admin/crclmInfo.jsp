@@ -17,14 +17,21 @@
 	rel="stylesheet" />
 <link href="css/styles.css" rel="stylesheet" />
 <link rel="stylesheet"
+	href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css" />
+<link rel="stylesheet"
+	href="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.css" />
+<link rel="stylesheet"
 	href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
-<link rel="stylesheet" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css" />
-<script
-	src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-<script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
-<script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
 <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js"
 	crossorigin="anonymous"></script>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script
+	src="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.js"></script>
+<script
+	src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
+<script type="text/javascript"
+	src="https://uicdn.toast.com/tui-grid/latest/tui-grid.js"></script>
 <style>
 .tui-grid-cell {
 	font-size: 14px;
@@ -483,9 +490,7 @@
 			
 			const rowKey = grid.getFocusedCell().rowKey
 			var obj = grid.getRow(rowKey);
-			console.log(obj);
 			var ccd = obj.CRCLM_CD;
-			alert(ccd);
 			var cyear = obj.CRCLM_YEAR;
 			var chalf = obj.CRCLM_HALF;
 			var crclmname = obj.CRCLM_NM;
@@ -697,8 +702,7 @@
 		
 		//과정일정 설정 
 		
-		
-		/* const DatePicker = tui.DatePicker; */
+		const datePicker = tui.DatePicker; 
 		
 		var Grid = tui.Grid;
 				Grid.applyTheme('clean', { 
@@ -726,14 +730,26 @@
 				          name: 'SCHDL_BGNG_DT',
 				          width:400,
 				          align:'center',
-				          editor:{type:'datePicker', options:{format:'yyyy-MM-dd'}}
+				          editor: {
+				              type: 'datePicker',
+				              options: {
+				            	  format: 'yyyy-MM-dd HH:mm',
+				                  timepicker: true
+				              }
+				            }
 				        },
 				        {
 				          header: '종료일',
 				          name: 'SCHDL_END_DT',
 				          width:400,
 				          align:'center',
-				          editor:{type:'datePicker', options:{format:'yyyy-MM-dd'}}
+				          editor: {
+				              type: 'datePicker',
+				              options: {
+				            	  format: 'yyyy-MM-dd HH:mm',
+				                  timepicker: true
+				              }
+				            }
 				        },
 				        
 				        {
@@ -819,14 +835,15 @@
 				 updateRow1.push({
 						 "schdlCode": updatedRows[i].CRCLM_SCHDL_CD,
 						    "schdlBegin": updatedRows[i].SCHDL_BGNG_DT,
-						    "schdlEnd" : updatedRows[i].SCHDL_END_DT,
+						    "schdlEnd": updatedRows[i].SCHDL_END_DT,
 						    "schdlEx": updatedRows[i].SCHDL_EXPLN,
-						    "schdlFin" : updatedRows[i].SCHDL_FIN,	
+						    "schdlFin": updatedRows[i].SCHDL_FIN,	
 						    "ccd": ccd,
 						    "cyear": cyear,
 						    "chalf": chalf
 				});
 			}//for 끝
+			console.log(updatedRows[0].SCHDL_BGNG_DT);
 				// updateRow1.push({"ccd":ccd, "cyear":cyear,"chalf":chalf});
 			
 			$.post({
@@ -1006,225 +1023,221 @@
 </script>
 </head>
 <body class="sb-nav-fixed">
-	<%@include file="../bar/topbar.jsp"%>
-	<div id="layoutSidenav">
-		<%@include file="../bar/sidebar.jsp"%>
-
-		<div id="layoutSidenav_content">
-			<main>
-				<div class="container-fluid px-4">
-					<h5 class="mt-3 fw-bolder">교육훈련과정 정보관리</h5>
-					<hr>
-					<div style="width: 100%; position: relative;">
-						<div style="position: absolute; right: 0">
-							<button class="btn btn-secondary  btn-sm" id="listBtn">조회</button>
-							<button class="btn btn-secondary btn-sm" id="newBtn"
-								disabled="disabled">신규</button>
-							<button class="btn btn-secondary btn-sm" id="deleteBtn"
-								disabled="disabled">삭제</button>
-							<button class="btn btn-secondary btn-sm" id="saveBtn"
-								disabled="disabled">저장</button>
-						</div>
+	<div id="layoutSidenav_content">
+		<main>
+			<div class="container-fluid px-4">
+				<h5 class="mt-3 fw-bolder">교육훈련과정 정보관리</h5>
+				<hr>
+				<div style="width: 100%; position: relative;">
+					<div style="position: absolute; right: 0">
+						<button class="btn btn-secondary  btn-sm" id="listBtn">조회</button>
+						<button class="btn btn-secondary btn-sm" id="newBtn"
+							disabled="disabled">신규</button>
+						<button class="btn btn-secondary btn-sm" id="deleteBtn"
+							disabled="disabled">삭제</button>
+						<button class="btn btn-secondary btn-sm" id="saveBtn"
+							disabled="disabled">저장</button>
 					</div>
-					<br> <br>
+				</div>
+				<br> <br>
 
+				<div
+					style="width: 100%; background-color: #F3FAFE; height: 80px; border: 1px solid #c0c0c0; position: relative;">
 					<div
-						style="width: 100%; background-color: #F3FAFE; height: 80px; border: 1px solid #c0c0c0; position: relative;">
-						<div
-							style="position: absolute; width: 100%; top: 50%; transform: translateY(-50%)"
-							class="d-flex justify-content-center">
-							<div class="input-group fw-bolder  "
-								style="width: calc(20%); float: left;">
-								학년도 <input type="text" class="form-control form-control-sm"
-									style="margin-left: 10px;" value="2001" id="inputYear"
-									numberOnly> <select class="form-select form-select-sm"
-									name="crclm_half">
-									<option value="">상/하반기</option>
-									<option value="0010">상반기</option>
-									<option value="0020">하반기</option>
-								</select>
+						style="position: absolute; width: 100%; top: 50%; transform: translateY(-50%)"
+						class="d-flex justify-content-center">
+						<div class="input-group fw-bolder  "
+							style="width: calc(20%); float: left;">
+							학년도 <input type="text" class="form-control form-control-sm"
+								style="margin-left: 10px;" value="2001" id="inputYear"
+								numberOnly> <select class="form-select form-select-sm"
+								name="crclm_half">
+								<option value="">상/하반기</option>
+								<option value="0010">상반기</option>
+								<option value="0020">하반기</option>
+							</select>
+						</div>
+						<div class="input-group "
+							style="width: calc(25%); margin-left: 10px; float: left;">
+							<input class="form-control form-control-sm" "type="text"
+								placeholder="과정명" id="inputCrclmSearch" />
+						</div>
+						<div class="input-group fw-bolder "
+							style="width: calc(40%); margin-left: 10px; float: left;">
+							과정현황
+							<div class="form-check form-check-inline"
+								style="margin-left: 5px;">
+								<input class="form-check-input fw-bolder" type="radio"
+									name="radioStatus" checked="checked" value="">전체
 							</div>
-							<div class="input-group "
-								style="width: calc(25%); margin-left: 10px; float: left;">
-								<input class="form-control form-control-sm" "type="text"
-									placeholder="과정명" id="inputCrclmSearch" />
-							</div>
-							<div class="input-group fw-bolder "
-								style="width: calc(40%); margin-left: 10px; float: left;">
-								과정현황
-								<div class="form-check form-check-inline"
-									style="margin-left: 5px;">
-									<input class="form-check-input fw-bolder" type="radio"
-										name="radioStatus" checked="checked" value="">전체
-								</div>
-								<c:forEach items="${scheduleName }" var="SN">
-									<div class="form-check form-check-inline"">
+							<c:forEach items="${scheduleName }" var="SN">
+								<div class="form-check form-check-inline"">
 									<input class="form-check-input fw-bolder" type="radio"
 										name="radioStatus" value="${SN.CD }">${SN.CD_NM }
-									</div>
-								</c:forEach>
-							</div>
+								</div>
+							</c:forEach>
 						</div>
 					</div>
-					<!-- 상단 끝 -->
-					<div>
-						<div class="float-start "
-							style="width: 10px; height: 27px; background-color: #498c5f; margin-right: 10px;"></div>
-						<h6 class="mt-3 fw-bolder">교육훈련과정</h6>
-						<div id="grid"></div>
-					</div>
-
-					<div class="mt-3">
-						<!--탭설정 -->
-						<nav>
-							<div class="nav nav-tabs" id="nav-tab" role="tablist">
-								<button class="nav-link active" id="nav-home-tab"
-									data-bs-toggle="tab" data-bs-target="#nav-home" type="button"
-									role="tab" aria-controls="nav-home" aria-selected="true">훈련과정정보</button>
-								<button class="nav-link" id="nav-schedule-tab"
-									data-bs-toggle="tab" data-bs-target="#nav-schedule"
-									type="button" role="tab" aria-controls="nav-schedule"
-									aria-selected="false">과정일정설정</button>
-							</div>
-						</nav>
-						<div class="tab-content" id="nav-tabContent">
-							<!--훈련과정정보  -->
-							<div class="tab-pane fade show active" id="nav-home"
-								role="tabpanel" aria-labelledby="nav-home-tab">
-								<div class="mb-5 inputTotal"
-									style="width: 100%; background-color: #F3FAFE; height: 430px; border: 1px solid #c0c0c0; position: relative;">
-
-									<table
-										style="width: 90%; position: absolute; top: 50%; transform: translateY(-50%) translateX(5%);">
-										<tr style="height: 50px">
-											<td class="col-1" style="text-align: right;">학년도</td>
-											<td class="col-1" colspan="2"><input type="text"
-												numberOnly class="form-control form-control-sm cyear"
-												disabled="disabled"></td>
-											<td class="col-1" style="text-align: right;">훈련과정코드</td>
-											<td class="col-4" colspan="2"><input type="hidden"
-												class="cno">
-												<div class="input-group"
-													style="display: flex; flex-wrap: wrap;">
-													<input type="text" class="form-control form-control-sm ccd"
-														style="width: calc(20%);" aria-describedby="sel" readonly
-														disabled="disabled"> <select
-														class="form-select form-select-sm crclmNameList"
-														disabled="disabled" id="sel" style="width: calc(80%);">
-														<option value="">선택</option>
-														<c:forEach items="${crclmName}" var="cn">
-															<option value="${cn.CD}">${cn.CD_NM}</option>
-														</c:forEach>
-													</select>
-												</div></td>
-											<td class="col-1" style="text-align: right;">훈련과정명</td>
-											<td class="col-4" colspan="5"><input type="text"
-												class="form-control form-control-sm  crclmNameSet "
-												disabled="disabled"></td>
-										</tr>
-										<tr style="height: 50px">
-											<td style="text-align: right;">상/하반기</td>
-											<td colspan="2"><select
-												class="form-select form-select-sm chalf" disabled="disabled">
-													<option value="">선택</option>
-													<option value="0010">상반기</option>
-													<option value="0020">하반기</option>
-											</select></td>
-
-											<td style="text-align: right;">대표강사명</td>
-											<td colspan="2">
-												<div class="input-group "
-													style="display: flex; flex-wrap: wrap;">
-													<input type="text" class="form-control form-control-sm "
-														style="width: calc(30%);" id="instrNo"
-														aria-describedby="sel" readonly disabled="disabled">
-													<input class="form-control form-control-sm instrname"
-														type="text" placeholder="강사명" style="width: calc(55%)"
-														disabled="disabled" />
-													<button class="btn btn-secondary btn-sm" type="button"
-														id="btnInstrSearch" style="width: calc(15%);">
-														<i class="fas fa-search"></i>
-													</button>
-												</div>
-											<td style="text-align: right;">시작일</td>
-											<td colspan="2"><input type="date"
-												class="form-control form-control-sm bgYMD"
-												disabled="disabled"></td>
-											<td style="text-align: right;">종료일</td>
-											<td colspan="2"><input type="date"
-												class="form-control form-control-sm endYMD"
-												disabled="disabled"></td>
-
-										</tr>
-										<tr style="height: 50px">
-											<td style="text-align: right;">모집인원</td>
-											<td colspan="2"><input type="text" numberOnly
-												class="form-control form-control-sm epeople"
-												disabled="disabled"></td>
-											<td style="text-align: right;">훈련비용</td>
-											<td colspan="2"><input type="text" numberOnly
-												class="form-control form-control-sm ecost"
-												disabled="disabled"></td>
-
-
-											<td style="text-align: right;">과정현황</td>
-											<td colspan="2"><select
-												class="form-select form-select-sm schedule"
-												disabled="disabled">
-													<option value="">선택</option>
-													<option value="0010">모집</option>
-													<option value="0020">훈련</option>
-													<option value="0030">수료</option>
-											</select></td>
-											<td style="text-align: right;">종료여부</td>
-											<td colspan="2"><select
-												class="form-select form-select-sm efnYN" disabled="disabled">
-													<option value="">선택</option>
-													<option value="N">N</option>
-													<option value="Y">Y</option>
-											</select></td>
-										</tr>
-
-										<tr>
-											<td style="text-align: right;">훈련내용</td>
-										</tr>
-										<tr>
-											<td></td>
-											<td colspan="11"><textarea class="form-control econtent"
-													style="height: 200px; resize: none;" disabled="disabled"></textarea></td>
-										</tr>
-
-									</table>
-								</div>
-							</div>
-							<!--과정일정설정  -->
-							<div class="tab-pane fade" id="nav-schedule" role="tabpanel"
-								aria-labelledby="nav-schedule-tab">
-								
-										<div class="d-flex justify-content-end mt-2 mb-2 "  id="buttonGroup"> 
-											<button class="btn btn-secondary btn-sm" id="SsaveBtn">
-												저장</button>
-												<!-- disabled="disabled" -->
-										</div>
-								<div id="scheduleGrid"></div>
-
-								</div>
-								
-								
-							</div>
-
-
-
-
-						</div>
-
-
-					</div>
-
-					<%@ include file="./crclmInstrModal.jsp"%>
 				</div>
-			</main>
-		</div>
+				<!-- 상단 끝 -->
+				<div>
+					<div class="float-start "
+						style="width: 10px; height: 27px; background-color: #498c5f; margin-right: 10px;"></div>
+					<h6 class="mt-3 fw-bolder">교육훈련과정</h6>
+					<div id="grid"></div>
+				</div>
+
+				<div class="mt-3">
+					<!--탭설정 -->
+					<nav>
+						<div class="nav nav-tabs" id="nav-tab" role="tablist">
+							<button class="nav-link active" id="nav-home-tab"
+								data-bs-toggle="tab" data-bs-target="#nav-home" type="button"
+								role="tab" aria-controls="nav-home" aria-selected="true">훈련과정정보</button>
+							<button class="nav-link" id="nav-schedule-tab"
+								data-bs-toggle="tab" data-bs-target="#nav-schedule"
+								type="button" role="tab" aria-controls="nav-schedule"
+								aria-selected="false">과정일정설정</button>
+						</div>
+					</nav>
+					<div class="tab-content" id="nav-tabContent">
+						<!--훈련과정정보  -->
+						<div class="tab-pane fade show active" id="nav-home"
+							role="tabpanel" aria-labelledby="nav-home-tab">
+							<div class="mb-5 inputTotal"
+								style="width: 100%; background-color: #F3FAFE; height: 430px; border: 1px solid #c0c0c0; position: relative;">
+
+								<table
+									style="width: 90%; position: absolute; top: 50%; transform: translateY(-50%) translateX(5%);">
+									<tr style="height: 50px">
+										<td class="col-1" style="text-align: right;">학년도</td>
+										<td class="col-1" colspan="2"><input type="text"
+											numberOnly class="form-control form-control-sm cyear"
+											disabled="disabled"></td>
+										<td class="col-1" style="text-align: right;">훈련과정코드</td>
+										<td class="col-4" colspan="2"><input type="hidden"
+											class="cno">
+											<div class="input-group"
+												style="display: flex; flex-wrap: wrap;">
+												<input type="text" class="form-control form-control-sm ccd"
+													style="width: calc(20%);" aria-describedby="sel" readonly
+													disabled="disabled"> <select
+													class="form-select form-select-sm crclmNameList"
+													disabled="disabled" id="sel" style="width: calc(80%);">
+													<option value="">선택</option>
+													<c:forEach items="${crclmName}" var="cn">
+														<option value="${cn.CD}">${cn.CD_NM}</option>
+													</c:forEach>
+												</select>
+											</div></td>
+										<td class="col-1" style="text-align: right;">훈련과정명</td>
+										<td class="col-4" colspan="5"><input type="text"
+											class="form-control form-control-sm  crclmNameSet "
+											disabled="disabled"></td>
+									</tr>
+									<tr style="height: 50px">
+										<td style="text-align: right;">상/하반기</td>
+										<td colspan="2"><select
+											class="form-select form-select-sm chalf" disabled="disabled">
+												<option value="">선택</option>
+												<option value="0010">상반기</option>
+												<option value="0020">하반기</option>
+										</select></td>
+
+										<td style="text-align: right;">대표강사명</td>
+										<td colspan="2">
+											<div class="input-group "
+												style="display: flex; flex-wrap: wrap;">
+												<input type="text" class="form-control form-control-sm "
+													style="width: calc(30%);" id="instrNo"
+													aria-describedby="sel" readonly disabled="disabled">
+												<input class="form-control form-control-sm instrname"
+													type="text" placeholder="강사명" style="width: calc(55%)"
+													disabled="disabled" />
+												<button class="btn btn-secondary btn-sm" type="button"
+													id="btnInstrSearch" style="width: calc(15%);">
+													<i class="fas fa-search"></i>
+												</button>
+											</div>
+										<td style="text-align: right;">시작일</td>
+										<td colspan="2"><input type="date"
+											class="form-control form-control-sm bgYMD"
+											disabled="disabled"></td>
+										<td style="text-align: right;">종료일</td>
+										<td colspan="2"><input type="date"
+											class="form-control form-control-sm endYMD"
+											disabled="disabled"></td>
+
+									</tr>
+									<tr style="height: 50px">
+										<td style="text-align: right;">모집인원</td>
+										<td colspan="2"><input type="text" numberOnly
+											class="form-control form-control-sm epeople"
+											disabled="disabled"></td>
+										<td style="text-align: right;">훈련비용</td>
+										<td colspan="2"><input type="text" numberOnly
+											class="form-control form-control-sm ecost"
+											disabled="disabled"></td>
+
+
+										<td style="text-align: right;">과정현황</td>
+										<td colspan="2"><select
+											class="form-select form-select-sm schedule"
+											disabled="disabled">
+												<option value="">선택</option>
+												<option value="0010">모집</option>
+												<option value="0020">훈련</option>
+												<option value="0030">수료</option>
+										</select></td>
+										<td style="text-align: right;">종료여부</td>
+										<td colspan="2"><select
+											class="form-select form-select-sm efnYN" disabled="disabled">
+												<option value="">선택</option>
+												<option value="N">N</option>
+												<option value="Y">Y</option>
+										</select></td>
+									</tr>
+
+									<tr>
+										<td style="text-align: right;">훈련내용</td>
+									</tr>
+									<tr>
+										<td></td>
+										<td colspan="11"><textarea class="form-control econtent"
+												style="height: 200px; resize: none;" disabled="disabled"></textarea></td>
+									</tr>
+
+								</table>
+							</div>
+						</div>
+						<!--과정일정설정  -->
+						<div class="tab-pane fade" id="nav-schedule" role="tabpanel"
+							aria-labelledby="nav-schedule-tab">
+
+							<div class="d-flex justify-content-end mt-2 mb-2 "
+								id="buttonGroup">
+								<button class="btn btn-secondary btn-sm" id="SsaveBtn">
+									저장</button>
+								<!-- disabled="disabled" -->
+							</div>
+							<div id="scheduleGrid"></div>
+
+						</div>
+
+
+					</div>
+
+
+
+
+				</div>
+
+
+			</div>
+
+			<%@ include file="./crclmInstrModal.jsp"%>
+	</div>
+	</main>
 	</div>
 	<%@include file="../bar/footer.jsp"%>
 	<script

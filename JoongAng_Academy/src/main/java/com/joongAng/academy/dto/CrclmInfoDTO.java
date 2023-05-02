@@ -1,7 +1,5 @@
 package com.joongAng.academy.dto;
 
-import java.util.List;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -17,6 +15,3 @@ public class CrclmInfoDTO {
 	
 }
 
-/*
- * class rows{ }
- */
