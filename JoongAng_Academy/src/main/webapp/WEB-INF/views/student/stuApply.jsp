@@ -120,8 +120,8 @@ if (session.getAttribute("id") == null) {
 
         					}).done(function(data) {
         						var schedule = data.schedule; 
-        						startTime = schedule[0].SCHDL_BGNG_DT;
-        	        			endTime =  schedule[0].SCHDL_END_DT;
+        						startTime = schedule[0].BGNG_DT;
+        	        			endTime =  schedule[0].END_DT;
         	        			
         					}).fail(function() {
         						alert("문제가 발생했습니다.");
@@ -143,7 +143,7 @@ if (session.getAttribute("id") == null) {
         			var minutes = ('0' + today.getMinutes()).slice(-2);
         			var seconds = ('0' + today.getSeconds()).slice(-2); 
 
-        			var dateString = year + '-' + month  + '-' + day;
+        			var dateString = year + '/' + month  + '/' + day;
         			var timeString = hours + ':' + minutes  + ':' + seconds;
         			var datetime= dateString + " " +timeString;	 
         			
@@ -156,8 +156,11 @@ if (session.getAttribute("id") == null) {
         			this.el = el;
         			this.render(props);
         			this.el.addEventListener('click', (event) => {
+        				/* console.log(datetime);
+        				console.log(startTime);
+        				console.log(endTime); */
         			if(datetime>= startTime && datetime <= endTime){
-        					alert("수강신청기간입니다.");
+        				alert("수강신청기간입니다.");
         				var STDNT_NO=$("#stdntNo").text();
         				var SBJCT_NO= el.getAttribute("data-value");
         				
@@ -521,6 +524,8 @@ if (session.getAttribute("id") == null) {
         </script>
 </head>
 <body class="d-flex flex-column h-100 bg-light">
+
+    
 	<main class="flex-shrink-0">
 		<%@include file="../portalbar/topbar.jsp"%>
 		<!-- Page Content-->

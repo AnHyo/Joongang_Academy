@@ -23,7 +23,7 @@
 			</button>
 		</div>
 	</form>
-	<c:if test="${not empty sessionScope.username}">
+<%-- 	<c:if test="${not empty sessionScope.username}">
 		<div style="color: white;">${sessionScope.username}님</div>
 	</c:if>
 
@@ -38,5 +38,22 @@
 				<li><hr class="dropdown-divider" /></li>
 				<li><a class="dropdown-item logout" href="/logout">로그아웃</a></li>
 			</ul></li>
-	</ul>
+	</ul> --%>
+	
+					<c:if test="${not empty sessionScope.username}">
+					<ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+						<li class="nav-item dropdown"><a
+							class="nav-link dropdown-toggle" id="navbarDropdown" href="#"
+							role="button" data-bs-toggle="dropdown" aria-expanded="false"> 
+							<i class="fas fa-user fa-fw"></i>
+							${sessionScope.username}님</a>
+							<ul class="dropdown-menu dropdown-menu-end"
+								aria-labelledby="navbarDropdown">
+<!-- 								<li><a class="dropdown-item" href="/stuinfoMod">개인정보수정</a></li> -->
+								<li><a class="dropdown-item" href="/pwCheckMod">비밀번호 수정</a></li>
+								<li><hr class="dropdown-divider" /></li>
+								<li><a class="dropdown-item logout" href="/logout">로그아웃</a></li>
+							</ul></li>
+					</ul>
+					</c:if>
 </nav>

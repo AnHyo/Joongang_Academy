@@ -3,7 +3,7 @@
 <!-- Navigation-->
 		<nav class="navbar navbar-expand-lg navbar-light bg-white py-3">
 			<div class="container px-5">
-				<a class="navbar-brand" href="/portal"><span
+				<a class="navbar-brand" href="/stuIndex"><span
 					class="fw-bolder text-success">중앙정보처리학원</span></a>
 				<button class="navbar-toggler" type="button"
 					data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
@@ -12,8 +12,8 @@
 					<span class="navbar-toggler-icon"></span>
 				</button>
 				<div class="collapse navbar-collapse" id="navbarSupportedContent">
-					<ul class="navbar-nav ms-auto mb-2 mb-lg-0 small fw-bolder">
-						<li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+					<ul class="navbar-nav ms-auto mb-2 mb-lg-0 small" style="font-weight: bolder;">
+						<li class="nav-item"><a class="nav-link" href="/stuIndex">Home</a></li>
 						<li class="nav-item"><a class="nav-link" href="/stuApply">수강신청</a></li>
 						<li class="nav-item"><a class="nav-link" href="">설문조사</a></li>
 						<li class="nav-item"><a class="nav-link" href="">출결확인</a></li>

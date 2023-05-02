@@ -104,6 +104,9 @@ body {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
+
+
+
 hr {
   margin: 1rem 0;
   color: inherit;
@@ -3104,7 +3107,7 @@ textarea.form-control-lg {
 .btn-outline-info {
   --bs-btn-color: #0dcaf0;
   --bs-btn-border-color: #0dcaf0;
-  --bs-btn-hover-color: #000;
+  --bs-btn-hover-color: #eee;
   --bs-btn-hover-bg: #0dcaf0;
   --bs-btn-hover-border-color: #0dcaf0;
   --bs-btn-focus-shadow-rgb: 13, 202, 240;
@@ -3116,6 +3119,7 @@ textarea.form-control-lg {
   --bs-btn-disabled-bg: transparent;
   --bs-btn-disabled-border-color: #0dcaf0;
   --bs-gradient: none;
+   
 }
 
 .btn-outline-warning {
@@ -3133,6 +3137,8 @@ textarea.form-control-lg {
   --bs-btn-disabled-bg: transparent;
   --bs-btn-disabled-border-color: #ffc107;
   --bs-gradient: none;
+  
+
 }
 
 .btn-outline-danger {
