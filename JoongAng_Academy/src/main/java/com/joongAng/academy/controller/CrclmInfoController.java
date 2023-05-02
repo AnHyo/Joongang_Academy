@@ -52,17 +52,16 @@ public class CrclmInfoController {
 	public String newCrclmAjax(@RequestBody CrclmInfoDTO crclmInfoDTO) {
 
 		JSONObject json = new JSONObject();
-		// db에 중복갯수 검사
+		// DB에 중복갯수 검사
 		int ck = crclmInfoService.checkCrclmAjax(crclmInfoDTO);
 
-		//System.err.println("같은 갯수 :" + ck);
 		if (ck != 1) {
 			int result = crclmInfoService.newCrclmAjax(crclmInfoDTO);
 			List<Map<String, Object>> list2 = crclmInfoService.listCrclmAjax(crclmInfoDTO);
 			json.put("saveResult", result);
 			json.put("saveAfter", list2);
 			
-			//훈련과정 신규저장시 과정일정설정(RCLM_SCHDL)에 데이터 생성
+			//훈련과정 신규저장시 과정일정설정(CRCLM_SCHDL)에 데이터 생성
 			//1.공통데이터상에 과정일정 코드 갯수 확인
 			int codeNumber = crclmInfoService.countCodeNum();
 			//2. RCLM_SCHDL에 과정일정 데이터 생성
@@ -76,6 +75,7 @@ public class CrclmInfoController {
 			}
 
 		} else {
+			//중복이 있음을 jsp단으로 전송
 			json.put("ck", "dup");
 		}
 
@@ -132,7 +132,7 @@ public class CrclmInfoController {
 		JSONObject json = new JSONObject();
 		System.err.println(updateRow);
 		int result = crclmInfoService.updateSchedule(updateRow);
-		System.err.println("결과 : "+ result);
+		//System.err.println("결과 : "+ result);
 		// System.err.println(sList);
 		//json.put("sList", sList);
 
