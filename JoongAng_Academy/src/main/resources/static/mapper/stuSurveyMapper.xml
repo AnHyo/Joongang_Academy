@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.joongAng.academy.dao.StuSurveyDAO">
+
+<select id="surveySbj" resultType="HashMap" parameterType="HashMap">
+	SELECT s.STDNT_NO , s.SBJCT_NO , s.SBJCT_NM ,s.KORN_FLNM ,s.ESNTL_YN ,s.DGSTFN_SFDATE ,s.DGSTFN_TITLE , s.DGSTFN_INTRO, s.BUTTON      
+	FROM applyclssurveyview s
+	WHERE STDNT_NO = #{student_ID }
+</select>
+
+<select id="surveyTI" resultType="StuSurveyDTO" parameterType="StuSurveyDTO">
+	SELECT DGSTFN_TITLE , DGSTFN_INTRO 
+	FROM applyclssurveyview
+	WHERE STDNT_NO = #{student_ID }
+	AND SBJCT_NO = #{sbjctNo }
+</select>
+
+<select id="surveyIn" resultType="StuSurveyDTO" parameterType="StuSurveyDTO">
+	SELECT *,CONCAT('설문', DGSTFN_NO) AS DGSTFN_NM
+	FROM APPL_DGSTFN_ITEM
+	WHERE CRCLM_CD = #{cCd } 
+	AND CRCLM_YEAR  = #{cYear }
+	AND CRCLM_HALF = #{cHalf }
+	AND SBJCT_NO  = #{sbjctNo }
+	AND QITEM_CD ='0010'
+</select>
+
+<select id="surveyIn2" resultType="StuSurveyDTO" parameterType="StuSurveyDTO">
+	SELECT *,CONCAT('설문', DGSTFN_NO) AS DGSTFN_NM
+	FROM APPL_DGSTFN_ITEM
+	WHERE CRCLM_CD = #{cCd } 
+	AND CRCLM_YEAR  = #{cYear }
+	AND CRCLM_HALF = #{cHalf }
+	AND SBJCT_NO  = #{sbjctNo }
+	AND QITEM_CD ='0020'
+</select>
+
+<select id="code" resultType="StuSurveyDTO" parameterType="StuSurveyDTO">
+	SELECT CD, CD_NM 
+	FROM CODE_INFO
+	WHERE CD_CLSF ='0016'
+</select>
+
+</mapper>
