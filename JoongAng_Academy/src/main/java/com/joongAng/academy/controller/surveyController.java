@@ -126,8 +126,8 @@ public class surveyController {
 	public String surveyANS() {
 		JSONObject json = new JSONObject();
 		List<Map<String, Object>> anslist = surveyService.anslist(); 
-			json.put("anslist", anslist);
-			//System.out.println("객관");//
+		json.put("anslist", anslist);
+		//System.out.println("객관");//
 		return json.toString();
 	}
 	
@@ -142,5 +142,13 @@ public class surveyController {
 		return json.toString();
 	}
 
+	//강사조회 페이지
+	@GetMapping("/surveyResult")
+	public String surveyResult() {
+		
+		return "instr/surveyResult";
+	}
+	
+	
 
 }

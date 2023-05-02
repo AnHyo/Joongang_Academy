@@ -21,9 +21,7 @@
 	crossorigin="anonymous"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
 <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
-<script src="js/survey/survey.js"></script>
-<!-- <script src="js/survey/surveydetail.js"></script> -->
-<!-- <script src="js/survey/surveyatnd.js"></script> -->
+<script src="js/survey/surveyResult.js"></script>
 <style type="text/css">
 ml-10 {
 	margin-left: 10px;
