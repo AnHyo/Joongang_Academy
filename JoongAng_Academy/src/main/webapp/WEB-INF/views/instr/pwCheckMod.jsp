@@ -146,7 +146,7 @@ if (session.getAttribute("id") == null) {
 </head>
 <body class="d-flex flex-column h-100 bg-light">
 	<main class="flex-shrink-0">
-		<%@include file="../portalbar/topbar.jsp"%>
+		<%@include file="../portalbar/instrtopbar.jsp"%>
 		<input type="hidden" id="loginID" value="${sessionScope.id}">
 		<!-- Page Content-->
 		<div class="container px-5  my-5" id="checkdiv">

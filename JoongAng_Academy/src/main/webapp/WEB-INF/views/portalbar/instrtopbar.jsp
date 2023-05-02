@@ -3,8 +3,8 @@
 <!-- Navigation-->
 		<nav class="navbar navbar-expand-lg navbar-light bg-white py-3">
 			<div class="container px-5">
-				<a class="navbar-brand" href="/portal"><span
-					class="fw-bolder text-success">중앙정보처리학원</span></a>
+				<a class="navbar-brand" href="index.html"><span
+					class="fw-bolder text-primary">Start Bootstrap</span></a>
 				<button class="navbar-toggler" type="button"
 					data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
 					aria-controls="navbarSupportedContent" aria-expanded="false"
@@ -14,9 +14,17 @@
 				<div class="collapse navbar-collapse" id="navbarSupportedContent">
 					<ul class="navbar-nav ms-auto mb-2 mb-lg-0 small fw-bolder">
 						<li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-						<li class="nav-item"><a class="nav-link" href="/stuApply">수강신청</a></li>
-						<li class="nav-item"><a class="nav-link" href="">설문조사</a></li>
-						<li class="nav-item"><a class="nav-link" href="">출결확인</a></li>
+						<li class="nav-item"><a class="nav-link" href="resume.html">출결관리</a></li>
+						<li class="nav-item"><a class="nav-link" href="projects.html">설문조사</a></li>
+							<li class="nav-item dropdown"><a
+							class="nav-link dropdown-toggle" id="navbarDropdown" href="#"
+							role="button" data-bs-toggle="dropdown" aria-expanded="false">강의관리</a>
+							<ul class="dropdown-menu dropdown-menu-end"
+								aria-labelledby="navbarDropdown">
+								<li><a class="dropdown-item" href="/stuinfoMod">강의계획서관리</a></li>
+								<li><hr class="dropdown-divider" /></li>
+								<li><a class="dropdown-item" href="/pwCheckMod">강의시간표조회</a></li>
+							</ul></li>
 					</ul>
 					
 					<c:if test="${not empty sessionScope.username}">

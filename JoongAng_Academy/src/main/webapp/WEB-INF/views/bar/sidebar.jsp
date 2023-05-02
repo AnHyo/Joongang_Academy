@@ -58,8 +58,24 @@
 					<nav class="sb-sidenav-menu-nested nav">
 						<a class="nav-link" href="crclmInfo">교육훈련과정 정보관리</a> 
 						<a class="nav-link" href="estmg">개설교과목관리</a>
-						<a class="nav-link" href="">과목관리</a>
+						<a class="nav-link" href="sbjctMG">과목관리</a>
 						<a class="nav-link" href="planmg">강의계획서관리</a>
+					</nav>
+				</div>
+				<a class="nav-link collapsed" href="#" data-bs-toggle="collapse"
+					data-bs-target="#collapseLayouts4" aria-expanded="false"
+					aria-controls="collapseLayouts">
+					<div class="sb-nav-link-icon">
+					</div> 수강신청관리
+					<div class="sb-sidenav-collapse-arrow">
+						<i class="fas fa-angle-down"></i>
+					</div>
+				</a>
+				<div class="collapse" id="collapseLayouts4"
+					aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+					<nav class="sb-sidenav-menu-nested nav">
+						<a class="nav-link" href="adminApply">수강신청</a> 
+						<a class="nav-link" href="adminApplyList">수강신청내역</a>
 					</nav>
 				</div>
 

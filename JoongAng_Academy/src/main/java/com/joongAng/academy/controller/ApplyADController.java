@@ -52,6 +52,16 @@ public class ApplyADController {
 
 		return json.toString();
 	}
+	
+	@ResponseBody
+	@PostMapping(value = "/scheduleAjax", produces = "application/json;charset=UTF-8")
+	public String scheduleAjax(@RequestParam Map<String, Object> map) {
+		JSONObject json = new JSONObject();
+		List<Map<String, Object>> schedule = applyService.schedule(map);
+		JSONArray scheduleJ = new JSONArray(schedule);
+		json.put("schedule", scheduleJ);
+		return json.toString();
+	}
 
 	@ResponseBody
 	@PostMapping(value = "/stuinfoAjax", produces = "application/json;charset=UTF-8")
