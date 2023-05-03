@@ -30,10 +30,11 @@
 	<select id="stdntList" parameterType="HashMap" resultType="HashMap">
 		SELECT CRCLM_CD as crclm_cd, CRCLM_YEAR as crclm_year, CRCLM_HALF as crclm_half, SBJCT_NO as sbjct_no
 			, STDNT_NO as stdnt_no, (SELECT KORN_FLNM FROM APPL_INFO ai WHERE ai.STDNT_NO = APPL_ATND.STDNT_NO) as stdnt_name
-			, CAST(COUNT(CASE WHEN ATND_CD != '0030' THEN 1 END) AS CHAR(1)) AS atnd_hour, CAST(COUNT(CASE WHEN ATND_CD = '0030' THEN 1 END) AS CHAR(1)) AS notAtnd_hour
+			, CAST(COUNT(CASE WHEN ATND_CD != '0030' THEN 1 END) AS CHAR(10)) AS atnd_hour, CAST(COUNT(CASE WHEN ATND_CD = '0030' THEN 1 END) AS CHAR(10)) AS notAtnd_hour
 		FROM APPL_ATND
 		WHERE CRCLM_CD = #{crclm_cd } AND CRCLM_YEAR = #{crclm_year } AND CRCLM_HALF = #{crclm_half } AND SBJCT_NO = #{sbjct_no }
 		GROUP BY STDNT_NO
+		ORDER BY stdnt_name
 	</select>
 	
 	<select id="dayAtndList" parameterType="HashMap" resultType="HashMap">
@@ -62,9 +63,17 @@
 	</update>
 	
 	<select id="checkSchdlYN" parameterType="HashMap" resultType="HashMap">
-		SELECT COUNT(CASE WHEN CRCLM_SCHDL_CD = '0020' THEN 1 END) AS countCrclm, COUNT(CASE WHEN SCHDL_FIN = 'Y' THEN 1 END) AS countY
+		SELECT COUNT(CASE WHEN CRCLM_SCHDL_CD = '0020' THEN 1 END) AS countCrclm, COUNT(CASE WHEN CRCLM_SCHDL_CD = '0020' AND SCHDL_FIN = 'Y' THEN 1 END) AS countY
 		FROM CRCLM_SCHDL
 		WHERE CRCLM_YEAR = #{crclm_year } AND CRCLM_HALF = #{crclm_half }
 	</select>
+	
+	<insert id="createAtnd" parameterType="HashMap">
+		INSERT INTO APPL_ATND (CRCLM_CD, CRCLM_YEAR, CRCLM_HALF, SBJCT_NO, STDNT_NO, LECT_YMD, CLS_CD, ATND_CD)
+		SELECT ac.CRCLM_CD, ac.CRCLM_YEAR, ac.CRCLM_HALF, ac.SBJCT_NO, ac.STDNT_NO, ltd.LECT_YMD, ltd.CLS_CD, '0010' AS ATND_CD
+		FROM APPL_CLS ac
+		JOIN LECT_TM_DTL ltd ON ac.CRCLM_CD = ltd.CRCLM_CD AND ac.CRCLM_YEAR = ltd.CRCLM_YEAR AND ac.CRCLM_HALF = ltd.CRCLM_HALF AND ac.SBJCT_NO = ltd.SBJCT_NO
+		WHERE ac.CRCLM_YEAR = #{crclm_year } AND ac.CRCLM_HALF = #{crclm_half }
+	</insert>
 
 </mapper>

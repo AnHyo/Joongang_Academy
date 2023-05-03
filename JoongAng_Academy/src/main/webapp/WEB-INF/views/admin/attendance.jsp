@@ -44,6 +44,9 @@
 	cursor: pointer;
 	text-align: center;
 }
+.tui-grid-cell.selectedRow{
+	background-color: #edfdf2;
+}
 </style>
 <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
 <!-- 그리드 -->
@@ -60,7 +63,7 @@
 					showHorizontalBorder : true
 				},
 				header : {
-					background : '#f2f2f2',
+					background : '#f9f9f9',
 					border : '#e0e0e0'
 				},
 				selectedHeader : {
@@ -102,7 +105,7 @@
 			}, {
 				header : '개설과목',
 				name : 'sbjct_name',
-				width : 350,
+				width : 250,
 			}, {
 				header : '필수구분',
 				name : 'esntl_yn',
@@ -122,7 +125,7 @@
 			}, {
 				header : '강의시간',
 				name : 'cls_dayhour',
-				width : 300
+				width : 200
 			}, {
 				header : '강의실',
 				name : 'cls_room',
@@ -179,11 +182,11 @@
 			
 			bodyHeight : 230,
 			
-			columnStyles: {
-			    age: {
-			      fontSize: '16px'
-			    }
+			columnOptions: {
+			    frozenCount: 4, 
+			    frozenBorderWidth: 1
 			}
+			
 		});
 		
 		const stuAtndList = new tui.Grid({
@@ -270,11 +273,15 @@
 			}).done(function(data){
 				//alert("성공");
 				lectureList.resetData(data.crclmList);
+				
+				
 			}).fail(function(xhr){
 				alert("문제발생");
 			});
 			
 		});
+		
+		
 		
 // ---- 강의목록 행 클릭 ----
 		lectureList.on('click', function(ev){
@@ -283,11 +290,30 @@
 			
 			let rowKey = ev.rowKey;
 			let row = lectureList.getRow(rowKey);		// 행
-			let crclm_cd = lectureList.getValue(rowKey, 'crclm_cd');			// 해당 행의 hidden 컬럼을 가져오기.
+			let crclm_cd = lectureList.getValue(rowKey, 'crclm_cd');			
 			let crclm_year = lectureList.getValue(rowKey, 'crclm_year');		
 			let crclm_half = lectureList.getValue(rowKey, 'crclm_half');
 			let sbjct_no = lectureList.getValue(rowKey, 'sbjct_no');
 			alert(crclm_cd + " / " + crclm_year + " / " + crclm_half + " / " + sbjct_no);
+			
+			// 행 클릭시 하이라이팅 주기
+			console.log(lectureList.getRowClassName(rowKey));
+			/*
+			if(lectureList.getRowClassName(rowKey)){
+				lectureList.removeRowClassName(rowKey, 'selectedRow');
+			}
+			*/
+			rowKey = ev.rowKey
+			lectureList.addRowClassName(rowKey, 'selectedRow');
+			
+			/*
+			lectureList.setSelectionRange({
+				start: [rowKey, 0],
+				end: [rowKey, lectureList.getColumns().length]
+			});
+			*/
+			
+			
 			
 			$.post({
 				url : "/atndList",
@@ -390,6 +416,11 @@
 			
 			let lectureDay = crclm_year + columnName.replace('.','');
 			alert(crclm_cd + " / " + crclm_year + " / " + crclm_half + " / " + sbjct_no + " / " + stdnt_no + " / " + lectureDay);
+			
+			atndList.setSelectionRange({
+				start: [rowKey, 0],
+				end: [rowKey, atndList.getColumns().length]
+			});
 			
 			$("#stdnt_no").html(stdnt_no);
 			$("#stdnt_name").html(stdnt_name);
@@ -586,7 +617,8 @@
 						},
 						dataType : "json"
 					}).done(function(data){
-						alert("생성성공!");
+						//alert("생성성공!");
+						
 					}).fail(function(xhr){
 						
 					});
@@ -611,8 +643,8 @@
 	<%-- 	<%@include file="../bar/sidebar.jsp"%> --%>
 	<div id="layoutSidenav_content">
 		<main>
-			<div class="container-fluid px-4">
-				<div class="mt-4 position-relative row">
+			<div class="container-fluid px-4" >
+				<div class="mt-1 position-relative row" >
 					<div style="width: 30px;">
 						<img src="./image/joongang_logo.png" style="width: 25px;">
 					</div>
@@ -621,21 +653,21 @@
 					</div>
 				</div>
 
-				<div class="mt-2 mb-1"
+				<div class="mt-2 mb-3"
 					style="width: 100%; height: 1px; background-color: #c1c2c2;"></div>
 
 				<div class="mt-2 marginPadding0 position-relative"
 					style="width: 100%; height: 31px;">
 					<div class="float-start"
 						style="width: 300px; height: auto; padding: 0;">
-						<button type="button" id="createAtndList" class="btn btn-sm btn-secondary">출석부생성</button>
-						<button type="button" class="btn btn-sm btn-secondary">출석부출력</button>
-						<button type="button" class="btn btn-sm btn-secondary">수강신청명단</button>
+						<button type="button" id="createAtndList" class="btn btn-secondary" style="height:27px; font-size: 13px; line-height:10px;">출석부생성</button>
+						<!-- <button type="button" class="btn btn-secondary" style="height:27px; font-size: 13px; line-height:10px";>출석부출력</button>-->
+						<button type="button" class="btn btn-secondary" style="height:27px; font-size: 13px; line-height:10px";>수강신청명단</button>
 					</div>
 					<div class="float-end"
-						style="width: 50px; height: auto; padding: 0;">
+						style="width: 75px; height: auto; padding: 0;">
 						<button type="button" id="getCrclmList"
-							class="btn btn-sm btn-secondary">조회</button>
+							class="btn btn-success" style="width: 75px; height:28px; font-size: 14px; line-height:10px;">조회</button>
 						<!-- 
 						<button type="button" id="delCrclmList"
 							class="btn btn-sm btn-secondary" disabled>삭제</button>
@@ -646,7 +678,7 @@
 				</div>
 
 				<div class="mt-2">
-					<div class="position-relative justify-content-center" style="display: flex; width: 100%; height: 45px; font-weight: bold; padding: 10px 0 10px 0; background-color: #eef4f8;">
+					<div class="position-relative justify-content-center" style="display: flex; width: 100%; height: 45px; font-weight: bold;  padding: 10px 0 10px 0; margin:10px 0; border-style:solid; border-width: 1px; border-color: lightgray;">
 						<div style="width: 70px; height: 25px; font-size: 14px; text-align: right; line-height: 25px; margin: 0 10px 0 0;">
 							학년도
 						</div>
@@ -744,13 +776,13 @@
 								</div>
 							</div>
 							<div class="mt-2 position-relative"
-								style="display: flex; width: 100%; height: 30px; line-height: 27px; padding: 0; font-weight: bold; font-size: 14px; border: solid 1px; background-color: lightgray;">
+								style="display: flex; width: 100%; height: 30px; line-height: 27px; padding: 0; font-weight: bold; font-size: 14px; background-color:#f9f9f9; border-style:solid; border-width: 1px; border-color: lightgray;">
 								<div style="width: 50px; text-align: center;">학번</div>
 								<div id="stdnt_no"
-									style="width: 150px; text-align: center; color: navy;"></div>
+									style="width: 150px; text-align: center; color: #08559c;"></div>
 								<div style="width: 50px; text-align: center;">이름</div>
 								<div id="stdnt_name"
-									style="width: 150px; text-align: center; color: navy;"></div>
+									style="width: 150px; text-align: center; color: #08559c;"></div>
 							</div>
 							<div class="mt-2"
 								style="width: 100%; text-align: center; font-size: 14px;">

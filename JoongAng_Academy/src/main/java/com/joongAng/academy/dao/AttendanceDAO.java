@@ -24,5 +24,7 @@ public interface AttendanceDAO {
 
 	Map<String, Object> checkSchdlYN(Map<String, Object> map);
 
+	int createAtnd(Map<String, Object> map);
+
 
 }
