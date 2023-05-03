@@ -3,15 +3,11 @@ package com.joongAng.academy.controller;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -126,12 +122,14 @@ public class AttendanceController {
 		return json.toString();
 	}
 	
+// ---- 수강신청내역으로 출석부생성 ----
 	@ResponseBody
 	@PostMapping("/createAtnd")
 	public String createAtnd(@RequestParam Map<String, Object> map ) {
+		
+		int createResult = atndService.createAtnd(map);
+		
 		JSONObject json = new JSONObject();
-		
-		
 		
 		return json.toString();
 	}
