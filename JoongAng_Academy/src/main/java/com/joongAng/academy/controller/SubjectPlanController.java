@@ -1,5 +1,6 @@
 package com.joongAng.academy.controller;
 
+import java.net.http.HttpRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,6 +79,7 @@ public class SubjectPlanController {
 		      }
 		}
 		int resultPlan = planService.savePlan(map);
+		int resultPlanYN = planService.planYN(map);
 		int resultEstOn = planService.estOn(map);
 		json.put("result", resultPlan);
 		return json.toString();
@@ -95,6 +97,7 @@ public class SubjectPlanController {
 				map.put(key.toString(), value);
 			}
 		}
+		System.out.println(map);
 		int result = planService.updatePlanDetail(map);
 		json.put("result", result);
 		return json.toString();
@@ -132,5 +135,11 @@ public class SubjectPlanController {
 		int resultDetail = planService.deleteDetail(map);
 		json.put("result", resultDetail);
 		return json.toString();
+	}
+	
+	@GetMapping("/insSubPlan")
+	public ModelAndView insSubPlan(HttpServletRequest request) {
+		ModelAndView mv = new ModelAndView("/instr/SbjctPlan");
+		return mv;
 	}
 }

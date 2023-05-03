@@ -231,16 +231,16 @@ public class EstablishedSubjectController {
 	@PostMapping(value = "/estDelete", produces = "application/json;charset=UTF-8")
 	public String estDelete(HttpServletRequest request) {
 		JSONObject json = new JSONObject();
-		String crc = request.getParameter("crc");
-		String year = request.getParameter("year");
-		String hlf = request.getParameter("hlf");
-		String sbjno= request.getParameter("sbjno");
+		Map<String, String[]> reqmap = request.getParameterMap();
 		Map<String,Object> map = new HashMap<String, Object>();
-		map.put("crc", crc);
-		map.put("year", year);
-		map.put("hlf", hlf);
-		map.put("sbjno", sbjno);
+		for (String key : reqmap.keySet()) {
+			String[] values = reqmap.get(key);
+			for (String value : values) {
+				map.put(key.toString(), value);
+			}
+		}
 		int result = estService.estDelete(map);
+		json.put("result", result);
 		return json.toString();
 	}
 }

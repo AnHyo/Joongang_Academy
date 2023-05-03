@@ -24,4 +24,6 @@ public interface SubjectPlanDAO {
 
 	int deleteDetail(Map<String, Object> map);
 
+	int planYN(Map<String, Object> map);
+
 }
