@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @Mapper
-public interface AttendanceInstrDAO {
+public interface AtndInstrDAO {
 
 	List<Map<String, Object>> crclmList(Map<String, Object> map);
 
