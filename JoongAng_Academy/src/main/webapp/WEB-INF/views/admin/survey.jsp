@@ -1,6 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%-- <%
+if (session.getAttribute("id") == null) {
+	response.sendRedirect("/login");
+}
+%> --%>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -21,7 +26,7 @@
 	crossorigin="anonymous"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
 <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
-<script src="js/survey/surveyResult.js"></script>
+<script src="js/survey/survey.js"></script>
 <style type="text/css">
 ml-10 {
 	margin-left: 10px;

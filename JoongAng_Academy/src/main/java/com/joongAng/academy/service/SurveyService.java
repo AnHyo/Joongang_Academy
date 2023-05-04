@@ -34,6 +34,10 @@ public class SurveyService {
 		return surveyDAO.ITEMCreate(map);
 	}
 
+	public boolean checknoExists(Map<String, Object> map) {
+		return surveyDAO.checknoExists(map);
+	}
+	
 	public int ITEMUpdate(List<Map<String, Object>> updateData) {
 		return surveyDAO.ITEMUpdate(updateData);
 	}
@@ -45,4 +49,23 @@ public class SurveyService {
 	public List<Map<String, Object>> stdntlist(Map<String, String> map) {
 		return surveyDAO.stdntlist(map);
 	}
+
+	public List<Map<String, Object>> surveySbj(String loginID) {
+		return surveyDAO.surveySbj(loginID);
+	}
+
+	public List<Map<String, Object>> ResultDetailAjax(Map<String, String> map) {
+		return surveyDAO.ResultDetailAjax(map);
+	}
+
+	public List<Map<String, Object>> dgstfnNo(Map<String, String> map) {
+		return surveyDAO.dgstfnNo(map);
+	}
+
+	public List<Map<String, Object>> ResultDetailAjax2(Map<String, String> map) {
+		// TODO Auto-generated method stub
+		return surveyDAO.ResultDetailAjax2(map);
+	}
+
+	
 }

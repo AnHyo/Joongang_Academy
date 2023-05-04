@@ -20,10 +20,21 @@ public interface SurveyDAO {
 
 	public int ITEMCreate(Map<String, Object> map);
 
+	public boolean checknoExists(Map<String, Object> map);
+	
 	public int ITEMUpdate(List<Map<String, Object>> updateData);
 
 	public int ITEMdelete(List<Map<String, Object>> deleteData);
 
 	public List<Map<String, Object>> stdntlist(Map<String, String> map);
+
+	public List<Map<String, Object>> surveySbj(String loginID);
+
+	public List<Map<String, Object>> ResultDetailAjax(Map<String, String> map);
+
+	public List<Map<String, Object>> dgstfnNo(Map<String, String> map);
+
+	public List<Map<String, Object>> ResultDetailAjax2(Map<String, String> map);
+
 
 }

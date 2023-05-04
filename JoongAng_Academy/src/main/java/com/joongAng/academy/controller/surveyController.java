@@ -79,11 +79,19 @@ public class surveyController {
 	@PostMapping(value = "/ITEMCreate", produces = "application/json;charset=UTF-8")
 	public String ITEMCreate(@RequestParam Map<String, Object> map,HttpServletRequest request){
 		JSONObject json = new JSONObject();
-		int result = surveyService.ITEMCreate(map); 
-		//System.err.println(map.get("CRCLM_YEAR")); //ok
-		json.put("result", result);
-		//System.err.println(result); //1
-	return json.toString();
+	
+		boolean noExists = surveyService.checknoExists(map);
+		//중복문항번호 검사
+		if(noExists) {
+			json.put("result", "exist");
+			return json.toString();
+		} else {
+			int result = surveyService.ITEMCreate(map); 
+			//System.err.println(map.get("CRCLM_YEAR")); //ok
+			json.put("result", result);
+			System.err.println(result); //1
+			return json.toString();
+		}
 	}
 	
 	//문항정보 수정
@@ -141,7 +149,9 @@ public class surveyController {
 		//System.out.println("객관");//
 		return json.toString();
 	}
-
+	
+//--------------------------------------
+	
 	//강사조회 페이지
 	@GetMapping("/surveyResult")
 	public String surveyResult() {
@@ -149,6 +159,47 @@ public class surveyController {
 		return "instr/surveyResult";
 	}
 	
+	@ResponseBody
+	@PostMapping(value = "surveyResultAjax", produces = "application/json;charset=UTF-8")
+	public String surveyResultAjax(@RequestParam(value="loginID", required=false) String loginID) {
+		JSONObject json = new JSONObject();
+		
+		List<Map<String, Object>> surveySbj = surveyService.surveySbj(loginID); 
+		//System.err.println(surveySbj);
+		JSONArray list = new JSONArray(surveySbj);
+		json.put("list", list);
+		
+		return json.toString();
+	}
 	
+	
+	//강사조회_디테일 페이지
+	@GetMapping("/surveyResultDetail")
+	public String surveyResultDetail() {
+		
+		return "instr/surveyResultDetail";
+	}
+	
+	
+	@ResponseBody
+	@PostMapping(value = "ResultDetailAjax", produces = "application/json;charset=UTF-8")
+	public String ResultDetailAjax(@RequestParam Map<String, String> map) {
+		JSONObject json = new JSONObject();
+		
+		//설문조사결과
+		List<Map<String, Object>> resultDetail = surveyService.ResultDetailAjax(map); 
+		//JSONArray resultDetail = new JSONArray(resultDetail);
+		json.put("resultDetail", resultDetail);
+		
+		
+		List<Map<String, Object>> dgstfnNo = surveyService.dgstfnNo(map); 
+		json.put("dgstfnNo", dgstfnNo);
+		
+		//총계표
+		List<Map<String, Object>> resultDetail2 = surveyService.ResultDetailAjax2(map); 
+		json.put("resultDetail2", resultDetail2);
+		
+		return json.toString();
+	}
 
 }
