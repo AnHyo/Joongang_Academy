@@ -2,7 +2,8 @@
 	pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
-if (session.getAttribute("id") == null) {
+String id = (String) session.getAttribute("id");
+if (id == null) {
 	response.sendRedirect("/login");
 }
 %>
@@ -39,10 +40,224 @@ if (session.getAttribute("id") == null) {
 	href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
 <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
 
+<style type="text/css">
+.tui-grid-cell {
+	font-size: 13px;
+}
+
+.marginPadding0 {
+	margin: 0;
+	padding: 0;
+}
+
+.textheight25 {
+	height: 25px;
+}
+
+.tui-grid-cell-content {
+	text-align: center;
+}
+
+.tui-grid-body-area {
+	cursor: pointer;
+	text-align: center;
+}
+.tui-grid-cell.selectedRow{
+	background-color: #edfdf2;
+}
+</style>
 
 <script>
 	$(function() {
+		
+		tui.Grid.applyTheme('default', {
+			cell : {
+				normal : {
+					background : '#fff',
+					border : '#e0e0e0',
+					showVerticalBorder : false,
+					showHorizontalBorder : true
+				},
+				header : {
+					background : '#f9f9f9',
+					border : '#e0e0e0'
+				},
+				selectedHeader : {
+					background : '#e0e0e0'
+				}
+			}
+		});
 
+		const sbjctList = new tui.Grid({
+
+			el : document.getElementById('sbjctList'),
+			scrollX : false,
+			scrollY : true,
+			rowHeight : 30,
+			minRowHeight : 30,
+			header : {
+				height : 30
+			},
+			columns : [ {
+				header : '훈련과정코드',
+				name : 'CRCLM_CD',
+				hidden : true
+			},{
+				header : '학년도',
+				name : 'CRCLM_YEAR',
+				hidden : true
+			}, {
+				header : '기간',
+				name : 'CRCLM_HALF',
+				hidden : true
+			}, {
+				header : '과목코드',
+				name : 'SBJCT_NO',
+			}, {
+				header : '필수구분',
+				name : 'ESNTL_YN',
+				width : 80,
+			}, {
+				header : '과목명',
+				name : 'SBJCT_NM',
+				width : 200,
+			}, {
+				header : '담당강사',
+				name : 'KORN_FLNM',
+				width : 80
+			}, {
+				header : '강의시간',
+				name : 'cls_dayhour',
+				width : 180
+			}, {
+				header : '강의실',
+				name : 'ROOM_NM',
+				width : 100
+			} ],
+			
+			bodyHeight : 500,
+
+		});
+		
+		const atndDetailList = new tui.Grid({
+
+			el : document.getElementById('atndDetailList'),
+			scrollX : false,
+			scrollY : true,
+			rowHeight : 30,
+			minRowHeight : 30,
+			header : {
+				height : 30
+			},
+			columns : [ {
+				header : '훈련과정코드',
+				name : 'CRCLM_CD',
+				hidden : true
+			},{
+				header : '학년도',
+				name : 'CRCLM_YEAR',
+				hidden : true
+			}, {
+				header : '기간',
+				name : 'CRCLM_HALF',
+				hidden : true
+			}, {
+				header : '주차',
+				name : 'WEEK_NUM',
+				width : 70
+			}, {
+				header : '수업일자',
+				name : 'LECT_YMD',
+			}, {
+				header : '요일',
+				name : 'LECT_DAY',
+				width : 70,
+			}, {
+				header : '교시',
+				name : 'CLS_KORN',
+				width : 70
+			}, {
+				header : '출결',
+				name : 'ATND_KORN',
+				width : 70
+			}, {
+				header : '비고',
+				name : 'RMRK',
+				width : 70
+			} ],
+			
+			bodyHeight : 500,
+
+		});
+		
+// ---- 내 정보	----	
+		const id = '<%= id %>';
+		
+		$.post({
+			url : "/atnd_stdntInfo",
+			data : { "id" : id },
+			dataType : "json"
+		}).done(function(data){
+			$("#year").html(data.stdntInfo.CRCLM_YEAR);
+			$("#half").html(data.stdntInfo.CRCLM_HALF);
+			$("#crclmName").html(data.stdntInfo.CRCLM_NM);
+		}).fail(function(xhr){
+			
+		});
+				
+// ---- 조회버튼 : 강의목록 ------		
+		$("#getCrclmList").click(function(){
+			
+			alert("학생아이디 : " + id)
+			atndDetailList.resetData([]);
+			
+			let searchSbjct = $.trim($("#searchSbjct").val());
+			alert("과목명 : " + searchSbjct);
+			
+			$.post({
+				url : "/atndStdnt_sbjctList",
+				data : {
+					"id" : id,
+					"searchSbjct" : searchSbjct,
+				},
+				dataType : "json"
+			}).done(function(data){
+				//alert("성공");
+				sbjctList.resetData(data.sbjctList);
+				
+			}).fail(function(xhr){
+				alert("문제발생");
+			});
+			
+		});
+
+// ---- 강의목록 행 클릭 ----
+		sbjctList.on('click',function(ev){
+			
+			let rowKey = ev.rowKey;
+			let row = sbjctList.getRow(rowKey);
+			let crclm_cd = sbjctList.getValue(rowKey, 'CRCLM_CD');
+			let crclm_year = sbjctList.getValue(rowKey, 'CRCLM_YEAR');		
+			let crclm_half = sbjctList.getValue(rowKey, 'CRCLM_HALF');
+			let sbjct_no = sbjctList.getValue(rowKey, 'SBJCT_NO');
+			alert(crclm_cd + " / " + crclm_year + " / " + crclm_half + " / " + sbjct_no);
+			
+			$.post({
+				url : "/atndStdnt_atndList",
+				data : { "id" : id },
+				dataType : "json"
+			}).done(function(data){
+				
+				atndDetailList.resetData(data.atndList);
+				
+			}).fail(function(xhr){
+				
+			});
+			
+		});
+		
+		
+		
 	});
 </script>
 </head>
@@ -60,58 +275,41 @@ if (session.getAttribute("id") == null) {
 				<div class="col-lg-11 col-xl-9 col-xxl-8">
 					<!-- Experience Section-->
 
-					<div
-						class="d-flex align-items-center justify-content-between mb-4 px-3">
-						<h4 class="text-success fw-bolder mb-0">내 정보</h4>
-					</div>
-
 					<div class="card shadow border-0 rounded-2 mb-1 ">
 						<div class="card-body p-4">
-							<div class="row align-items-center">
-								<div class="row col-4">
-									<div class="col-4 d-flex justify-content-end fw-bolder">학번(이름)</div>
-									<input type="hidden" id="loginID" value="${sessionScope.id}">
-									<div class="col-8">
-										<span id="stdntNo" class="col-6"></span> (<span
-											id="searchNM" class="col-6"></span>)
+							<div class="mt-2">
+								<div class="position-relative justify-content-center" style="display: flex; width: 100%; height: 45px; font-weight: bold; padding: 10px 0 10px 0; margin: 10px 0;">
+									<div style="width: 70px; height: 25px; font-size: 14px; text-align: right; line-height: 25px; margin: 0 20px 0 0;">
+										학년도
 									</div>
-								</div>
-								<div class="col-2">
-									<div class="row">
-										<div class="col-5 d-flex justify-content-end fw-bolder">학적상태</div>
-										<div class="col-4" id="regNM"></div>
+									<div id="year" style="width: 50px; height: 25px; margin: 0 10px 0 0; font-size: 15px; text-align:right; line-height:25px; color: blue;">
 									</div>
-								</div>
-								<div class="col-6">
-									<div class="row">
-										<div class="col-2 d-flex justify-content-end fw-bolder">과정구분</div>
-										<div class="col-10">
-											<span id="crclmYear"></span>&nbsp;/&nbsp; <span
-												id="crclmHalf"></span>&nbsp;/&nbsp;&nbsp; <span id="crclmNM"></span>
+									<div id="half" style="width: 50px; height: 25px; margin: 0 10px 0 0; font-size: 15px; text-align:center; line-height:25px; color: blue;">
+									</div>
+									<div style="width: 100px; height: 25px; font-size: 14px; text-align: right; line-height: 25px; margin: 0 0 0 20px;">
+										훈련과정명</div>
+									<div id="crclmName" style="width: 400px; height: 25px; margin: 0 10px 0 0; font-size: 15px; text-align:center; line-height:25px; color: blue;">
+									</div>
+									<!-- 
+									<div>
+										<div style="width: 300px; height: 30px; margin: 0 10px;">
+											<input type="text" class="form-control" id="searchCrclm" style="height: 25px; font-size: 13px; " readOnly>
 										</div>
 									</div>
-
-								</div>
-							</div>
-							<div class="row d-flex justify-content-end mt-3">
-								<div class="row col-3">
-									<div class="col-4 d-flex fw-bolder">생년월일</div>
-									<div class="col-8 ">
-										<span id="userBrdT" class="col-8"></span> (<span
-											id="genderNM" class="col-4"></span>)
+									 -->
+									<div style="width: 60px; height: 25px; font-size: 14px; text-align: right; line-height: 25px; margin: 0 0 0 10px;">
+										과목명</div>
+									<div>
+										<div style="width: 150px; height: 30px; margin: 0 10px;">
+											<input type="text" class="form-control" id="searchSbjct" style="height: 25px; font-size: 13px;">
+										</div>
 									</div>
-								</div>
-								<div class="row col-3">
-									<div class="col-3 d-flex justify-content-end fw-bolder">연락처</div>
-									<div class="col-8" id="relTel"></div>
-								</div>
-								<div class="row col-3">
-									<div class="col-3 d-flex justify-content-end fw-bolder">이메일</div>
-									<div class="col-9" id="emailAddr"></div>
-								</div>
-								<div class="row col-3">
-									<div class="col-4 d-flex justify-content-end fw-bolder">대표강사</div>
-									<div class="col-8" id="rprsNM"></div>
+									<div class="float-end" style="width: 75px; height: auto; padding: 0; margin: 0 0 0 40px;">
+										<button type="button" id="getCrclmList" class="btn btn-secondary"
+											style="width: 75px; height: 25px; font-size: 14px; line-height: 5px; margin-top:-3px;">
+											조회
+										</button>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -124,87 +322,69 @@ if (session.getAttribute("id") == null) {
 					<!-- Skills Section-->
 					<!-- Skillset Card-->
 					<div class="card shadow border-0 rounded-2 mb-5">
-						<div class="card-body p-4">
-							<div class="row">
-
-								<div class="d-flex align-items-center col-3">
-									<h6 class="fw-bolder mb-2 px-2">
-										<span class=" d-inline">개설과목</span>
-									</h6>
-								</div>
-								<div class="col-4">
-									<div class="row d-flex justify-content-end"
-										style="margin-left: 40px; margin-right: -50px;">
-										<div class="col-3" style="margin-left: 20px;">
-											<input type="radio" style="cursor: pointer;"
-												checked="checked" class="form-check-input esntlchk"
-												name="esntlchk" id="allchk" value=""> <label
-												for="allchk"
-												style="cursor: pointer; font-size: 14px; vertical-align: 1px;"
-												class="text-center form-check-label">&nbsp;전체</label>
+						<div class="card-body p-4 ">
+	
+							<!-- 강의목록 & 출석정보 -->
+							<div  class="position-relative" style="display: flex; width: 100%">
+							
+								<!-- 강의목록 -->
+								<div style="width: 60%; height: auto; margin-right:15px;">
+									<div class="mt-3 position-relative" style="display: flex; width: 100%; height: 27px;">
+										<div style="width: 10px; height: 27px; background-color: #498c5f;">
 										</div>
-										<div class="col-3" style="margin-left: -20px;">
-											<input type="radio" style="cursor: pointer;"
-												class="form-check-input esntlchk" name="esntlchk" id="Ychk"
-												value="Y"> <label for="Ychk"
-												style="cursor: pointer; font-size: 14px; vertical-align: 1px;"
-												class="text-center form-check-label">&nbsp;필수</label>
-										</div>
-										<div class="col-3" style="margin-left: -20px;">
-											<input type="radio" style="cursor: pointer;"
-												class="form-check-input esntlchk" name="esntlchk" id="Nchk"
-												value="N"> <label for="Nchk"
-												style="cursor: pointer; font-size: 14px; vertical-align: 1px;"
-												class="text-center form-check-label">&nbsp;선택</label>
-										</div>
+										<div style="width: 80px; height: 27px; font-size: 17px; font-weight: bold; line-height: 30px; margin: 0 10px;">
+											강의목록</div>
+										<div style="width: 150px; height: 27px; font-size: 13px; color: #a3a3a7; line-height: 35px; margin: 0 10px;">
+											00건이 조회되었습니다.</div>
+									</div>
+									<div class="mt-2" style="width: 100%; text-align: center; font-size: 14px;">
+										<!-- 강의목록 그리드 -->
+										<div id="sbjctList"></div>
 									</div>
 								</div>
-								<div class="col-5">
-									<div class="input-group" style="margin-top: -5px;">
-										<div class="col-3">
-											<select class="form-control form-control-sm"
-												disabled="disabled" name="search_name" id="search_name"
-												style="border-radius: 5px 0 0 5px;">
-												<option value="all" selected>전체</option>
-												<option value="sbjNM">과목명</option>
-												<option value="instrNM">강사명</option>
-											</select>
-										</div>
-										<input type="text" name="search_value" id="search_value"
-											disabled="disabled"
-											class="form-control form-control-sm border-gray col-md-8"
-											placeholder="검색어를 입력하세요">
-										<button class="btn btn-dark btn-sm" type="button"
-											disabled="disabled" id="sbjSearchbtn">
-											<i class="fas fa-search"></i>
-										</button>
+							
+								<!-- 출석정보 -->
+								<div style="width: 40%; height: auto;">
+									<div class="mt-3 position-relative" style="display: flex; width: 100%; height: 27px;">
+										<div class="float-start" style="width: 10px; height: 27px; background-color: #498c5f;"></div>
+										<div class="float-start" style="width: 100px; height: 27px; font-size: 17px; font-weight: bold; line-height: 30px; margin: 0 10px;">
+											출석정보</div>
+									</div>
+
+									<div class="mt-2"
+										style="width: 100%; text-align: center; font-size: 14px;">
+										<!-- 출석정보 요약 그리드 -->
+										<!-- 
+										<table style="width: 100%; border-style: solid; border-width: 1px;">
+											<thead>
+												<tr>
+													<th>총훈련일수</th>
+													<th>실시일수</th>
+													<th>출석일</th>
+													<th>결석일</th>
+													<th>출석률</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr>
+													<td></td>
+													<td></td>
+													<td></td>
+													<td></td>
+													<td></td>
+												</tr>
+											</tbody>
+										</table>
+										 -->
+										<!-- 출석정보 디테일 그리드 -->
+										<div class="mt-2" id="atndDetailList"></div>
 									</div>
 								</div>
+								
 							</div>
-							<div class="mb-1">
-								<div class="d-flex align-items-center mb-4">
-
-									<div id="estblSBJ" class="mb-2 mt-1"
-										style="width: 100%; height: 270px;"></div>
-								</div>
-
-							</div>
-							<div class="d-flex align-items-center">
-
-								<h6 class="fw-bolder mb-2 mt-3 px-2">
-									<span class=" d-inline">신청과목</span>
-								</h6>
-							</div>
-							<div class="mb-5">
-								<div class="d-flex align-items-center">
-									<div id="applySBJ" class="mb-3 mt-1"
-										style="width: 100%; height: 270px;"></div>
-								</div>
-
-							</div>
-
 						</div>
-					</div>
+					</div> <!-- 두번째card -->
+					
 
 				</div>
 			</div>

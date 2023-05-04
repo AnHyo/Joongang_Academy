@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.joongAng.academy.service.AttendanceInstrService;
+import com.joongAng.academy.service.AtndInstrService;
 import com.joongAng.academy.service.AttendanceService;
 
 
@@ -19,7 +19,7 @@ import com.joongAng.academy.service.AttendanceService;
 public class AtndInstrController {
 	
 	@Autowired
-	private AttendanceInstrService atndInstService;
+	private AtndInstrService atndInstService;
 
 	@GetMapping("/atndInstr")
 	public String atndInstr() {

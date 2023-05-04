@@ -72,7 +72,7 @@ String id = (String) session.getAttribute("id") ;
 <script>
 	$(function() {
 		
-		var id = '<%= id %>';
+		const id = '<%= id %>';
 
 		tui.Grid.applyTheme('default', {
 			cell : {

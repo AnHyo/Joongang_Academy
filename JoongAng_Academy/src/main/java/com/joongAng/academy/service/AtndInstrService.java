@@ -6,14 +6,14 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.joongAng.academy.dao.AttendanceInstrDAO;
+import com.joongAng.academy.dao.AtndInstrDAO;
 import com.joongAng.academy.dao.AttendanceDAO;
 
 @Service
-public class AttendanceInstrService {
+public class AtndInstrService {
 	
 	@Autowired
-	private AttendanceInstrDAO atndInstrDAO;
+	private AtndInstrDAO atndInstrDAO;
 
 	public List<Map<String, Object>> crclmList(Map<String, Object> map) {
 		return atndInstrDAO.crclmList(map);
