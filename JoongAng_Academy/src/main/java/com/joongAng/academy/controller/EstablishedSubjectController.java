@@ -1,5 +1,8 @@
 package com.joongAng.academy.controller;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -239,8 +242,13 @@ public class EstablishedSubjectController {
 				map.put(key.toString(), value);
 			}
 		}
+		Map<String, Object> integrityChecker = estService.integCheck(map);
+		byte[] rsltStrBytes = (byte[]) map.get("RSLT_STR");
+		String rsltStr = new String(rsltStrBytes, StandardCharsets.UTF_8);
+		map.put("RSLT_STR", rsltStr);
+		json.put("result", map);
 		int result = estService.estDelete(map);
-		json.put("result", result);
+		json.put("delResult", result);
 		return json.toString();
 	}
 }

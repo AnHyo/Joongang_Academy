@@ -87,4 +87,26 @@
 			INSTR_NO = #{insno}
 			,RPRS_INSTR_YN = (SELECT IF(COUNT(RPRS_INSTR_NO)>0,'Y','N') FROM CRCLM_INFO WHERE RPRS_INSTR_NO = #{insno})
 	</insert>
+	<select id="integCheck" parameterType="HashMap" statementType="CALLABLE">
+		{CALL
+    			ESTBL_SBJCT_INTEGRITY(
+    				#{crc, mode=IN,jdbcType=INTEGER}
+    				,#{year, mode=IN,jdbcType=INTEGER}
+    				,#{hlf, mode=IN,jdbcType=INTEGER}
+    				,#{sbjno, mode=IN,jdbcType=INTEGER}
+    				,#{RSLT, mode=OUT, jdbcType=INTEGER}
+    				,#{RSLT_STR, mode=OUT, jdbcType=VARCHAR}
+    		)
+    	}
+	</select>
+	<delete id="estDelete" parameterType="HashMap" statementType="CALLABLE">
+		{CALL
+			ESTBL_SBJCT_DELETE(
+				#{crc, mode=IN,jdbcType=INTEGER}
+    			,#{year, mode=IN,jdbcType=INTEGER}
+    			,#{hlf, mode=IN,jdbcType=INTEGER}
+    			,#{sbjno, mode=IN,jdbcType=INTEGER}
+			)
+		}
+	</delete>
 </mapper>

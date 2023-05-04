@@ -44,4 +44,6 @@ public interface EstablishedSubjectDAO {
 	public List<Map<String, Object>> estTimeInfo(Map<String, Object> map);
 
 	public int estTimeConfirm(Map<String, Object> map);
+
+	public Map<String, Object> integCheck(Map<String, Object> map);
 }

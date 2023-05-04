@@ -26,6 +26,13 @@
 			.ready(
 					function() {
 
+						$.fn.changetag = function(str){
+							var result = "";
+							result = str.replace('<',"&lt");
+							result = result.replace(">","&gt");
+							return result;
+						}
+						
 						var Grid = tui.Grid;
 						Grid.applyTheme('clean', {
 							row : {
@@ -400,12 +407,15 @@
 									var hlf = $("#crclmHalf").val();
 									var sbj = $("#sbjno").val();
 									var trgt = $("#a").val();
+									trgt = $.fn.changetag(trgt);
 									var cn = $("#b").val();
+									cn = $.fn.changetag(cn);
 									var book = $("#c").val();
+									book = $.fn.changetag(book);
 									var method = $("#l").val();
 									if (crc == '' || year == '' || hlf == ''
-											|| sbj == '' || trgt == ''
-											|| cn == '' || method == '') {
+											|| sbj == '' || trgt.trim() == ''
+											|| cn.trim() == '' || method == '') {
 										alert("!");
 										return false;
 									}
@@ -439,8 +449,11 @@
 									var hlf = $("#crclmHalf").val();
 									var sbj = $("#sbjno").val();
 									var ttl = $("#d").val();
+									ttl = $.fn.changetag(ttl);
 									var tpc = $("#e").val();
+									tpc = $.fn.changetag(tpc);
 									var cn = $("#f").val();
+									cn = $.fn.changetag(cn);
 									var dtlno = $("#dtlno").val();
 									if (ttl.trim() == "" || tpc.trim() == ""
 											|| cn.trim() == "") {
@@ -500,44 +513,15 @@
 						$("#initDetail").click(function(){
 							$("#dtlno").val("");
 							$("#d").val("");
+							$("#d").focus();
 							$("#e").val("");
 							$("#f").val("");
 						});
-						$("#detailZone").on("click", ".dtlUpdateBtn",
-								function() {
-									var no = $(this).val();
-									var crc = $("#crclmCd").val();
-									var year = $("#year").val();
-									var hlf = $("#crclmHalf").val();
-									var sbj = $("#sbjno").val();
-									var ttl = $("#dtlTTL" + no).val();
-									var tpc = $("#dtlTPC" + no).val();
-									var cn = $("#dtlCN" + no).val();
-									$.post({
-										url : "/estDetailUpdate",
-										data : {
-											crc : crc,
-											year : year,
-											hlf : hlf,
-											sbj : sbj,
-											ttl : ttl,
-											tpc : tpc,
-											cn : cn,
-											dtlno : no
-										},
-										dataType : "json"
-									}).done(function(data) {
-										alert("저장했다");
-										$.fn.detailPlan(crc, year, hlf, sbj);
-									}).fail(function() {
-										alert("문제가 발생했습니다.");
-									});
-								});
-
+						
 						$("#delDetail").click(function() {
 							var checkedRows = detailPlanGrid.getCheckedRows();
 							if(checkedRows.length==0){
-								alert("상세계획을 선택해주세요");
+								alert("삭제할 항목의 체크박스를 클릭해주세요");
 								return false;
 							}else{
 								if(confirm("정말로 삭제합니까?")==true){

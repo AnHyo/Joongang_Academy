@@ -519,23 +519,35 @@
 // 		삭제 버튼 클릭 시 체크박스가 체크된 모든 데이터를 삭제할 예정, 현재는 값만 넘기고 구현되지 않음
 		$("#deleteBtn").click(function(){
 			var checkedRows = grid.getCheckedRows();
-			console.log(checkedRows);
-			$.each(checkedRows, function(index, row){
-				$.post({
-					url : "/estDelete",
-					data : {
-						crc : row.CRCLM_CD,
-						year : row.CRCLM_YEAR,
-						hlf : row.CRCLM_HALF,
-						sbjno : row.SBJCT_NO
-					},
-					dataType : "json"
-				}).done(function(data) {
-					console.log("success");
-				}).fail(function() {
-					alert("문제가 발생했습니다.");
-				});
-			})
+			if(checkedRows.length==0){
+				alert("체크박스를 선택해주세요");
+				return false;
+			}
+			if(confirm("정말 삭제할겁니까?")!=true){
+				return false;
+			}else{
+				$.each(checkedRows, function(index, row){
+					$.post({
+						url : "/estDelete",
+						data : {
+							crc : row.CRCLM_CD,
+							year : row.CRCLM_YEAR,
+							hlf : row.CRCLM_HALF,
+							sbjno : row.SBJCT_NO,
+							RSLT : null,
+							RSLT_STR : null
+						},
+						dataType : "json"
+					}).done(function(data) {
+						if(data.result.RSLT!=0){
+							alert(data.result.RSLT_STR);						
+						}
+					}).fail(function() {
+						alert("문제가 발생했습니다.");
+					});
+				})
+			}
+						
 		});
 		
 // 		과목선택 그리드
