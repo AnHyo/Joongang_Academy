@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.joongAng.academy.dao.InstrTimeTableDAO">
+	<!--강사 시간표 조회  -->
+	<select id="instrTimeTableAjax" parameterType="instrDTO" resultType="Hashmap">
+		SELECT *
+		FROM instrtimetableview
+		WHERE CRCLM_YEAR = #{inputYear} AND CRCLM_HALF = #{selectHalf } AND INSTR_NO = #{instrNo}
+		
+	</select>
+	
+	<!--강사 과목 조회  -->
+	<select id="sbjSearchAjax" parameterType="instrDTO" resultType="Hashmap">
+		SELECT CRCLM_NM, SBJCT_NM, ROOM_NM, CLASSTM, CRCLM_CD, CRCLM_HALF, SBJCT_NO, CRCLM_YEAR
+		FROM estblSbJview
+		WHERE CRCLM_YEAR = #{inputYear} AND CRCLM_HALF = #{selectHalf } AND INSTR_NO = #{instrNo}
+	</select>
+
+	<!--과목별 학생 조회  -->
+	<select id="stuAjax" parameterType= "instrDTO" resultType="Hashmap">
+		SELECT  STDNT_NO, KORN_FLNM, USER_BRDT, GENDER_CD, EML_ADDR, TELNO, REG_CD
+		FROM instrsearchview
+		WHERE CRCLM_YEAR = #{inputYear} AND CRCLM_HALF = #{selectHalf } AND SBJCT_NO =#{sbjctNo }
+		
+	</select>
+
+
+
+
+
+
+
+</mapper>

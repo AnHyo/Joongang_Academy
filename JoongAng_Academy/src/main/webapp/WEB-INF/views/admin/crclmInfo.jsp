@@ -122,7 +122,11 @@
 			}).done(function(data) {
 				listCrclm = data.listCrclm;
 				grid.resetData(listCrclm);
-
+				
+				//건수 표시
+				let sCount = listCrclm.length;
+				$("#searchCount").html(sCount);
+	
 			}).fail(function(xhr, status, errorThrown) {
 				alert("문제가 발생했습니다.");
 			});
@@ -179,7 +183,6 @@
 			scrollX : false,
 			scrollY : true,
 			bodyHeight : 250,
-			rowHeaders : [ 'checkbox' ],
 			columns : [ {
 				header : '훈련과정코드',
 				name : 'CRCLM_CD',
@@ -1026,8 +1029,15 @@
 	<div id="layoutSidenav_content">
 		<main>
 			<div class="container-fluid px-4">
-				<h5 class="mt-3 fw-bolder">교육훈련과정 정보관리</h5>
-				<hr>
+				<div class="mt-4 position-relative row">
+						<div style="width:25px;">
+						<img src="./image/joongang_logo.png" style="width:25px;">
+						</div>
+						<div style="width:300px; height:25x;  "> 
+							<h5 style="font-weight: bold; color:#565757; line-height:25px;">교육훈련과정 정보관리</h5>
+						</div>
+					</div>
+				<hr style="height: 4px;" class="m-0 mb-1">
 				<div style="width: 100%; position: relative;">
 					<div style="position: absolute; right: 0">
 						<button class="btn btn-secondary  btn-sm" id="listBtn">조회</button>
@@ -1081,9 +1091,18 @@
 				</div>
 				<!-- 상단 끝 -->
 				<div>
-					<div class="float-start "
-						style="width: 10px; height: 27px; background-color: #498c5f; margin-right: 10px;"></div>
-					<h6 class="mt-3 fw-bolder">교육훈련과정</h6>
+				<div class="position-relative mt-2" style="display: flex;">
+						<div class="float-start "
+							style="width: 10px; height: 29px; background-color: #498c5f; margin-right: 10px;"></div>
+						<h6 class="mt-1 fw-bolder">교육훈련과정</h6>
+						<div class="position-relative"
+							style="display: flex; width: 150px; height: 27px; font-size: 13px; color: #a3a3a7; line-height: 30px; margin: 0 10px;">
+							<div id="searchCount"
+								style="width: 15px; height: 27px; font-size: 13px; color: #a3a3a7; line-height: 27px;">
+								0</div>
+							건이 조회되었습니다.
+						</div>
+					</div>
 					<div id="grid"></div>
 				</div>
 
