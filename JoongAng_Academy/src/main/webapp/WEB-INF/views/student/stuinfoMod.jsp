@@ -52,6 +52,12 @@ if (session.getAttribute("id") == null) {
 		//전화번호 정규식
 		var RegExp = /[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/ A-Z\uAC00-\uD7A3\u3131-\u3163]/gim;
 		
+		$("#nowPw").keydown(function(key){
+			  if(key.keyCode == 13){
+				$("#pwCheckbtn").click();
+			  }
+		});
+		
 		$("#pwCheckbtn").click(function() {
 			var nowPw = $("#nowPw").val();
 
@@ -111,7 +117,11 @@ if (session.getAttribute("id") == null) {
 		});
 
 		
-
+		$("#telNo,#relTel,#emailAddr,#relation,#postNum,#addrInfo,#addrDetail").keydown(function(key){
+			  if(key.keyCode == 13){
+				$("#infoSave").click();
+			  }
+		});
 	
 		//저장 버튼
 		$(document).on(

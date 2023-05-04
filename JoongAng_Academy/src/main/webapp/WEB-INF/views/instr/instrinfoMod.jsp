@@ -116,6 +116,12 @@ if (session.getAttribute("id") == null) {
 			alert("문제가 발생했습니다.");
 		});
 
+		
+		$("#telNo,#emailAddr,#postNum,#addrInfo,#addrDetail").keydown(function(key){
+			  if(key.keyCode == 13){
+				$("#infoSave").click();
+			  }
+		});
 		//저장 버튼
 		$(document).on(
 				"click",

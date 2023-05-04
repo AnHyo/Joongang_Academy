@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.joongAng.academy.dao.AdminInfoDAO">
+	
+	<select id="admininfoAjax" parameterType="HashMap" resultType="HashMap">
+		SELECT * FROM USER_INFO
+		WHERE USER_ID = #{user_id};
+	</select>
+	<update id="adminInfoUpdate" parameterType="HashMap">
+		UPDATE USER_INFO SET
+		EML_ADDR=#{emailAddr},
+		TELNO=#{telNo}
+		WHERE 
+		USER_ID = #{user_id};
+	</update>
+</mapper>
