@@ -152,8 +152,8 @@ $("#mainSuv").hide();
 							
 							
 							table += "<tr>";
-							table += "<td class='tbc' style='width: 130px;' id='"+DGSTFN_NO+"'><b>" + DGSTFN_NM + "<b></td>";
-							table += "<td>";
+							table += "<td class='tbc col-2' id='"+DGSTFN_NO+"'><b>" + DGSTFN_NM + "<b></td>";
+							table += "<td class='col-10'>";
 							table += "<div style='margin-bottom: 20px;'>" + DGSTFN_CN + "</div>";
 							table += "<div style='width: auto; height: auto;'>";
 							for (let i = 0; codelist.length > i; i++) {
@@ -177,8 +177,8 @@ $("#mainSuv").hide();
 							var DGSTFN_NO = suvIn2[i].DGSTFN_NO; // 설문 번호
 							
 							table += "<tr>";
-							table += "<td class='tbc' style='width: 130px;'><b>"+DGSTFN_NM+"</b></td>";
-							table += "<td>";
+							table += "<td class='tbc col-2'><b>"+DGSTFN_NM+"</b></td>";
+							table += "<td class='col-10'>";
 							table += "<div style='margin-bottom: 20px;'>"+ DGSTFN_CN +"</div>";
 							table += "<div class='textarea-wrapper'>";
 							table += "<textarea class='form-control' data-suv='"+DGSTFN_NO+"' id='subShort"+ DGSTFN_NO +"' style='height: 150px; resize: none;' maxlength='4000'></textarea>";
@@ -204,26 +204,74 @@ $("#mainSuv").hide();
 						
 						// -- 저장
 						$("#saveBtn").click(function(){
+							var dataArr = []; // 저장할 데이터를 담을 배열
 							//alert(loginID + " " + sbjctNo+ " " + CRCLM_YEAR + " " + CRCLM_CD + " " +CRCLM_HALF);
 							 //var unanswered = $("input[name^='answer']:checked").length;
 							 var innm = "";
+							 var txnm = "";
 							 for (let i = 0; suvIn.length > i; i++) {
 								 var DGSTFN_NO = suvIn[i].DGSTFN_NO; // 설문 번호
 								 innm = $("input[name='answer"+DGSTFN_NO+"']:checked").val();
 								  if(innm == undefined){
-									 $("input[name='answer"+DGSTFN_NO+"']:checked").eq(0).focus();
+									  $("input[name='answer"+DGSTFN_NO+"']:first").focus();
+									  alert("설문"+DGSTFN_NO+"번 문항이 선택되지 않았습니다.");
+									  return false;
+								 } else {
+									 //alert(loginID + " " + sbjctNo+ " " + CRCLM_YEAR + " " + CRCLM_CD + " " +CRCLM_HALF+ " " + DGSTFN_NO + " " +innm);
+									// 데이터를 배열에 추가
+							            dataArr.push({
+							                "student_ID": loginID,
+							                "sbjctNo" : sbjctNo,
+							                "cYear" : CRCLM_YEAR,
+							                "cCd" : CRCLM_CD,
+							                "cHalf" : CRCLM_HALF,
+							                "DGSTFN_NO" : DGSTFN_NO,
+							                "innm" : innm,
+							                "txnm" : ""
+							            });
+									 
+									 
 								 }
-								 alert(DGSTFN_NO + " : "+ innm);
+							 }
+							 
+							 for (let i = 0; suvIn2.length > i; i++) {
+								var DGSTFN_NO = suvIn2[i].DGSTFN_NO;
+								txnm = $.trim($("#subShort"+DGSTFN_NO).val());
+								//alert(loginID + " " + sbjctNo+ " " + CRCLM_YEAR + " " + CRCLM_CD + " " +CRCLM_HALF+ " " + DGSTFN_NO + " " +txnm);
+								dataArr.push({
+						            "student_ID": loginID,
+						            "sbjctNo" : sbjctNo,
+						            "cYear" : CRCLM_YEAR,
+						            "cCd" : CRCLM_CD,
+						            "cHalf" : CRCLM_HALF,
+						            "DGSTFN_NO" : DGSTFN_NO,
+						            "innm" : "",
+						            "txnm" : txnm
+						        });
+								
+							 }
+							 
+							 if(confirm("설문을 제출하시겠습니까?")){
+							 // ajax 호출
+							    $.post({
+							        url: "/svSave",
+							        cache: false,
+							        contentType: "application/json",
+							        data: JSON.stringify(dataArr)
+							    }).done(function(data) {
+							        var result = data.result;
+							        if(result != '0'){
+							        	alert("설문제출이 완료되었습니다.");
+							        	location.href="/stuSuv";
+							        }
+							    }).fail(function() {
+							        alert("문제가 발생 했습니다.");
+							    });
 							 }
 							
-							 //alert(unanswered);
-							/*  if (unanswered < suvIn.length) {
-								 alert("선택되지 않은 항목이 있습니다.");
-							    } else {
-
-							    } */
+							
 						});
-
+	
 						
 					}).fail(function() {
 						alert("문제가 발생 했습니다.");
@@ -478,44 +526,6 @@ tbody tr{
 											data-target="#list-example" data-offset="0"
 											class="scrollspy-example">
 
-											<!-- <tr>
-												<td class="tbc" style="width: 130px;" id="1"><b>설문1</b></td>
-												<td>
-													<div style="margin-bottom: 20px;">[훈련교사강사] 교강사는 수업시간을 준수하며 수업 및 진행을 성실하게 수행하고 있나요?</div>
-													<div style="width: auto; height: auto;">
-														<label for="radio1" style="display: block;"> 
-														<input type="radio" id="radio1" name="answer1" value="1">
-															1번
-														</label> 
-														<label for="radio2" style="display: block;">
-														<input type="radio" id="radio2" name="answer1" value="2">
-															2번
-														</label> 
-														<label for="radio3" style="display: block;">
-														<input type="radio" id="radio3" name="answer1" value="3">
-															3번
-														</label>
-														<label for="radio4" style="display: block;">
-														<input type="radio" id="radio4" name="answer1" value="4">
-															4번
-														</label>
-														<label for="radio5" style="display: block;">
-														<input type="radio" id="radio5" name="answer1" value="5">
-															5번
-														</label>
-													</div>	
-												</td>
-											</tr> -->
-											<tr>
-												<td class="tbc" style="width: 130px;"><b>설문2</b></td>
-												<td>
-												<div style="margin-bottom: 20px;">[훈련교사강사] 교강사는 수업시간을 준수하며 수업 및 진행을 성실하게 수행하고 있나요?</div>
-												<div class="textarea-wrapper">
-												<textarea class="form-control" id="subShort" style="height: 150px; resize: none;" maxlength="4000"></textarea>
-												<span id="char-count">0/4000</span>
-												</div>
-												</td>
-											</tr>
 										</tbody>
 									</table>
 								</div>

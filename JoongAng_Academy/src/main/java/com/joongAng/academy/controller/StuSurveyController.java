@@ -1,5 +1,6 @@
 package com.joongAng.academy.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -71,6 +73,40 @@ public class StuSurveyController {
 		json.put("surveyIn", suvIn);
 		json.put("surveyIn2", suvIn2);
 		json.put("codelist", codelist);
+		
+		return json.toString();
+	}
+	
+	
+	@ResponseBody
+	@PostMapping(value = "svSave", produces = "application/json;charset=UTF-8")
+	public String svSave(@RequestBody List<Map<String, Object>> dataArr) {
+		JSONObject json = new JSONObject();
+		System.err.println(dataArr);
+		List<StuSurveyDTO> svList = new ArrayList<>();
+		for (Map<String, Object> dataMap : dataArr) {
+			StuSurveyDTO stuSuvDTO = new StuSurveyDTO();
+			stuSuvDTO.setStudent_ID((String) dataMap.get("student_ID"));
+			stuSuvDTO.setSbjctNo((String) dataMap.get("sbjctNo"));
+			stuSuvDTO.setCYear((String) dataMap.get("cYear"));
+			stuSuvDTO.setCCd((String) dataMap.get("cCd"));
+			stuSuvDTO.setCHalf((String) dataMap.get("cHalf"));
+			stuSuvDTO.setDGSTFN_NO((int) dataMap.get("DGSTFN_NO"));
+			stuSuvDTO.setInnm((String) dataMap.get("innm"));
+			stuSuvDTO.setTxnm((String) dataMap.get("txnm"));
+			svList.add(stuSuvDTO);
+			
+			
+		}
+		//System.err.println(svList);
+		int result = 0;
+		for (StuSurveyDTO dto : svList) {
+			result += stuSurveyService.svSave(dto);
+			result += stuSurveyService.svUpdate(dto);
+		}
+		System.err.println(result);
+
+		json.put("result", result);
 		
 		return json.toString();
 	}

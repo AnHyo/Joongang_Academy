@@ -42,4 +42,32 @@
 	WHERE CD_CLSF ='0016'
 </select>
 
+<insert id="svSave" parameterType="StuSurveyDTO">
+	INSERT INTO APPL_DGSTFN_RSLT
+	SET
+	CRCLM_CD=#{cCd },
+	CRCLM_YEAR=#{cYear },
+	CRCLM_HALF=#{cHalf },
+	SBJCT_NO=#{sbjctNo },
+	DGSTFN_NO= #{DGSTFN_NO },
+	DGSTFN_YMD = NOW(),
+	<if test="innm != ''">
+	CHC_ANS_CD= #{innm },
+	</if>
+	<if test="txnm != ''">
+	EXPR_ANS= #{txnm },
+	</if>
+	STDNT_NO= #{student_ID}
+</insert>
+
+<update id="svUpdate" parameterType="StuSurveyDTO">
+	UPDATE APPL_CLS
+	SET DGSTFN_YN = 'Y'
+	WHERE STDNT_NO = #{student_ID}
+	AND CRCLM_CD = #{cCd } 
+	AND CRCLM_YEAR  = #{cYear }
+	AND CRCLM_HALF = #{cHalf }
+	AND SBJCT_NO  = #{sbjctNo }
+</update>
+
 </mapper>

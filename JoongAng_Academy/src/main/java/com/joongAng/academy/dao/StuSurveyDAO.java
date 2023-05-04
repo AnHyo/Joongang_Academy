@@ -22,5 +22,9 @@ public interface StuSurveyDAO {
 
 	List<StuSurveyDTO> code();
 
+	int svSave(StuSurveyDTO dto);
+
+	int svUpdate(StuSurveyDTO dto);
+
 
 }
