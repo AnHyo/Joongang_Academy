@@ -52,6 +52,12 @@ if (session.getAttribute("id") == null) {
 		var filter = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
 		//전화번호 정규식
 		var RegExp = /[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/ A-Z\uAC00-\uD7A3\u3131-\u3163]/gim;
+		
+		$("#nowPw").keydown(function(key){
+			  if(key.keyCode == 13){
+				$("#pwCheckbtn").click();
+			  }
+		});
 		$("#pwCheckbtn").click(function() {
 			var nowPw = $("#nowPw").val();
 
@@ -79,6 +85,12 @@ if (session.getAttribute("id") == null) {
 				alert("문제가 발생했습니다.");
 			});
 
+		});
+		
+		$("#newPw,#newPwCheck").keydown(function(key){
+			  if(key.keyCode == 13){
+				$("#pwChangebtn").click();
+			  }
 		});
 		$("#pwChangebtn").click(function() {
 			var newPw = $("#newPw").val();
