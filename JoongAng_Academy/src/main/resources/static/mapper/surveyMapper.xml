@@ -51,6 +51,15 @@
 		SBJCT_NO=#{SBJCT_NO}
 	</insert>
 	
+	<select id="checknoExists" parameterType="HashMap" resultType="boolean">
+ 		SELECT COUNT(*) FROM APPL_DGSTFN_ITEM 
+	 	WHERE CRCLM_CD = #{CRCLM_CD} AND
+		CRCLM_YEAR=#{CRCLM_YEAR} AND
+		CRCLM_HALF=#{CRCLM_HALF} AND
+		SBJCT_NO=#{SBJCT_NO} AND
+		DGSTFN_NO = #{DGSTFN_NO}
+	</select>
+	
 		<update id="ITEMUpdate" parameterType="java.util.List">
    		UPDATE APPL_DGSTFN_ITEM SET
         DGSTFN_CN = CASE
@@ -122,4 +131,47 @@
 		CRCLM_YEAR = #{CRCLM_YEAR} AND SBJCT_NM = #{SBJCT_NM})
 		ORDER BY STDNT_NO ASC
 	</select>
+	
+	<!-- 설문조사 결과 페이지 -->
+	<select id="surveySbj" resultType="HashMap" parameterType="HashMap">
+		SELECT *     
+		FROM surveylist
+		WHERE USER_ID = #{loginID }
+		ORDER BY CRCLM_YEAR DESC
+	</select>
+	
+	<select id="ResultDetailAjax" resultType="HashMap" parameterType="HashMap">
+		SELECT *     
+		FROM APPL_DGSTFN_RSLT
+		WHERE (CRCLM_CD = #{CRCLM_CD} AND CRCLM_HALF = #{CRCLM_HALF} AND 
+		CRCLM_YEAR = #{CRCLM_YEAR} AND SBJCT_NO = #{SBJCT_NO})
+	</select>
+	
+	<select id="dgstfnNo" resultType="HashMap" parameterType="HashMap">
+		SELECT *
+		FROM APPL_DGSTFN_RSLT adr JOIN APPL_DGSTFN_ITEM adi on (
+		WHERE (CRCLM_CD = #{CRCLM_CD} AND CRCLM_HALF = #{CRCLM_HALF} AND 
+		CRCLM_YEAR = #{CRCLM_YEAR} AND SBJCT_NO = #{SBJCT_NO}) )
+	</select> 
+	
+	<select id="ResultDetailAjax2" resultType="HashMap" parameterType="HashMap">
+		SELECT APPL  
+		FROM APPL_DGSTFN_RSLT
+		WHERE (CRCLM_CD = #{CRCLM_CD} AND CRCLM_HALF = #{CRCLM_HALF} AND 
+		CRCLM_YEAR = #{CRCLM_YEAR} AND SBJCT_NO = #{SBJCT_NO})
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 </mapper>

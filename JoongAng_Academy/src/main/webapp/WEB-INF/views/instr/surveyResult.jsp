@@ -1,6 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%
+if (session.getAttribute("id") == null) {
+	response.sendRedirect("/login");
+}
+%>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -21,72 +26,214 @@
 	crossorigin="anonymous"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
 <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
-<script src="js/survey/surveyResult.js"></script>
+<script type="text/javascript">
+$(function(){
+var Grid = tui.Grid;
+	Grid.applyTheme('clean', { 
+		  row: { 
+			    hover: { 
+			      background: '#e9ecef' 
+			    }
+			  }
+	});
+	
+	var loginID = $("#loginID").val(); //(로그인된 ID)
+// 	var CRCLM_YEAR = "";
+// 	var CRCLM_CD = "";
+// 	var CRCLM_HALF = "";
+	
+	/* 설문과목정보 ajax */
+	$.post({
+		url: "/surveyResultAjax",
+		data: {
+			"loginID": loginID
+		},
+		cache: false,
+		dataType: "json"
+	}).done(function(data) {
+		var list = data.list;
+		suvGrid.refreshLayout();
+		suvGrid.resetData(list);
+		
+	
+	}).fail(function() {
+		alert("문제가 발생 했습니다.");
+	});
+
+	
+	class buttonRenderer{
+		constructor(props) {
+			const el = document.createElement('input');
+			el.type='button';
+			const Nn = document.createElement('span');
+			Nn.textContent = '';
+			this.value = props.value; // 1 (해당 컬럼 값)
+			this.el = el;
+			this.n = Nn;
+			this.rowKey = props.rowKey;
+		}
+		
+		getElement(){    	
+			if(this.value =='0'){
+				return this.el;
+			} 
+			else {
+				return this.n;
+			}
+
+		}
+		
+		render(props){
+			var { rowKey } = props;
+			var row = suvGrid.getRow(rowKey);
+			var CRCLM_CD = row.CRCLM_CD;
+			var CRCLM_YEAR = row.CRCLM_YEAR;
+			var CRCLM_HALF = row.CRCLM_HALF;
+			var SBJCT_NO = row.SBJCT_NO;
+			  
+			console.log("CRCLM_CD:"+CRCLM_CD);
+			console.log("CRCLM_YEAR:"+CRCLM_YEAR);
+			console.log("CRCLM_HALF:"+CRCLM_HALF);
+			console.log("SBJCT_NO:"+SBJCT_NO);
+			
+			this.el.value="결과보기"; //value 값
+			this.el.id="survRs"; // id 값
+			this.el.setAttribute("class", "btn btn-success rounded-2 fw-bold "); // class값
+			this.el.setAttribute("style","width:60px; color:white;"); //style값
+			
+			this.el.addEventListener('click', (event) => {
+				window.location.href = 
+				"http://localhost/surveyResultDetail?CC=" + 
+				CRCLM_CD + "&CY=" + CRCLM_YEAR + "&CH=" + CRCLM_HALF + "&SN=" + SBJCT_NO;
+			});
+			
+		}
+	}
+	
+	
+	
+	var suvGrid = new tui.Grid({
+	      el: document.getElementById('suvListGrid'),
+	      scrollX: true,
+	      scrollY: true,
+	      columns: [
+	    	{
+		          header: '년도',
+		          name: 'CRCLM_YEAR',
+		          align:'center',
+				  sortingType: 'desc',
+				  sortable: true,
+		     },
+	    	{
+		          header: '분기',
+		          name: 'CRCLM_HALF_NM',
+		          align:'center',
+				  sortingType: 'desc',
+				  sortable: true,
+		     },
+	    	{
+		          header: '과목코드',
+		          name: 'SBJCT_NO',
+		          align:'center',
+				  sortingType: 'desc',
+				  sortable: true,
+				  hidden: true
+		     },
+	    	{
+		          header: '과목코드',
+		          name: 'SBJCT_NO',
+		          align:'center',
+				  sortingType: 'desc',
+				  sortable: true,
+				  hidden: true
+		     },
+	        {
+	          header: '훈련과정명',
+	          name: 'CRCLM_CD_NM',
+	          align:'center',
+			  sortingType: 'desc',
+			  sortable: true
+	        },
+	        {
+	          header: '과목명',
+	          name: 'SBJCT_NM',
+	          align:'center',
+			  sortingType: 'desc',
+			  sortable: true
+	        },
+	        {
+	          header: '설문명',
+	          name: 'DGSTFN_TITLE',
+	          align:'center',
+			  sortingType: 'desc',
+			  sortable: true
+	        },
+			{
+				  header : '결과조회',
+				  name : 'BUTTON',
+				  align:'center',
+				  sortingType: 'desc',
+				  sortable: true,
+				  renderer: { type: buttonRenderer },
+				}		
+			],
+		selectionUnit: 'row'
+		
+		});
+	
+});
+
+</script>
 <style type="text/css">
-ml-10 {
-	margin-left: 10px;
+.tui-grid-cell {
+  font-size: 14px;
 }
 </style>
 </head>
-<body class="sb-nav-fixed">
-<%-- 	<%@include file="../bar/topbar.jsp"%> --%>
-<!-- 	<div id="layoutSidenav"> -->
-<%-- 		<%@include file="../bar/sidebar.jsp"%> --%>
-
-		<div id="layoutSidenav_content">
-			<main>
-				<div class="container-fluid px-4">
+<body class="d-flex flex-column h-100 bg-light">
+	<main class="flex-shrink-0">
+		<%@include file="../portalbar/topbar.jsp"%>
+		<!-- Page Content-->
+		<!-- 설문조사 현황 -->
+		<div id ="readySuv">
+		<div class="my-5">
+			<div class="text-center mb-5">
+				<h1 class="display-5 fw-bold mb-0">
+					<span class="text-gradient d-inline">설문조사 결과 조회</span>
+				</h1>
+			</div>
+			<div class="row gx-1 justify-content-center">
+				<div class="col-xlg-11 col-xl-9 col-xxl-8">
 					
-					<!-- tab -->
-					<div class="mt-3">
-						<nav>
-							<div class="nav nav-tabs" id="nav-tab" role="tablist">
-								<button class="nav-link active" id="tab1_btn"
-									data-bs-toggle="tab" data-bs-target="#tab1" type="button"
-									role="tab" aria-controls="nav-home" aria-selected="true">결과조회</button>
-								<button class="nav-link" id="tab2_btn" data-bs-toggle="tab"
-									data-bs-target="#tab2" type="button" role="tab"
-									aria-controls="nav-profile" aria-selected="false">총계표</button>
-							</div>
-						</nav>
-					</div>
+					<input type="hidden" id="loginID" value="${sessionScope.id}">
 
-					<!-- 설문조사결과 -->
-					<div class="tab-pane fade" id="tab1" role="tabpanel"
-						aria-labelledby="nav-profile-tab">
-						<h6 class="mt-3 fw-bolder">설문조사결과</h6>
-						<div>
-							<div id="grid1"></div>
+
+					<!-- Divider-->
+					<div class="pb-5"></div>
+					
+					<div class="d-flex align-items-center justify-content-between mb-4 px-3">
+						<h4 class="text-success fw-bolder mb-0">과목현황</h4>
+					</div>
+					<!-- 설문조사 현황  -->
+					<div class="card shadow border-0 rounded-2 mb-5">
+						<div class="card-body p-4">
+							<div class="mt-2" id="suvListGrid"></div>
 						</div>
 					</div>
-					
-					<!-- 총계표 -->
-					<div class="tab-pane fade" id="tab2" role="tabpanel"
-						aria-labelledby="nav-profile-tab">
-						<h6 class="mt-3 fw-bolder">설문조사총계표</h6>
-						<div>
-							<div id="grid2"></div>
-						</div>
-					</div>
-					
-					
+
 				</div>
-			</main>
-			<%@include file="../bar/footer.jsp"%>
+			</div>
 		</div>
-<!-- 	</div> -->
+		</div>
+		
+	</main>
+	
+	<%@include file="../portalbar/footer.jsp"%>
+	<!-- Bootstrap core JS-->
 	<script
-		src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-		crossorigin="anonymous"></script>
-	<script src="js/scripts.js"></script>
-	<script
-		src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"
-		crossorigin="anonymous"></script>
-	<script src="assets/demo/chart-area-demo.js"></script>
-	<script src="assets/demo/chart-bar-demo.js"></script>
-	<script
-		src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js"
-		crossorigin="anonymous"></script>
-	<script src="js/datatables-simple-demo.js"></script>
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+	<!-- Core theme JS-->
+	<script src="js/scripts2.js"></script>
 </body>
+
 </html>

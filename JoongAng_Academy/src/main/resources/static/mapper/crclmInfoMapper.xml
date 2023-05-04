@@ -2,21 +2,22 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.joongAng.academy.dao.CrclmInfoDAO">
-	
+
 	<!-- 검색기능 - 라디오버튼 생성용 -->
 	<select id="scheduleName" resultType="Hashmap">
 		SELECT CD, CD_NM
-		FROM CODE_INFO
+		FROM
+		CODE_INFO
 		WHERE CD_CLSF ='0003'
 	</select>
-	
+
 	<!-- 교육훈련과정 - 리스트 출력(검색포함) -->
-	 <select id="listCrclmAjax" resultType="HashMap" parameterType="CrclmInfoDTO">
-		SELECT *  
+	<select id="listCrclmAjax" resultType="HashMap" parameterType="CrclmInfoDTO">
+		SELECT COUNT(*) as count, *
 		FROM crclmListView
 		<where>
 			<if test="crclmName != null and crclmName !='' ">
-				AND CRCLM_NM LIKE CONCAT('%',#{crclmName},'%')		
+				AND CRCLM_NM LIKE CONCAT('%',#{crclmName},'%')
 			</if>
 			<if test="year != null and year !=''">
 				AND CRCLM_YEAR = #{year}
@@ -25,13 +26,13 @@
 				AND CRCLM_HALF = #{half}
 			</if>
 			<if test="radioVal != null and  radioVal !=''">
-				AND CRCLM_SCHDL_CD =#{radioVal}                                                                                                                                          
+				AND CRCLM_SCHDL_CD =#{radioVal}
 			</if>
 		</where>
 		ORDER BY CRCLM_NO ASC;
-	</select> 
-	
-	<!-- 수정  -->
+	</select>
+
+	<!-- 수정 -->
 	<update id="saveCrclmAjax" parameterType="CrclmInfoDTO">
 		UPDATE CRCLM_INFO set
 		RPRS_INSTR_NO =#{instrName},
@@ -42,161 +43,151 @@
 		EDU_BGNG_YMD =#{bgYMD},
 		EDU_END_YMD =#{endYMD},
 		CRCLM_SCHDL_CD =#{schedule},
-		EDU_FNSH_YN =#{efnYN},
+		EDU_FNSH_YN
+		=#{efnYN},
 		EDU_NOPE =#{epeople},
 		CRCLM_NM =#{crName}
-		WHERE CRCLM_NO=#{cno}
+		WHERE
+		CRCLM_NO=#{cno}
 	</update>
-	
-	<!-- 신규  -->
-	<insert id="newCrclmAjax"  parameterType="CrclmInfoDTO">
-		INSERT INTO CRCLM_INFO SET
+
+	<!-- 신규 -->
+	<insert id="newCrclmAjax" parameterType="CrclmInfoDTO">
+		INSERT INTO CRCLM_INFO
+		SET
 		RPRS_INSTR_NO =#{instrName},
 		CRCLM_YEAR =#{cyear},
-		CRCLM_HALF =#{chalf},
+		CRCLM_HALF
+		=#{chalf},
 		EDU_CN =#{econtent},
 		EDU_COST =#{ecost},
-		EDU_BGNG_YMD =#{bgYMD},
+		EDU_BGNG_YMD
+		=#{bgYMD},
 		EDU_END_YMD =#{endYMD},
 		EDU_FNSH_YN =#{efnYN},
-		EDU_NOPE =#{epeople},
+		EDU_NOPE
+		=#{epeople},
 		CRCLM_CD =#{ccd},
 		CRCLM_NM =#{crName},
-		CRCLM_SCHDL_CD =#{schedule}
+		CRCLM_SCHDL_CD
+		=#{schedule}
 	</insert>
-	
-	<!-- 교육훈련과정 - 신규/ 수정후 저장된 리스트 다시 불러오기  -->
+
+	<!-- 교육훈련과정 - 신규/ 수정후 저장된 리스트 다시 불러오기 -->
 	<select id="saveAfter" resultType="HashMap">
 		SELECT * FROM crclmListView
 		WHERE CRCLM_YEAR =#{cyear}
 	</select>
-	
-	<!-- 교육훈련과정 - 중복저장 방지확인용  -->
-	<select id="checkCrclmAjax" resultType="Integer" parameterType="CrclmInfoDTO"> 
-		SELECT COUNT(*) FROM CRCLM_INFO 
-		WHERE CRCLM_CD = #{ccd} AND  CRCLM_YEAR = #{cyear} AND CRCLM_HALF = #{chalf};	
+
+	<!-- 교육훈련과정 - 중복저장 방지확인용 -->
+	<select id="checkCrclmAjax" resultType="Integer"
+		parameterType="CrclmInfoDTO">
+		SELECT COUNT(*) FROM CRCLM_INFO
+		WHERE CRCLM_CD = #{ccd} AND CRCLM_YEAR = #{cyear} AND CRCLM_HALF =
+		#{chalf};
 	</select>
-	
+
 	<!-- 훈련과정정보 - 훈련과정명 셀렉트뽑아오기 -->
 	<select id="crclmNameList" resultType="Hashmap">
 		SELECT CD_NM, CD
-		FROM CODE_INFO
+		FROM
+		CODE_INFO
 		WHERE CD_CLSF =0002;
 	</select>
-	
+
 	<!-- 훈련과정정보 - 강사명모달 -->
-	<select id="instrSearchM" parameterType="Hashmap" resultType="Hashmap">
+	<select id="instrSearchM" parameterType="Hashmap"
+		resultType="Hashmap">
 		SELECT INSTR_NO,KORN_FLNM
 		FROM INSTR_INFO
 		<where>
 			<if test="iname != null and  iname !=''">
-			AND KORN_FLNM LIKE CONCAT('%',#{iname},'%')	
+				AND KORN_FLNM LIKE CONCAT('%',#{iname},'%')
 			</if>
 		</where>
 	</select>
-	
+
 	<!-- 과정일정설정 - 리스트출력 -->
-	<select id="crclmSchdl" resultType="Hashmap" parameterType="CrclmInfoDTO">
-		SELECT CodeFind('0003',CRCLM_SCHDL.CRCLM_SCHDL_CD) AS CRCLM_SCHDL_CD, SCHDL_EXPLN,
-		DATE_FORMAT( SCHDL_END_DT, '%Y-%m-%d %H:%i:%s') as  SCHDL_END_DT,SCHDL_FIN,
-		DATE_FORMAT( SCHDL_BGNG_DT, '%Y-%m-%d %H:%i:%s') as SCHDL_BGNG_DT
+	<select id="crclmSchdl" resultType="Hashmap"
+		parameterType="CrclmInfoDTO">
+		SELECT CodeFind('0003',CRCLM_SCHDL.CRCLM_SCHDL_CD) AS
+		CRCLM_SCHDL_CD, SCHDL_EXPLN,
+		DATE_FORMAT( SCHDL_END_DT, '%Y-%m-%d
+		%H:%i:%s') as SCHDL_END_DT,SCHDL_FIN,
+		DATE_FORMAT( SCHDL_BGNG_DT,
+		'%Y-%m-%d %H:%i:%s') as SCHDL_BGNG_DT
 		FROM CRCLM_SCHDL
-		WHERE CRCLM_YEAR = #{cyear} AND CRCLM_HALF =#{chalf} AND CRCLM_CD =#{ccd}
+		WHERE CRCLM_YEAR
+		= #{cyear} AND CRCLM_HALF =#{chalf} AND CRCLM_CD =#{ccd}
 	</select>
-	
-	<!--과정신규저장시, 공통코드 갯수 확인하기(과정일정 반복문 종료값용)  -->
+
+	<!--과정신규저장시, 공통코드 갯수 확인하기(과정일정 반복문 종료값용) -->
 	<select id="countCodeNum" resultType="Integer">
 		SELECT COUNT(1) as count
 		FROM CODE_INFO
 		WHERE CD_CLSF ="0003"
 	</select>
-	
-	<!--과정일정 신규생성  -->
+
+	<!--과정일정 신규생성 -->
 	<insert id="newSchedule" parameterType="CrclmInfoDTO">
-		INSERT INTO CRCLM_SCHDL SET
+		INSERT INTO CRCLM_SCHDL
+		SET
 		CRCLM_YEAR =#{cyear},
 		CRCLM_HALF =#{chalf},
 		CRCLM_CD =#{ccd},
 		CRCLM_SCHDL_CD =#{schedule}
 	</insert>
-	
-	<!-- 과정일정 저장(수정)  -->
 
-	<!-- <update id="updateSchedule" parameterType="java.util.List">
-  	   UPDATE CRCLM_SCHDL SET
-  	   SCHDL_BGNG_DT = CASE
-       	  <foreach collection="list" item="item" index="index" >
-          	  WHEN CRCLM_SCHDL_CD = CodeFindRev('0003',#{item.schdlCode}) THEN #{item.schdlBegin}
-          </foreach>
-        ELSE SCHDL_BGNG_DT
-  	    END,
-   	   SCHDL_END_DT = CASE
-      	  <foreach collection="list" item="item" index="index" >
-            WHEN CRCLM_SCHDL_CD = CodeFindRev('0003',#{item.schdlCode}) THEN #{item.schdlEnd}
-       	  </foreach>
-        ELSE SCHDL_END_DT
-   	    END,
-       SCHDL_EXPLN = CASE
-         <foreach collection="list" item="item" index="index" >
-            WHEN CRCLM_SCHDL_CD = CodeFindRev('0003',#{item.schdlCode}) THEN #{item.schdlEx}
-         </foreach>
-        ELSE SCHDL_EXPLN
-       END,
-      SCHDL_FIN = CASE
-        <foreach collection="list" item="item" index="index" >
-            WHEN CRCLM_SCHDL_CD = CodeFindRev('0003',#{item.schdlCode}) THEN #{item.schdlFin}
-        </foreach>
-       ELSE SCHDL_FIN
-      END
-      <where>
-         <foreach collection="list" item="item" index="index" >
-            CRCLM_CD = #{item.ccd } AND  CRCLM_YEAR = #{item.cyear } AND CRCLM_HALF =#{item.chalf }
-         </foreach>
-      </where>
-	</update> -->
+	<!-- 과정일정 저장(수정) -->
 	<update id="updateSchedule" parameterType="java.util.List">
-    UPDATE CRCLM_SCHDL SET
-    SCHDL_BGNG_DT = CASE
-        <foreach collection="list" item="item" index="index" >
-            WHEN CRCLM_SCHDL_CD = CodeFindRev('0003', #{item.schdlCode}) THEN #{item.schdlBegin}
-        </foreach>
-        ELSE SCHDL_BGNG_DT
-    END,
-    SCHDL_END_DT = CASE
-        <foreach collection="list" item="item" index="index" >
-            WHEN CRCLM_SCHDL_CD = CodeFindRev('0003', #{item.schdlCode}) THEN #{item.schdlEnd}
-        </foreach>
-        ELSE SCHDL_END_DT
-    END,
-    SCHDL_EXPLN = CASE
-        <foreach collection="list" item="item" index="index" >
-            WHEN CRCLM_SCHDL_CD = CodeFindRev('0003', #{item.schdlCode}) THEN #{item.schdlEx}
-        </foreach>
-        ELSE SCHDL_EXPLN
-    END,
-    SCHDL_FIN = CASE
-        <foreach collection="list" item="item" index="index" >
-            WHEN CRCLM_SCHDL_CD = CodeFindRev('0003', #{item.schdlCode}) THEN #{item.schdlFin}
-        </foreach>
-        ELSE SCHDL_FIN
-    END
-    <where>
-        <foreach collection="list" item="item" index="index" separator="OR">
-            (CRCLM_CD = #{item.ccd} AND CRCLM_YEAR = #{item.cyear} AND CRCLM_HALF = #{item.chalf})
-        </foreach>
-    </where>
-</update>
-	
+		UPDATE CRCLM_SCHDL SET
+		SCHDL_BGNG_DT = CASE
+		<foreach collection="list" item="item" index="index">
+			WHEN CRCLM_SCHDL_CD = CodeFindRev('0003', #{item.schdlCode}) THEN
+			#{item.schdlBegin}
+		</foreach>
+		ELSE SCHDL_BGNG_DT
+		END,
+		SCHDL_END_DT = CASE
+		<foreach collection="list" item="item" index="index">
+			WHEN CRCLM_SCHDL_CD = CodeFindRev('0003', #{item.schdlCode}) THEN
+			#{item.schdlEnd}
+		</foreach>
+		ELSE SCHDL_END_DT
+		END,
+		SCHDL_EXPLN = CASE
+		<foreach collection="list" item="item" index="index">
+			WHEN CRCLM_SCHDL_CD = CodeFindRev('0003', #{item.schdlCode}) THEN
+			#{item.schdlEx}
+		</foreach>
+		ELSE SCHDL_EXPLN
+		END,
+		SCHDL_FIN = CASE
+		<foreach collection="list" item="item" index="index">
+			WHEN CRCLM_SCHDL_CD = CodeFindRev('0003', #{item.schdlCode}) THEN
+			#{item.schdlFin}
+		</foreach>
+		ELSE SCHDL_FIN
+		END
+		<where>
+			<foreach collection="list" item="item" index="index"
+				separator="OR">
+				(CRCLM_CD = #{item.ccd} AND CRCLM_YEAR = #{item.cyear} AND CRCLM_HALF =
+				#{item.chalf})
+			</foreach>
+		</where>
+	</update>
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
+
+
+
+
+
 </mapper>

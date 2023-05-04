@@ -1,5 +1,8 @@
 package com.joongAng.academy.controller;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -231,16 +234,21 @@ public class EstablishedSubjectController {
 	@PostMapping(value = "/estDelete", produces = "application/json;charset=UTF-8")
 	public String estDelete(HttpServletRequest request) {
 		JSONObject json = new JSONObject();
-		String crc = request.getParameter("crc");
-		String year = request.getParameter("year");
-		String hlf = request.getParameter("hlf");
-		String sbjno= request.getParameter("sbjno");
+		Map<String, String[]> reqmap = request.getParameterMap();
 		Map<String,Object> map = new HashMap<String, Object>();
-		map.put("crc", crc);
-		map.put("year", year);
-		map.put("hlf", hlf);
-		map.put("sbjno", sbjno);
+		for (String key : reqmap.keySet()) {
+			String[] values = reqmap.get(key);
+			for (String value : values) {
+				map.put(key.toString(), value);
+			}
+		}
+		Map<String, Object> integrityChecker = estService.integCheck(map);
+		byte[] rsltStrBytes = (byte[]) map.get("RSLT_STR");
+		String rsltStr = new String(rsltStrBytes, StandardCharsets.UTF_8);
+		map.put("RSLT_STR", rsltStr);
+		json.put("result", map);
 		int result = estService.estDelete(map);
+		json.put("delResult", result);
 		return json.toString();
 	}
 }

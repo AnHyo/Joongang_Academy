@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.joongAng.academy.dao.AtndInstrDAO">
+
+	<select id="crclmList" parameterType="HashMap" resultType="HashMap">
+		SELECT CRCLM_CD, CRCLM_YEAR, CRCLM_HALF, CRCLM_NM, SBJCT_NO, SBJCT_NM, ESNTL_YN, cls_stdntNum, cls_dayhour, ROOM_NM
+		FROM atndSbjctListView
+		WHERE CRCLM_YEAR = #{crclm_year } AND CRCLM_HALF = #{crclm_half } AND INSTR_NO = #{id }
+		<if test="searchCrclm != null">
+			AND CRCLM_NM LIKE CONCAT('%',#{searchCrclm },'%')
+		</if>
+		<if test="searchSbjct != null">
+			AND SBJCT_NM LIKE CONCAT('%',#{searchSbjct },'%')
+		</if>
+		<if test="searchInstr != null">
+			AND KORN_FLNM LIKE CONCAT('%',#{searchInstr },'%')
+		</if>
+	</select>
+	
+	<select id="weekList" parameterType="HashMap" resultType="HashMap">
+		SELECT CRCLM_CD, CRCLM_YEAR, CRCLM_HALF, SBJCT_NO, (SELECT INSERT(INSERT(LECT_YMD,5,0,'-'),8,0,'-')) AS LECT_YMD, LECT_DAY_KORN, CLS_KORN, CONCAT(WEEK_NUM, '주차') AS WEEK_NUM, CONCAT(ATND_SUM, ' / ', ABSC_SUM) AS ATND_SUM
+		FROM atndInstrWeekView
+		WHERE CRCLM_CD = #{crclm_cd } AND CRCLM_YEAR = #{crclm_year } AND CRCLM_HALF = #{crclm_half } AND SBJCT_NO = #{sbjct_no }
+		ORDER BY LECT_YMD, CLS_KORN
+	</select>
+	
+	<select id="stdntList" parameterType="HashMap" resultType="HashMap">
+		SELECT STDNT_NO, (SELECT KORN_FLNM FROM APPL_INFO Ai WHERE APPL_ATND.STDNT_NO = Ai.STDNT_NO) AS STDNT_NM, CodeFind('0014', ATND_CD) AS ATND_STT
+		FROM APPL_ATND
+		WHERE CRCLM_CD = #{crclm_cd } AND CRCLM_YEAR = #{crclm_year } AND CRCLM_HALF = #{crclm_half } AND SBJCT_NO = #{sbjct_no }
+		GROUP BY STDNT_NO
+		ORDER BY STDNT_NM
+	</select>
+
+</mapper>

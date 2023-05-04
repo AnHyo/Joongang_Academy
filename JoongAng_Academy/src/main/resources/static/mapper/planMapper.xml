@@ -5,17 +5,18 @@
 
 	<select id="getPlan" parameterType="HashMap" resultType="HashMap">
 		SELECT * FROM SBJCT_PLAN
-		WHERE CodeFind('0002',CRCLM_CD) = #{crc} 
+		WHERE CRCLM_CD = #{crc} 
 			AND CRCLM_YEAR = #{year} 
-			AND CodeFind('0018',CRCLM_HALF) = #{hlf} 
+			AND CRCLM_HALF = #{hlf} 
 			AND SBJCT_NO = #{sbj} 
 	</select>
 	<select id="getPlanDetail" parameterType="HashMap" resultType="HashMap">
 		SELECT * FROM SBJCT_PLAN_DTL
-		WHERE CodeFind('0002',CRCLM_CD) = #{crc} 
+		WHERE CRCLM_CD = #{crc} 
 			AND CRCLM_YEAR = #{year} 
-			AND CodeFind('0018',CRCLM_HALF) = #{hlf} 
+			AND CRCLM_HALF = #{hlf} 
 			AND SBJCT_NO = #{sbj} 
+		ORDER BY CAST(DTL_NO AS SIGNED) ASC
 	</select>
 	<update id="savePlan" parameterType="HashMap">
 		UPDATE SBJCT_PLAN
@@ -24,18 +25,27 @@
 		,SBJCT_CN = #{cn}
 		,CRS_BOOK = #{book}
 		,SBJCT_MTHD_CD = #{method}
-		WHERE CodeFind('0002',CRCLM_CD) = #{crc} 
+		WHERE CRCLM_CD = #{crc} 
 			AND CRCLM_YEAR = #{year} 
-			AND CodeFind('0018',CRCLM_HALF) = #{hlf} 
+			AND CRCLM_HALF = #{hlf} 
+			AND SBJCT_NO = #{sbj} 
+	</update>
+	<update id="planYN" parameterType="HashMap">
+		UPDATE SBJCT_PLAN
+		SET
+		PLAN_WRT_CMPTL = 'Y'
+		WHERE CRCLM_CD = #{crc} 
+			AND CRCLM_YEAR = #{year} 
+			AND CRCLM_HALF = #{hlf} 
 			AND SBJCT_NO = #{sbj} 
 	</update>
 
 	<insert id="saveDetail" parameterType="HashMap">
 		<selectKey resultType="Integer" keyProperty="detailCount" order="BEFORE">
-        SELECT COUNT(*) FROM SBJCT_PLAN_DTL WHERE CRCLM_YEAR=#{year} AND CRCLM_HALF=CodeFindRev('0018',#{hlf}) AND CRCLM_CD=CodeFindRev('0002',#{crc}) AND SBJCT_NO=#{sbj}
+        SELECT IF(MAX(CAST(DTL_NO AS SIGNED)) IS NOT NULL,MAX(CAST(DTL_NO AS SIGNED)),0) FROM SBJCT_PLAN_DTL WHERE CRCLM_YEAR=#{year} AND CRCLM_HALF=#{hlf} AND CRCLM_CD=#{crc} AND SBJCT_NO=#{sbj}
     	</selectKey>   
 		INSERT INTO SBJCT_PLAN_DTL (CRCLM_YEAR,CRCLM_HALF,CRCLM_CD,SBJCT_NO,DTL_NO,LECT_TTL_NM,LECT_TPC_NM,LECT_CN)
-		VALUES (#{year},CodeFindRev('0018',#{hlf}),CodeFindRev('0002',#{crc}),#{sbj},
+		VALUES (#{year},#{hlf},#{crc},#{sbj},
 		#{detailCount}+1
 		,#{ttl},#{tpc},#{cn})		
 	</insert>
@@ -51,9 +61,9 @@
 		UPDATE ESTBL_SBJCT
 		SET
 		SBJCT_PLAN_YN = 'Y'
-		WHERE CodeFind('0002',CRCLM_CD) = #{crc} 
+		WHERE CRCLM_CD = #{crc} 
 			AND CRCLM_YEAR = #{year} 
-			AND CodeFind('0018',CRCLM_HALF) = #{hlf} 
+			AND CRCLM_HALF = #{hlf} 
 			AND SBJCT_NO = #{sbj} 
 	</update>
 	<delete id="deleteDetail" parameterType="HashMap">

@@ -53,7 +53,7 @@ $(function(){
 		
 		var grid = new tui.Grid({
 		      el: document.getElementById('grid'),
-		      bodyHeight: 420,
+		      bodyHeight: 400,
 		      scrollX: true,
 		      scrollY: true,
 		      contextMenu: null,

@@ -42,5 +42,9 @@ public class AttendanceService {
 		return atndDAO.checkSchdlYN(map);
 	}
 
+	public int createAtnd(Map<String, Object> map) {
+		return atndDAO.createAtnd(map);
+	}
+
 
 }

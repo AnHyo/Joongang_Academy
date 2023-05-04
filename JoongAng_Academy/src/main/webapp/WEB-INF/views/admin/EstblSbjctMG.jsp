@@ -308,6 +308,7 @@
 					$("#g").val("");
 					$("#h").val("");
 					$("#i").val("");
+					$("#m").val("");
 					$("#z").val("");
 				}).fail(function() {
 					alert("문제가 발생했습니다.");
@@ -518,23 +519,35 @@
 // 		삭제 버튼 클릭 시 체크박스가 체크된 모든 데이터를 삭제할 예정, 현재는 값만 넘기고 구현되지 않음
 		$("#deleteBtn").click(function(){
 			var checkedRows = grid.getCheckedRows();
-			console.log(checkedRows);
-			$.each(checkedRows, function(index, row){
-				$.post({
-					url : "/estDelete",
-					data : {
-						crc : row.CRCLM_CD,
-						year : row.CRCLM_YEAR,
-						hlf : row.CRCLM_HALF,
-						sbjno : row.SBJCT_NO
-					},
-					dataType : "json"
-				}).done(function(data) {
-					console.log("success");
-				}).fail(function() {
-					alert("문제가 발생했습니다.");
-				});
-			})
+			if(checkedRows.length==0){
+				alert("체크박스를 선택해주세요");
+				return false;
+			}
+			if(confirm("정말 삭제할겁니까?")!=true){
+				return false;
+			}else{
+				$.each(checkedRows, function(index, row){
+					$.post({
+						url : "/estDelete",
+						data : {
+							crc : row.CRCLM_CD,
+							year : row.CRCLM_YEAR,
+							hlf : row.CRCLM_HALF,
+							sbjno : row.SBJCT_NO,
+							RSLT : null,
+							RSLT_STR : null
+						},
+						dataType : "json"
+					}).done(function(data) {
+						if(data.result.RSLT!=0){
+							alert(data.result.RSLT_STR);						
+						}
+					}).fail(function() {
+						alert("문제가 발생했습니다.");
+					});
+				})
+			}
+						
 		});
 		
 // 		과목선택 그리드
@@ -889,22 +902,20 @@
 </style>
 </head>
 <body class="sb-nav-fixed">
-	<%@include file="../bar/topbar.jsp"%>
-	<div id="layoutSidenav">
-		<%@include file="../bar/sidebar.jsp"%>
+	
 		<div id="layoutSidenav_content">
 			<main>
-				<!-- 탭 메뉴 -->
-				<div class="bg-dark text-white" style="width: 100%; height: 40px;">
-
-				</div>
 				<div class="container-fluid px-4">
-					<h1 class="mt-4">개설교과목관리</h1>
-					<ol class="breadcrumb mb-4">
-						<li class="breadcrumb-item active">Established Subject
-							Management</li>
-					</ol>
-					<div class="row">
+					<div class="mt-4 mb-1 position-relative row">
+						<div style="width:30px;">
+						<img src="./image/joongang_logo.png" style="width:25px;">
+						</div>
+						<div style="width:200px; height:30px;  "> 
+							<h5 style="font-weight: bold; color:#565757; line-height:30px;">개설교과목관리</h5>
+						</div>
+					</div>
+					<hr style="height: 4px;" class="m-0 mb-1">
+					<div class="row d-flex align-items-center" style="height:55px; background-color: #F3FAFE; border: 1px solid #c0c0c0;">
 						<div class="col-md-4">
 							<select class="form-select" id="crclmSelect">
 								<option selected value=''>교육과정선택</option>
@@ -920,24 +931,30 @@
 								<option selected value=''>반기선택</option>
 							</select>
 						</div>
-						<button class="btn btn-primary col-md-1" id="searchBtn">조회</button>
-						<button class="btn btn-info col-md-1" id="insertBtn">신규</button>
-						<button class="btn btn-secondary col-md-1" id="saveBtn">저장</button>
-						<button class="btn btn-danger col-md-1" id="deleteBtn">삭제</button>
-
+						
+						<div class="col-md-4 d-flex justify-content-center">
+						<div><button class="btn btn-primary" id="searchBtn">조회</button></div>
+						<div><button class="btn btn-info" id="insertBtn">신규</button></div>
+						<div><button class="btn btn-secondary" id="saveBtn">저장</button></div>
+						<div><button class="btn btn-danger" id="deleteBtn">삭제</button></div>
+						</div>
+					</div>
 						<div>
 							<div class="float-start"
 								style="width: 10px; height: 27px; background-color: #498c5f; margin-right: 10px;"></div>
 							<h6 class="mt-3 fw-bolder">개설교과목</h6>
-							<div id="grid" class="mb-3" style="width: 100%;"></div>
 						</div>
-
-
-					</div>
+							<div id="grid" class="mb-3" style="width: 100%;"></div>
+							<hr style="height: 4px;" class="mb-2">
+							<div>
+							<div class="float-start"
+								style="width: 10px; height: 27px; background-color: #498c5f; margin-right: 10px;"></div>
+							<h6 class="mt-3 fw-bolder">상세정보</h6>
+						</div>
 					<div>
-						<div
-							style="background-color: #F3FAFE; width: 100%; min-height: 300px;">
-							<form>
+						<div class="d-flex justify-content-center"
+							style="background-color: #F3FAFE; width: 100%; min-height: 300px; border: 1px solid #c0c0c0;">
+							<form style="width:95%;">
 
 								<div class="row">
 									<div class="form-group col-md-6">
@@ -960,7 +977,7 @@
 									</div>
 								</div>
 
-
+								
 								<div class="row">
 									<div class="form-group col-md-4">
 										<label for="z" class="col-form-label">과목명</label>
@@ -1244,7 +1261,6 @@
 			</main>
 			<%-- 			<%@include file="../bar/footer.jsp"%> --%>
 		</div>
-	</div>
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
 		crossorigin="anonymous"></script>

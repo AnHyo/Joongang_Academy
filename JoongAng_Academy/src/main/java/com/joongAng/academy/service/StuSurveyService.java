@@ -35,6 +35,14 @@ public class StuSurveyService {
 	public List<StuSurveyDTO> code() {
 		return stuSurveyDAO.code();
 	}
+
+	public int svSave(StuSurveyDTO dto) {
+		return stuSurveyDAO.svSave(dto);
+	}
+
+	public int svUpdate(StuSurveyDTO dto) {
+		return stuSurveyDAO.svUpdate(dto);
+	}
 	
 
 }

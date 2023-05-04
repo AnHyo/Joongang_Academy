@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.joongAng.academy.dao.AtndStdntDAO">
+	
+	<select id="stdntInfo" parameterType="String" resultType="HashMap">
+		SELECT CI.CRCLM_CD, CONCAT(CI.CRCLM_YEAR,'년') AS CRCLM_YEAR, CodeFind('0018', CI.CRCLM_HALF) AS CRCLM_HALF, CI.CRCLM_NM AS CRCLM_NM
+		FROM APPL_INFO AI
+		JOIN CRCLM_INFO CI ON AI.CRCLM_CD = CI.CRCLM_CD AND AI.CRCLM_YEAR = CI.CRCLM_YEAR AND AI.CRCLM_HALF = CI.CRCLM_HALF
+		WHERE AI.STDNT_NO = #{id }
+	</select>
+
+	<select id="sbjctList" parameterType="HashMap" resultType="HashMap">
+		SELECT AC.CRCLM_CD, AC.CRCLM_YEAR, AC.CRCLM_HALF, AC.SBJCT_NO, aslv.SBJCT_NM, aslv.ESNTL_YN, aslv.KORN_FLNM, aslv.cls_dayhour, aslv.ROOM_NM 
+		FROM APPL_CLS AC
+		JOIN atndSbjctListView aslv ON AC.CRCLM_CD = aslv.CRCLM_CD AND AC.CRCLM_YEAR = aslv.CRCLM_YEAR AND AC.CRCLM_HALF = aslv.CRCLM_HALF AND AC.SBJCT_NO = aslv.SBJCT_NO
+		WHERE AC.STDNT_NO = #{id }
+		<if test="searchSbjct != null">
+			AND aslv.SBJCT_NM LIKE CONCAT('%',#{searchSbjct },'%')
+		</if>
+	</select>
+	
+	<select id="atndList" parameterType="String" resultType="HashMap">
+		SELECT CRCLM_CD, CRCLM_YEAR, CRCLM_HALF, SBJCT_NO, STDNT_NO, (CONCAT(SUBSTR(LECT_YMD, 5, 2), '.', SUBSTR(LECT_YMD, 7, 2))) AS LECT_YMD
+				, CodeFind('0017', CLS_CD) AS CLS_KORN, CodeFind('0014', ATND_CD) AS ATND_KORN, RMRK
+		FROM APPL_ATND
+		WHERE STDNT_NO = #{id }
+		ORDER BY LECT_YMD
+	</select>
+
+</mapper>

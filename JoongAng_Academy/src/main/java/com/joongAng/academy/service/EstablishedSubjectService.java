@@ -97,5 +97,10 @@ public class EstablishedSubjectService {
 		// TODO Auto-generated method stub
 		return estDAO.estTimeConfirm(map);
 	}
+
+	public Map<String, Object> integCheck(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return estDAO.integCheck(map);
+	}
 	
 }

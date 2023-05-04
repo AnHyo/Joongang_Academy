@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class StuSurveyDTO {
-	private String student_ID, sbjctNo, cYear, cCd, cHalf;
+	private String student_ID, sbjctNo, cYear, cCd, cHalf, txnm, innm;
 	private String DGSTFN_TITLE , DGSTFN_INTRO;
 	
 	/* APPL_DGSTFN_ITEM */

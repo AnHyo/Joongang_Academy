@@ -26,6 +26,13 @@
 			.ready(
 					function() {
 
+						$.fn.changetag = function(str){
+							var result = "";
+							result = str.replace('<',"&lt");
+							result = result.replace(">","&gt");
+							return result;
+						}
+						
 						var Grid = tui.Grid;
 						Grid.applyTheme('clean', {
 							row : {
@@ -240,12 +247,12 @@
 												return false;
 											} else {
 												var crc = grid.getValue(
-														ev.rowKey, 'CRCLM_NM');
+														ev.rowKey, 'CRCLM_CD');
 												var year = grid
 														.getValue(ev.rowKey,
 																'CRCLM_YEAR');
 												var hlf = grid.getValue(
-														ev.rowKey, 'HALF');
+														ev.rowKey, 'CRCLM_HALF');
 												var sbj = grid.getValue(
 														ev.rowKey, 'SBJCT_NO');
 												$
@@ -263,16 +270,23 @@
 																function(data) {
 																	$("#crc")
 																			.val(
-																					crc);
+																					grid.getValue(
+																							ev.rowKey, 'CRCLM_NM'));
+																	$("#crclmCd").val(crc);
 																	$("#year")
 																			.val(
 																					year);
+																	
 																	$("#hlf")
 																			.val(
-																					hlf);
+																					grid.getValue(
+																							ev.rowKey, 'HALF'));
+																	$("#crclmHalf").val(hlf);
 																	$("#sbj")
 																			.val(
-																					sbj);
+																					grid.getValue(
+																							ev.rowKey, 'SBJCT_NM'));
+																	$("#sbjno").val(sbj);
 																	$("#a")
 																			.val(
 																					data.subjectPlan.SBJCT_TRGT);
@@ -282,13 +296,36 @@
 																	$("#c")
 																			.val(
 																					data.subjectPlan.CRS_BOOK);
-																	$("#l")
+																	$("#l").val(data.subjectPlan.SBJCT_MTHD_CD);
+																	$("#dtlno")
 																			.val(
-																					data.subjectPlan.SBJCT_MTHD_CD);
-																	$("#dtlno").val("");
-																	$("#d").val("");
-																	$("#e").val("");
-																	$("#f").val("");
+																					"");
+																	$("#d")
+																			.val(
+																					"");
+																	$("#e")
+																			.val(
+																					"");
+																	$("#f")
+																			.val(
+																					"");
+																	if (data.subjectPlan.PLAN_WRT_CMPTL == 'Y') {
+																		$(
+																				"#nav-detail-tab")
+																				.attr(
+																						"disabled",
+																						false);
+																	} else {
+																		$(
+																				"#nav-detail-tab")
+																				.attr(
+																						"disabled",
+																						true);
+																		$(
+																				"#nav-home-tab")
+																				.tab(
+																						"show");
+																	}
 
 																})
 														.fail(
@@ -320,7 +357,7 @@
 								alert("문제가 발생했습니다.");
 							});
 						}
-						$("#nav-detail-tab").click(function(){
+						$("#nav-detail-tab").click(function() {
 							detailPlanGrid.refreshLayout();
 						});
 						//상세강의계획그리드클릭
@@ -365,17 +402,20 @@
 
 						$("#saveBtn").click(
 								function() {
-									var crc = $("#crc").val();
+									var crc = $("#crclmCd").val();
 									var year = $("#year").val();
-									var hlf = $("#hlf").val();
-									var sbj = $("#sbj").val();
+									var hlf = $("#crclmHalf").val();
+									var sbj = $("#sbjno").val();
 									var trgt = $("#a").val();
+									trgt = $.fn.changetag(trgt);
 									var cn = $("#b").val();
+									cn = $.fn.changetag(cn);
 									var book = $("#c").val();
+									book = $.fn.changetag(book);
 									var method = $("#l").val();
 									if (crc == '' || year == '' || hlf == ''
-											|| sbj == '' || trgt == ''
-											|| cn == '') {
+											|| sbj == '' || trgt.trim() == ''
+											|| cn.trim() == '' || method == '') {
 										alert("!");
 										return false;
 									}
@@ -395,282 +435,319 @@
 									}).done(function(data) {
 										alert("저장했다");
 										$.fn.planSearch();
+										$("#nav-detail-tab").attr("disabled",false);
 									}).fail(function() {
 										alert("문제가 발생했습니다.");
 									});
+
 								});
 
 						$("#insDetail").click(
 								function() {
-									var crc = $("#crc").val();
+									var crc = $("#crclmCd").val();
 									var year = $("#year").val();
-									var hlf = $("#hlf").val();
-									var sbj = $("#sbj").val();
+									var hlf = $("#crclmHalf").val();
+									var sbj = $("#sbjno").val();
 									var ttl = $("#d").val();
+									ttl = $.fn.changetag(ttl);
 									var tpc = $("#e").val();
+									tpc = $.fn.changetag(tpc);
 									var cn = $("#f").val();
+									cn = $.fn.changetag(cn);
+									var dtlno = $("#dtlno").val();
 									if (ttl.trim() == "" || tpc.trim() == ""
 											|| cn.trim() == "") {
 										alert("입력해주세요");
 										return false;
 									}
-									$.post({
-										url : "/estDetailSave",
-										data : {
-											crc : crc,
-											year : year,
-											hlf : hlf,
-											sbj : sbj,
-											ttl : ttl,
-											tpc : tpc,
-											cn : cn
-										},
-										dataType : "json"
-									}).done(function(data) {
-										alert("저장했다");
-										$.fn.detailPlan(crc, year, hlf, sbj);
-										$("#d").val("");
-										$("#e").val("");
-										$("#f").val("");
+									if (dtlno == "") {
 
-									}).fail(function() {
-										alert("문제가 발생했습니다.");
-									});
-								});
+										$.post({
+											url : "/estDetailSave",
+											data : {
+												crc : crc,
+												year : year,
+												hlf : hlf,
+												sbj : sbj,
+												ttl : ttl,
+												tpc : tpc,
+												cn : cn
+											},
+											dataType : "json"
+										}).done(
+												function(data) {
+													alert("저장했다");
+													$.fn.detailPlan(crc, year,
+															hlf, sbj);
+													$("#d").val("");
+													$("#e").val("");
+													$("#f").val("");
 
-						$("#detailZone").on("click", ".dtlUpdateBtn",
-								function() {
-									var no = $(this).val();
-									var crc = $("#crc").val();
-									var year = $("#year").val();
-									var hlf = $("#hlf").val();
-									var sbj = $("#sbj").val();
-									var ttl = $("#dtlTTL" + no).val();
-									var tpc = $("#dtlTPC" + no).val();
-									var cn = $("#dtlCN" + no).val();
-									$.post({
-										url : "/estDetailUpdate",
-										data : {
-											crc : crc,
-											year : year,
-											hlf : hlf,
-											sbj : sbj,
-											ttl : ttl,
-											tpc : tpc,
-											cn : cn,
-											dtlno : no
-										},
-										dataType : "json"
-									}).done(function(data) {
-										alert("저장했다");
-										$.fn.detailPlan(crc, year, hlf, sbj);
-									}).fail(function() {
-										alert("문제가 발생했습니다.");
-									});
+												}).fail(function() {
+											alert("문제가 발생했습니다.");
+										});
+									} else {
+										$.post({
+											url : "/estDetailUpdate",
+											data : {
+												crc : crc,
+												year : year,
+												hlf : hlf,
+												sbj : sbj,
+												ttl : ttl,
+												tpc : tpc,
+												cn : cn,
+												dtlno : dtlno
+											},
+											dataType : "json"
+										}).done(
+												function(data) {
+													alert("저장했다");
+													$.fn.detailPlan(crc, year,
+															hlf, sbj);
+												}).fail(function() {
+											alert("문제가 발생했습니다.");
+										});
+									}
 								});
-
-						$("#detailZone").on("click", ".dtlDeleteBtn",
-								function() {
-									var no = $(this).val();
-									var crc = $("#crc").val();
-									var year = $("#year").val();
-									var hlf = $("#hlf").val();
-									var sbj = $("#sbj").val();
-									$.post({
-										url : "/estDetailDelete",
-										data : {
-											crc : crc,
-											year : year,
-											hlf : hlf,
-											sbj : sbj,
-											dtlno : no
-										},
-										dataType : "json"
-									}).done(function(data) {
-										alert("삭제했다");
-										$.fn.detailPlan(crc, year, hlf, sbj);
-									}).fail(function() {
-										alert("문제가 발생했습니다.");
-									});
-								});
+						$("#initDetail").click(function(){
+							$("#dtlno").val("");
+							$("#d").val("");
+							$("#d").focus();
+							$("#e").val("");
+							$("#f").val("");
+						});
+						
+						$("#delDetail").click(function() {
+							var checkedRows = detailPlanGrid.getCheckedRows();
+							if(checkedRows.length==0){
+								alert("삭제할 항목의 체크박스를 클릭해주세요");
+								return false;
+							}else{
+								if(confirm("정말로 삭제합니까?")==true){
+										var crc = $("#crclmCd").val();
+										var year = $("#year").val();
+										var hlf = $("#crclmHalf").val();
+										var sbj = $("#sbjno").val();
+										var result = 0;
+									$.each(checkedRows,function(index,element){
+										$.post({
+											url : "/estDetailDelete",
+											data : {
+												crc : crc,
+												year : year,
+												hlf : hlf,
+												sbj : sbj,
+												dtlno : element.DTL_NO
+											},
+											dataType : "json"
+										}).done(function(data) {
+											result += data.result;
+											if(result==checkedRows.length){
+												alert("삭제했습니다.");
+												$.fn.detailPlan(crc, year, hlf, sbj);
+											}
+										}).fail(function() {
+											alert("문제가 발생했습니다.");
+										});	
+									})
+								}
+							}
+						});
 					});
 </script>
 </head>
 <body class="sb-nav-fixed">
-	<%@include file="../bar/topbar.jsp"%>
-	<div id="layoutSidenav">
-		<%@include file="../bar/sidebar.jsp"%>
-		<div id="layoutSidenav_content">
-			<main>
-				<!-- 탭 메뉴 -->
-				<div class="bg-dark text-white" style="width: 100%; height: 40px;">
+
+
+
+	<div id="layoutSidenav_content">
+		<main>
+			<div class="container-fluid px-4">
+					<div class="mt-4 mb-1 position-relative row">
+						<div style="width:30px;">
+						<img src="./image/joongang_logo.png" style="width:25px;">
+						</div>
+						<div style="width:200px; height:30px;  "> 
+							<h5 style="font-weight: bold; color:#565757; line-height:30px;">강의계획서관리</h5>
+						</div>
+					</div>
+					<hr style="height: 4px;" class="m-0 mb-1">
+					<div class="row d-flex align-items-center" style="height:55px; background-color: #F3FAFE; border: 1px solid #c0c0c0;">
+					<div class="col-md-4">
+						<select class="form-select" id="crclmSelect">
+							<option selected value=''>교육과정선택</option>
+						</select>
+					</div>
+					<div class="col-md-2">
+						<select class="form-select" id="yearSelect">
+							<option selected value=''>연도선택</option>
+						</select>
+					</div>
+					<div class="col-md-2">
+						<select class="form-select" id="halfSelect">
+							<option selected value=''>반기선택</option>
+						</select>
+					</div>
+					<div class="col-md-4 d-flex justify-content-center">
+						<button class="btn btn-primary" id="searchBtn">조회</button>
+						<button class="btn btn-secondary" id="saveBtn">저장</button>			
+					</div>
 
 				</div>
-				<div class="container-fluid px-4">
-					<h1 class="mt-4">강의계획서관리</h1>
-					<ol class="breadcrumb mb-4">
-						<li class="breadcrumb-item active">Subject Plan Management</li>
-					</ol>
-					<div class="row">
-						<div class="col-md-4">
-							<select class="form-select" id="crclmSelect">
-								<option selected value=''>교육과정선택</option>
-							</select>
-						</div>
-						<div class="col-md-2">
-							<select class="form-select" id="yearSelect">
-								<option selected value=''>연도선택</option>
-							</select>
-						</div>
-						<div class="col-md-2">
-							<select class="form-select" id="halfSelect">
-								<option selected value=''>반기선택</option>
-							</select>
-						</div>
-						<button class="btn btn-primary col-md-1" id="searchBtn">조회</button>
-						<button class="btn btn-secondary col-md-1" id="saveBtn">저장</button>
-						
-						<div class="float-start"
-								style="width: 10px; height: 27px; background-color: #498c5f; margin-right: 10px;"></div>
-							<h6 class="mt-3 fw-bolder">개설교과목</h6>
-						<div id="grid" class="mb-3" style="width: 100%;"></div>
-						
-					</div>
 					<div>
-						<div class="float-start"
-								style="width: 10px; height: 27px; background-color: #498c5f; margin-right: 10px;"></div>
-							<h6 class="mt-3 fw-bolder">강의계획서</h6>
-						<div
-							style="background-color: #F3FAFE; width: 100%; min-height: 300px;">
-							<div class="mt-3">
-								<!--탭설정 -->
-								<nav>
-									<div class="nav nav-tabs" id="nav-tab" role="tablist">
-										<button class="nav-link active" id="nav-home-tab"
-											data-bs-toggle="tab" data-bs-target="#nav-home" type="button"
-											role="tab" aria-controls="nav-home" aria-selected="true">강의계획서</button>
-										<button class="nav-link" id="nav-detail-tab"
-											data-bs-toggle="tab" data-bs-target="#nav-detail"
-											type="button" role="tab" aria-controls="nav-detail"
-											aria-selected="false">상세강의계획</button>
-									</div>
-								</nav>
-								<div class="tab-content" id="nav-tabContent">
-									<!--강의계획  -->
-									<div class="tab-pane fade show active" id="nav-home"
-										role="tabpanel" aria-labelledby="nav-home-tab">
-										<form id="subjectPlanMain">
-											<div class="row">
-												<div class="form-group col-md-4">
-													<label for="crc" class="col-form-label">교육과정</label> <input
-														type="text" class="form-control" id="crc" readonly>
-												</div>
-												<div class="form-group col-md-2">
-													<label for="year" class="col-form-label">연도</label> <input
-														type="text" class="form-control" id="year" readonly>
-												</div>
-												<div class="form-group col-md-2">
-													<label for="hlf" class="col-form-label">반기</label> <input
-														type="text" class="form-control" id="hlf" readonly>
-												</div>
-												<div class="form-group col-md-2">
-													<label for="sbj" class="col-form-label">과목</label> <input
-														type="text" class="form-control" id="sbj" readonly>
-												</div>
-												<div class="form-group col-md-2">
-													<label for="l" class="col-form-label">강의방법</label> <select
-														id="l" class="form-control">
-														<option value="">선택</option>
-													</select>
-												</div>
-											</div>
-											<br>
-											<div class="form-group row">
-												<label for="a" class="col-sm-2 col-form-label">강의목표</label>
-												<div class="col-sm-10">
-													<input id="a" type="text" class="form-control">
-												</div>
-											</div>
-											<div class="form-group row">
-												<label for="b" class="col-sm-2 col-form-label">강의내용</label>
-												<div class="col-sm-10">
-													<textarea id="b" class="form-control"></textarea>
-												</div>
-											</div>
-											<div class="form-group row">
-												<label for="c" class="col-sm-2 col-form-label">교재</label>
-												<div class="col-sm-10">
-													<input id="c" type="text" class="form-control">
-												</div>
-											</div>
-										</form>
-									</div>
-									<!--상세계획  -->
-									<div class="tab-pane fade" id="nav-detail" role="tabpanel"
-										aria-labelledby="nav-detail-tab">
+					<div class="float-start"
+						style="width: 10px; height: 27px; background-color: #498c5f; margin-right: 10px;"></div>
+					<h6 class="mt-3 fw-bolder">개설교과목</h6>
+					<div id="grid" class="mb-3" style="width: 100%;"></div>
+					</div>
+				<div>
+					<div class="float-start"
+						style="width: 10px; height: 27px; background-color: #498c5f; margin-right: 10px;"></div>
+					<h6 class="mt-3 fw-bolder">강의계획서</h6>
+					<div
+						style="background-color: #F3FAFE; width: 100%; min-height: 300px;">
+						<div class="mt-3">
+							<!--탭설정 -->
+							<nav>
+								<div class="nav nav-tabs" id="nav-tab" role="tablist">
+									<button class="nav-link active" id="nav-home-tab"
+										data-bs-toggle="tab" data-bs-target="#nav-home" type="button"
+										role="tab" aria-controls="nav-home" aria-selected="true">강의계획서</button>
+									<button class="nav-link" id="nav-detail-tab"
+										data-bs-toggle="tab" data-bs-target="#nav-detail"
+										type="button" role="tab" aria-controls="nav-detail"
+										aria-selected="false">상세강의계획</button>
+								</div>
+							</nav>
+							<div class="tab-content" id="nav-tabContent">
+								<!--강의계획  -->
+								<div class="tab-pane fade show active" id="nav-home"
+									role="tabpanel" aria-labelledby="nav-home-tab">
+									<div class="d-flex justify-content-center">
+									<form id="subjectPlanMain" style="width:95%;">
 										<div class="row">
-											<div class="col-md-4">
-												<div id="detailZone">
-													<table id="detailTable" class="table table-bordered">
-
-													</table>
-												</div>
-												<div id="detailPlanGrid"></div>
+											<div class="form-group col-md-4">
+												<label for="crc" class="col-form-label">교육과정</label> <input
+													type="text" class="form-control" id="crc" readonly>
+													<input type="hidden" id="crclmCd">
 											</div>
-											<div class="col-md-8">
-												<div id="detailEnter">
-													<form id="subjectPlanDetail">
-														<div class='d-flex justify-content-end col-md-12'>
-															<button type="button" class="btn btn-outline-dark"
-																id="insDetail">저장</button>
+											<div class="form-group col-md-2">
+												<label for="year" class="col-form-label">연도</label> <input
+													type="text" class="form-control" id="year" readonly>
+													<input type="hidden" id="crclmYear">
+											</div>
+											<div class="form-group col-md-2">
+												<label for="hlf" class="col-form-label">반기</label> <input
+													type="text" class="form-control" id="hlf" readonly>
+													<input type="hidden" id="crclmHalf">
+											</div>
+											<div class="form-group col-md-2">
+												<label for="sbj" class="col-form-label">과목</label> <input
+													type="text" class="form-control" id="sbj" readonly>
+													<input type="hidden" id="sbjno">
+											</div>
+											<div class="form-group col-md-2">
+												<label for="l" class="col-form-label">강의방법</label> <select
+													id="l" class="form-control">
+													<option value="">선택</option>
+												</select>
+											</div>
+										</div>
+										<br>
+										<div class="form-group row">
+											<label for="a" class="col-sm-2 col-form-label">강의목표</label>
+											<div class="col-sm-10">
+												<input id="a" type="text" class="form-control">
+											</div>
+										</div>
+										<div class="form-group row">
+											<label for="b" class="col-sm-2 col-form-label">강의내용</label>
+											<div class="col-sm-10">
+												<textarea id="b" class="form-control"></textarea>
+											</div>
+										</div>
+										<div class="form-group row">
+											<label for="c" class="col-sm-2 col-form-label">교재</label>
+											<div class="col-sm-10">
+												<input id="c" type="text" class="form-control">
+											</div>
+										</div>
+									</form>
+									</div>
+								</div>
+								<!--상세계획  -->
+								<div class="tab-pane fade" id="nav-detail" role="tabpanel"
+									aria-labelledby="nav-detail-tab">
+									<div class="d-flex justify-content-center">
+									<div class="row" style="width:95%;">
+										<div class="col-md-4">
+											<div id="detailZone">
+												<table id="detailTable" class="table table-bordered">
+
+												</table>
+											</div>
+											<div id="detailPlanGrid"></div>
+										</div>
+										<div class="col-md-8">
+											<div id="detailEnter">
+												<form id="subjectPlanDetail">
+													<div class='d-flex justify-content-end col-md-12'>
+														<button type="button" class="btn btn-outline-dark"
+															id="initDetail">신규</button>
+														<button type="button" class="btn btn-outline-dark"
+															id="insDetail">저장</button>
+														<button type="button" class="btn btn-outline-danger"
+															id="delDetail">삭제</button>
+													</div>
+													<div class="form-group row">
+														<label for="d" class="col-sm-2 col-form-label">계획번호</label>
+														<div class="col-sm-10">
+															<input type="text" id="dtlno" class="form-control"
+																readonly>
 														</div>
-														<div class="form-group row">
-															<label for="d" class="col-sm-2 col-form-label">계획번호</label>
-															<div class="col-sm-10">
-																<input type="text" id="dtlno" class="form-control"
-																	readonly>
-															</div>
+													</div>
+													<div class="form-group row">
+														<label for="d" class="col-sm-2 col-form-label">강의제목</label>
+														<div class="col-sm-10">
+															<input id="d" type="text" class="form-control">
 														</div>
-														<div class="form-group row">
-															<label for="d" class="col-sm-2 col-form-label">강의제목</label>
-															<div class="col-sm-10">
-																<input id="d" type="text" class="form-control">
-															</div>
+													</div>
+													<div class="form-group row">
+														<label for="e" class="col-sm-2 col-form-label">강의주제</label>
+														<div class="col-sm-10">
+															<input id="e" type="text" class="form-control">
 														</div>
-														<div class="form-group row">
-															<label for="e" class="col-sm-2 col-form-label">강의주제</label>
-															<div class="col-sm-10">
-																<input id="e" type="text" class="form-control">
-															</div>
+													</div>
+													<div class="form-group row">
+														<label for="f" class="col-sm-2 col-form-label">강의내용</label>
+														<div class="col-sm-10">
+															<input id="f" type="text" class="form-control">
 														</div>
-														<div class="form-group row">
-															<label for="f" class="col-sm-2 col-form-label">강의내용</label>
-															<div class="col-sm-10">
-																<input id="f" type="text" class="form-control">
-															</div>
-														</div>
-													</form>
-												</div>
+													</div>
+												</form>
 											</div>
 										</div>
 									</div>
-
-
-
-
+									</div>
 								</div>
 
 
+
+
 							</div>
+
+
 						</div>
 					</div>
-
 				</div>
-				<div class="container-fluid"></div>
-			</main>
-			<%@include file="../bar/footer.jsp"%>
-		</div>
+
+			</div>
+			<div class="container-fluid"></div>
+		</main>
+
 	</div>
+
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
 		crossorigin="anonymous"></script>
