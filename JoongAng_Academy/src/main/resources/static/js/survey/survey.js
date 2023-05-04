@@ -638,10 +638,6 @@ $(function() {
 		});
 	
 	});
-	
-		
-		
-	
 }); //grid.on 끝
 	
 	$("#tab2_btn").click(function(){
@@ -696,9 +692,8 @@ $(function() {
 			}
 			return result;
 		};
-		
-		var modifiedRows = grid2.getModifiedRows(); //추가/수정/삭제된 값 
-
+		var modifiedRows = [];
+		modifiedRows = grid2.getModifiedRows(); //추가/수정/삭제된 값 
 		// 배열로 변환
 		if (!Array.isArray(modifiedRows)) {
 		  modifiedRows = [modifiedRows];
@@ -710,39 +705,12 @@ $(function() {
 		  }); 
 
 		
-		//신규추가한 행의 정보 
-		var createdRows = modifiedRows[0].createdRows;
-		var createdData = createdRows.map(function(row) {
-			//필수값 입력하기
-			/*if(row.DGSTFN_NO == "" || row.DGSTFN_NO == null){
-				alert("문항번호를 입력하세요");
-				return false;
-			}
-			else if(row.DGSTFN_CN == "" || row.DGSTFN_CN == null){
-				alert("문항명을 입력하세요");
-				return false;
-			}
-			else if(row.QITEM_CD == "" || row.QITEM_CD == null){
-				alert("답변방식을 선택하세요");
-				return false;
-			}
-			else{*/
-			    return {
-			        DGSTFN_NO: row.DGSTFN_NO, // = SORT_SN
-			        QITEM_CD: row.QITEM_CD, //0010, 0020
-			        DGSTFN_CN: row.DGSTFN_CN,
-					//숨긴컬럼 정보
-			        CRCLM_CD: row.CRCLM_CD,
-			        CRCLM_YEAR: row.CRCLM_YEAR,
-			        CRCLM_HALF: row.CRCLM_HALF,
-			        SBJCT_NO: row.SBJCT_NO
-			    }
-		//	}
-		});
-		//alert("createdData:" + JSON.stringify(createdData)); //ok
-		//alert("data:" + JSON.stringify(data)); //ok
-		//alert("createdRows.length:" + createdRows.length); //ok
-		
+	//신규추가한 행의 정보 
+	var createdRows = [];
+	createdRows = modifiedRows[0].createdRows;
+	//console.log("createdData:" + JSON.stringify(createdData)); //ok
+	//console.log("data:" + JSON.stringify(data)); //ok
+	//console.log("createdRows.length:" + createdRows.length); //ok
 	
 	//수정한 행의 정보
 	var updatedRows = modifiedRows[0].updatedRows;
@@ -755,6 +723,27 @@ $(function() {
 		//if(createdRows && createdRows.length > 0){	
 		//신규값이 있는경우 
 		if(createdRows.length > 0){	
+				var createdData = [];
+				createdData = createdRows.map(function(row) {
+				 return {
+			     DGSTFN_NO: row.DGSTFN_NO, // = SORT_SN
+			     QITEM_CD: row.QITEM_CD, //0010, 0020
+			     DGSTFN_CN: row.DGSTFN_CN,
+				 //숨긴컬럼 정보
+			     CRCLM_CD: row.CRCLM_CD,
+			     CRCLM_YEAR: row.CRCLM_YEAR,
+			     CRCLM_HALF: row.CRCLM_HALF,
+			     SBJCT_NO: row.SBJCT_NO
+				 }
+			});
+			/*var DGSTFN_NO ="";
+			var QITEM_CD ="";
+			var DGSTFN_CN ="";
+			var CRCLM_CD ="";
+			var CRCLM_YEAR="";
+			var CRCLM_HALF="";
+			var SBJCT_NO ="";*/
+			
 			var DGSTFN_NO = createdData[0].DGSTFN_NO;
 			var QITEM_CD = createdData[0].QITEM_CD;
 			var DGSTFN_CN = createdData[0].DGSTFN_CN;
@@ -781,15 +770,17 @@ $(function() {
 				    },
 				dataType : "json"
 			}).done(function(data) {
-				if(data.result == 1){
+				alert(data.result);
+				if (data.result == "exist") {
+					alert("이미 등록된 번호입니다.");
+				} else if(data.result == 1){
 					alert("(신규)저장되었습니다.");
-					//grid.resetData(data.list);
-					//createdData = [];
-					grid2.refreshLayout();
-					//grid2.resetData(data.detaillist);
+					grid2.resetData([]);
+					//grid.resetData(data.list); //신규버튼이 Disable안풀림
+					//grid2.refreshLayout(); //신규버튼이 Disable풀리는데 2개이상 신규못함(중복)
 					//$("#save_btn2").prop('disabled', true);
 					//$("#save_btn2").prop('disabled', false);
-					 var rowKey = grid2.getRowCount() - 1;
+					var rowKey = grid2.getRowCount() - 1;
 				    grid2.disableCell(rowKey, 'DGSTFN_NO');
 
 					const inputTags_c = $("#btn2 button");
@@ -821,7 +812,6 @@ $(function() {
 			           return false;
 			}
 		}
-
 				//alert("updateData:"+JSON.stringify(updateData)); //ok
 				$.post({
 					url : "/ITEMUpdate",
