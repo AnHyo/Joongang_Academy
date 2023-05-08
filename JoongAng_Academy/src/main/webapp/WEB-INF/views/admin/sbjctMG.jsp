@@ -463,7 +463,6 @@
 						</div>
 					</div>
 					<div class="position-relative" style="display: flex;">
-
 						<div class="float-start mb-2"
 							style="width: 10px; height: 29px; background-color: #498c5f; margin-right: 10px;"></div>
 						<h6 class="mt-1 fw-bolder">과목</h6>

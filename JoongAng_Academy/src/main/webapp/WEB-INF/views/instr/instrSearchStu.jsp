@@ -43,13 +43,12 @@ if (session.getAttribute("id") == null) {
 <script>
 	$(function() {
 //-----과목조회 버튼
+		$("#BtnSbjSearch").click(function () {
 		var instrNo = $("#loginID").val();
 		var selectHalf = $('select[name=crclm_half]').val();
 		var inputYear = $("#inputYear").val();
 		
-		$("#BtnSbjSearch").click(function () {
 			//세션 로그인 아이디 
-			
 			$.post({
 				url :"/sbjSearchAjax",
 				cache: false,
@@ -262,7 +261,7 @@ if (session.getAttribute("id") == null) {
 										style="width: 100%; margin-top: -5px;">
 										<span class="input-group-text"
 											style="width: calc(20%); background-color: white;" id="grade">학년도</span>
-										<input type="text" class="form-control form-control-sm"
+										<input type="number" class="form-control form-control-sm"
 											aria-label="학년도" value="2023" id="inputYear" numberOnly>
 										<select class="form-select form-select-sm" name="crclm_half"
 											aria-describedby="BtnSearch">
