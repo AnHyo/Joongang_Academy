@@ -97,7 +97,8 @@
 			$("#deleteBtn").prop('disabled', false);
 			$("#saveBtn").prop('disabled', false);
 
-			var year = $("#inputYear").val(); //입력한년도
+			var yearNum = $("#inputYear").val(); //입력한년도
+			var year = yearNum.toString();
 			var selectval = $('select[name=crclm_half]').val(); //상/하반기 선택
 			var radioval = $('input:radio[name=radioStatus]:checked').val(); //과정현황 선택
 			var crclmname = $("#inputCrclmSearch").val();
@@ -304,7 +305,9 @@
 				$(this).prop('disabled', false);
 			});
 			$(".cyear").prop('disabled', true);
-			var year = $("#inputYear").val(); //입력한년도
+			var yearNum = $("#inputYear").val(); //입력한년도
+			var year = yearNum.toString();
+			
 			$(".cyear").val(year); //입력가능
 
 			$(".econtent").prop('disabled', false);
@@ -704,7 +707,6 @@
 				
 		
 		//과정일정 설정 
-		
 		const datePicker = tui.DatePicker; 
 		
 		var Grid = tui.Grid;
@@ -867,6 +869,45 @@
 			  
 		});//저장버튼 끝
 		
+		
+		//상단 - 삭제버튼
+		$("#deleteBtn").click(function(){
+			
+		if (confirm("해당 과정을 삭제하시겠습니까?")) {
+			var yearNum = $("#inputYear").val(); //입력한년도
+			var year = yearNum.toString();
+			
+			$.post({
+				url :"/deleteCrclmAjax",
+				cache : false,
+				data: JSON.stringify({
+					"crclmNo":crclmNo,
+					"cyear":cyear,
+					"chalf":chalf,
+					"ccd":ccd,
+					"year":year
+				}),
+				dataType : "json",
+				contentType: 'application/json'
+			 }).done(function(data) {
+				if(data.delOK == 0){
+				 alert("삭제되었습니다.");
+				 grid.resetData(data.delAfter);
+				
+				 // grid5.resetData(data.sList);
+				//$("#buttonGroup").show();
+				//alert(data.sList);
+				} else{
+					alert("삭제할 수 없는 과정입니다.");
+				}
+				
+			}).fail(function() {
+				alert("문제가 발생했습니다.");
+				
+		});
+			}
+		});//삭제버튼
+			
 	}); //grid click
 		
 	
@@ -878,8 +919,6 @@
 					var cno = $(".cno").val();
 					var cyear = $(".cyear").val();
 					var chalf = $(".chalf").val();
-					//var bgYMD = $(".bgYMD").val();
-					//var endYMD = $(".endYMD").val();
 					var ecost1 = $(".ecost").val();
 					var ecost = ecost1.replace("원", "");
 					var econtent = $(".econtent").val();
@@ -893,7 +932,8 @@
 					var crname = $(".crclmNameList option:selected").text();
 					var crnameset = $(".crclmNameSet").val()
 					//상단
-					var year = $("#inputYear").val(); //입력한년도
+					var yearNum = $("#inputYear").val(); //입력한년도
+					var year = yearNum.toString();
 					var selectval = $('select[name=crclm_half]').val(); //상/하반기 선택
 					var radioval = $('input:radio[name=radioStatus]:checked').val(); //과정현황 선택
 					var crclmname = $("#inputCrclmSearch").val();
@@ -1020,6 +1060,7 @@
 				});//저장버튼
 				
 				
+	
 			
 
 	});//func
@@ -1044,7 +1085,7 @@
 						<button class="btn btn-secondary btn-sm" id="newBtn"
 							disabled="disabled">신규</button>
 						<button class="btn btn-secondary btn-sm" id="deleteBtn"
-							disabled="disabled">삭제</button>
+							disabled="disabled"	>삭제</button>
 						<button class="btn btn-secondary btn-sm" id="saveBtn"
 							disabled="disabled">저장</button>
 					</div>
@@ -1052,14 +1093,14 @@
 				<br> <br>
 
 				<div
-					style="width: 100%; background-color: #F3FAFE; height: 80px; border: 1px solid #c0c0c0; position: relative;">
+					style="width: 100%;  height: 80px; border: 1px solid #c0c0c0; position: relative;">
 					<div
 						style="position: absolute; width: 100%; top: 50%; transform: translateY(-50%)"
 						class="d-flex justify-content-center">
 						<div class="input-group fw-bolder  "
 							style="width: calc(20%); float: left;">
-							학년도 <input type="text" class="form-control form-control-sm"
-								style="margin-left: 10px;" value="2001" id="inputYear"
+							학년도 <input type="number" class="form-control form-control-sm"
+								style="margin-left: 10px;" value="2023" id="inputYear"
 								numberOnly> <select class="form-select form-select-sm"
 								name="crclm_half">
 								<option value="">상/하반기</option>
@@ -1093,7 +1134,7 @@
 				<div>
 				<div class="position-relative mt-2" style="display: flex;">
 						<div class="float-start "
-							style="width: 10px; height: 29px; background-color: #498c5f; margin-right: 10px;"></div>
+							style="width: 10px; height: 29px;  margin-right: 10px;"></div>
 						<h6 class="mt-1 fw-bolder">교육훈련과정</h6>
 						<div class="position-relative"
 							style="display: flex; width: 150px; height: 27px; font-size: 13px; color: #a3a3a7; line-height: 30px; margin: 0 10px;">
@@ -1124,13 +1165,13 @@
 						<div class="tab-pane fade show active" id="nav-home"
 							role="tabpanel" aria-labelledby="nav-home-tab">
 							<div class="mb-5 inputTotal"
-								style="width: 100%; background-color: #F3FAFE; height: 430px; border: 1px solid #c0c0c0; position: relative;">
+								style="width: 100%;  height: 430px; border: 1px solid #c0c0c0; position: relative;">
 
 								<table
 									style="width: 90%; position: absolute; top: 50%; transform: translateY(-50%) translateX(5%);">
 									<tr style="height: 50px">
 										<td class="col-1" style="text-align: right;">학년도</td>
-										<td class="col-1" colspan="2"><input type="text"
+										<td class="col-1" colspan="2"><input type="number"
 											numberOnly class="form-control form-control-sm cyear"
 											disabled="disabled"></td>
 										<td class="col-1" style="text-align: right;">훈련과정코드</td>

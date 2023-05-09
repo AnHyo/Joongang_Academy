@@ -35,4 +35,9 @@ public interface CrclmInfoDAO {
 	public List<Map<String, Object>> scheduleName();
 
 	public int updateSchedule(List<Map<String, Object>> updateRow);
+
+	public int deleteCrclmAjax(CrclmInfoDTO crclmInfoDTO);
+
+	public int integrity1(CrclmInfoDTO crclmInfoDTO);
+	public int integrity2(CrclmInfoDTO crclmInfoDTO);
 }

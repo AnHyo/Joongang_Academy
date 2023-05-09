@@ -28,8 +28,8 @@ public class CrclmInfoController {
 		// 훈련과정정보 - 훈련과정명 select
 		List<Map<String, Object>> list = crclmInfoService.crclmNameList();
 		mv.addObject("crclmName", list);
-		
-		//공통코드(과정현황) 출력위한 데이터 불러오기
+
+		// 공통코드(과정현황) 출력위한 데이터 불러오기
 		List<Map<String, Object>> scheduleName = crclmInfoService.scheduleName();
 		mv.addObject("scheduleName", scheduleName);
 		return mv;
@@ -38,7 +38,6 @@ public class CrclmInfoController {
 	@ResponseBody
 	@PostMapping(value = "/listCrclmAjax", produces = "application/json;charset=UTF-8")
 	public String listCrclmAjax(@RequestBody CrclmInfoDTO crclmInfoDTO) {
-
 		JSONObject json = new JSONObject();
 		List<Map<String, Object>> list = crclmInfoService.listCrclmAjax(crclmInfoDTO);
 		json.put("listCrclm", list);
@@ -60,22 +59,22 @@ public class CrclmInfoController {
 			List<Map<String, Object>> list2 = crclmInfoService.listCrclmAjax(crclmInfoDTO);
 			json.put("saveResult", result);
 			json.put("saveAfter", list2);
-			
-			//훈련과정 신규저장시 과정일정설정(CRCLM_SCHDL)에 데이터 생성
-			//1.공통데이터상에 과정일정 코드 갯수 확인
+
+			// 훈련과정 신규저장시 과정일정설정(CRCLM_SCHDL)에 데이터 생성
+			// 1.공통데이터상에 과정일정 코드 갯수 확인
 			int codeNumber = crclmInfoService.countCodeNum();
-			//2. RCLM_SCHDL에 과정일정 데이터 생성
+			// 2. RCLM_SCHDL에 과정일정 데이터 생성
 			CrclmInfoDTO crclmInfoDTO2 = new CrclmInfoDTO();
-			for (int i = 1; i < codeNumber+1; i++) {
+			for (int i = 1; i < codeNumber + 1; i++) {
 				crclmInfoDTO2.setCcd(crclmInfoDTO.getCcd());
 				crclmInfoDTO2.setChalf(crclmInfoDTO.getChalf());
 				crclmInfoDTO2.setCyear(crclmInfoDTO.getCyear());
-				crclmInfoDTO2.setSchedule("00"+i+"0");
+				crclmInfoDTO2.setSchedule("00" + i + "0");
 				crclmInfoService.newSchedule(crclmInfoDTO2);
 			}
 
 		} else {
-			//중복이 있음을 jsp단으로 전송
+			// 중복이 있음을 jsp단으로 전송
 			json.put("ck", "dup");
 		}
 
@@ -101,11 +100,9 @@ public class CrclmInfoController {
 	@ResponseBody
 	@PostMapping(value = "/instrSearchM", produces = "application/json;charset=UTF-8")
 	public String instrSearchM(@RequestParam Map<String, String> paramap) {
-		// System.err.println(paramap);
 		JSONObject json = new JSONObject();
 
 		List<Map<String, Object>> list2 = crclmInfoService.instrSearchM(paramap);
-		// System.err.println(list2);
 		json.put("list2", list2);
 
 		return json.toString();
@@ -118,25 +115,46 @@ public class CrclmInfoController {
 		JSONObject json = new JSONObject();
 
 		List<Map<String, Object>> sList = crclmInfoService.crclmSchdl(crclmInfoDTO);
-		// System.err.println(sList);
 		json.put("sList", sList);
 
 		return json.toString();
 
 	}
-	
-	//과정일정설정 저장(수정)
+
+	// 과정일정설정 저장(수정)
 	@ResponseBody
 	@PostMapping(value = "/updateSchedule", produces = "application/json;charset=UTF-8")
 	public String updateSchedule(@RequestBody List<Map<String, Object>> updateRow) {
 		JSONObject json = new JSONObject();
-		System.err.println(updateRow);
 		int result = crclmInfoService.updateSchedule(updateRow);
-		//System.err.println("결과 : "+ result);
-		// System.err.println(sList);
-		//json.put("sList", sList);
 
 		return json.toString();
 
 	}
-}
+
+	// 과정 삭제
+	@ResponseBody
+	@PostMapping(value = "/deleteCrclmAjax", produces = "application/json;charset=UTF-8")
+	public String deleteCrclmAjax(@RequestBody CrclmInfoDTO crclmInfoDTO) {
+		
+		JSONObject json = new JSONObject();
+		int inteCheck1 = crclmInfoService.integrity1(crclmInfoDTO);
+		int inteCheck2 = crclmInfoService.integrity2(crclmInfoDTO);
+		
+		  if(inteCheck1 == 1 && inteCheck2 == 1) { 
+			 
+			  int result = crclmInfoService.deleteCrclmAjax(crclmInfoDTO);
+			  List<Map<String, Object>> delList = crclmInfoService.listCrclmAjax(crclmInfoDTO);
+			  
+			  json.put("delOK",0);
+			  json.put("delAfter",delList);
+		  
+		  } else {			 
+			  json.put("delOK",1); 
+			 }
+
+		return json.toString();
+
+		}
+
+	}

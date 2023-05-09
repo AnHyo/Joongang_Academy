@@ -66,6 +66,17 @@ public class CrclmInfoService {
 		return crclmInfoDAO.updateSchedule(updateRow);
 	}
 
+	public int deleteCrclmAjax(CrclmInfoDTO crclmInfoDTO) {
+		return crclmInfoDAO.deleteCrclmAjax(crclmInfoDTO);
+	}
+
+	public int integrity1(CrclmInfoDTO crclmInfoDTO) {
+		return crclmInfoDAO.integrity1(crclmInfoDTO);
+	}
+	public int integrity2(CrclmInfoDTO crclmInfoDTO) {
+		return crclmInfoDAO.integrity2(crclmInfoDTO);
+	}
+
 	
 	
 

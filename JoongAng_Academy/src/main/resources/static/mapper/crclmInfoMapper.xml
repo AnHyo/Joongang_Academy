@@ -13,7 +13,7 @@
 
 	<!-- 교육훈련과정 - 리스트 출력(검색포함) -->
 	<select id="listCrclmAjax" resultType="HashMap" parameterType="CrclmInfoDTO">
-		SELECT COUNT(*) as count, *
+		SELECT *
 		FROM crclmListView
 		<where>
 			<if test="crclmName != null and crclmName !='' ">
@@ -178,11 +178,40 @@
 		</where>
 	</update>
 
+	<!--과정 삭제기능  -->
+	<delete id="deleteCrclmAjax" parameterType="CrclmInfoDTO" >
+		DELETE FROM CRCLM_INFO
+		WHERE CRCLM_NO = #{crclmNo }
+	</delete>
 
-
-
-
-
+	<!--무결성 검사  -->
+	<select id="integrity1" parameterType="CrclmInfoDTO" resultType="Integer" >
+		SELECT COUNT(1)
+		FROM CRCLM_INFO ci
+		WHERE NOT EXISTS(
+		SELECT *
+		FROM ESTBL_SBJCT es
+		WHERE es.CRCLM_CD = #{ccd} 
+		AND es.CRCLM_YEAR = #{cyear}
+		AND es.CRCLM_HALF = #{chalf}
+		) 
+		AND 
+		ci.CRCLM_YEAR = #{cyear} AND ci.CRCLM_HALF =#{chalf} AND ci.CRCLM_CD =#{ccd}
+	</select>
+	<select id="integrity2" parameterType="CrclmInfoDTO" resultType="Integer" >
+		SELECT COUNT(1)
+		FROM CRCLM_INFO ci
+		WHERE NOT EXISTS(
+		SELECT *
+		FROM APPL_INFO ai
+		WHERE ai.CRCLM_CD = #{ccd}
+		AND ai.CRCLM_YEAR = #{cyear}
+		AND ai.CRCLM_HALF = #{chalf}
+		) 
+		AND 
+		ci.CRCLM_YEAR = #{cyear} AND ci.CRCLM_HALF =#{chalf} AND ci.CRCLM_CD =#{ccd}
+	</select>
+	
 
 
 
