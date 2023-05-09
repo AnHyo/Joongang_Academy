@@ -10,6 +10,20 @@
 			AND CRCLM_HALF = #{hlf} 
 			AND SBJCT_NO = #{sbj} 
 	</select>
+	<select id="estListForInstr" parameterType="HashMap" resultType="HashMap">
+		SELECT *,CodeFind('0018',es.CRCLM_HALF) AS HALF,SubjectFind(es.SBJCT_NO)AS REAL_SBJCT_NM, (SELECT CRCLM_NM FROM CRCLM_INFO WHERE CRCLM_INFO.CRCLM_CD = es.CRCLM_CD AND CRCLM_INFO.CRCLM_YEAR = es.CRCLM_YEAR AND CRCLM_INFO.CRCLM_HALF = es.CRCLM_HALF) AS CRCLM_NM FROM ESTBL_SBJCT es JOIN SBJCT_INSTR si 
+			ON es.CRCLM_CD = si.CRCLM_CD AND es.CRCLM_YEAR = si.CRCLM_YEAR AND es.CRCLM_HALF = si.CRCLM_HALF AND es.SBJCT_NO = si.SBJCT_NO 
+			WHERE si.INSTR_NO = #{loginID}
+			<if test="crc != ''">
+				AND si.CRCLM_CD = #{crc} 			
+			</if>
+			<if test="year != ''">
+				AND si.CRCLM_YEAR = #{year}		
+			</if>
+			<if test="hlf != ''">
+				AND si.CRCLM_HALF = #{hlf} 		
+			</if> 
+	</select>
 	<select id="getPlanDetail" parameterType="HashMap" resultType="HashMap">
 		SELECT * FROM SBJCT_PLAN_DTL
 		WHERE CRCLM_CD = #{crc} 

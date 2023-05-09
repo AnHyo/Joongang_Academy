@@ -34,6 +34,7 @@ public class EstablishedSubjectController {
 		ModelAndView mv = new ModelAndView("admin/EstblSbjctMG");
 		return mv;
 	}
+
 	
 	@ResponseBody
 	@PostMapping(value = "/estListAjax", produces = "application/json;charset=UTF-8")
@@ -229,6 +230,23 @@ public class EstablishedSubjectController {
 		json.put("result", result);
 		return json.toString();
 	}
+	@ResponseBody
+	@PostMapping(value = "/estClsBgngCheck", produces = "application/json;charset=UTF-8")
+	public String estClsBgngCheck(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		Map<String, String[]> reqmap = request.getParameterMap();
+		Map<String,Object> map = new HashMap<String, Object>();
+		for (String key : reqmap.keySet()) {
+			String[] values = reqmap.get(key);
+			for (String value : values) {
+				map.put(key.toString(), value);
+			}
+		}
+		int result = estService.estClsBgngCheck(map);
+		System.out.println(result);
+		json.put("result", result);
+		return json.toString();
+	}
 	
 	@ResponseBody
 	@PostMapping(value = "/estDelete", produces = "application/json;charset=UTF-8")
@@ -247,8 +265,12 @@ public class EstablishedSubjectController {
 		String rsltStr = new String(rsltStrBytes, StandardCharsets.UTF_8);
 		map.put("RSLT_STR", rsltStr);
 		json.put("result", map);
-		int result = estService.estDelete(map);
-		json.put("delResult", result);
+		if(map.get("RSLT").equals(0)) {			
+			int result = estService.estDelete(map);
+			json.put("delResult", result);
+		}
 		return json.toString();
 	}
+	
+	
 }

@@ -99,6 +99,15 @@
     		)
     	}
 	</select>
+	<select id="estClsBgngCheck" parameterType="HashMap" resultType="Integer">
+		SELECT COUNT(1)
+		FROM CRCLM_SCHDL 
+		WHERE CRCLM_CD = #{crc} 
+		AND CRCLM_YEAR = #{year} 
+		AND CRCLM_HALF = #{hlf}
+		AND CRCLM_SCHDL_CD = '0020'
+		AND SCHDL_BGNG_DT &lt; NOW()
+	</select>
 	<delete id="estDelete" parameterType="HashMap" statementType="CALLABLE">
 		{CALL
 			ESTBL_SBJCT_DELETE(

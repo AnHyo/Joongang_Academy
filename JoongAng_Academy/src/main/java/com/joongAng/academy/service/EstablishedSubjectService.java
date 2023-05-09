@@ -102,5 +102,10 @@ public class EstablishedSubjectService {
 		// TODO Auto-generated method stub
 		return estDAO.integCheck(map);
 	}
+
+	public int estClsBgngCheck(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return estDAO.estClsBgngCheck(map);
+	}
 	
 }

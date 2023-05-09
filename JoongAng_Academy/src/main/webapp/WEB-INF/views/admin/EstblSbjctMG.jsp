@@ -31,6 +31,31 @@
 			return result;
 		}
 		
+		//수강신청이 시작했는지 체크하는 함수
+		var clsBgngChecker = 0;
+		$.fn.clsBgngCheck = function(crc,year,hlf){
+			
+			$.post({
+				url : "/estClsBgngCheck",
+				data : {
+					crc : crc,
+					year : year,
+					hlf : hlf					
+				},
+				dataType : "json"
+			}).done(function(data) {
+				if(data.result==1){
+					
+					clsBgngChecker = 1;
+				}else{
+					clsBgngChecker = 0;
+				}
+			}).fail(function() {
+				alert("문제가 발생했습니다.");
+				clsBgngChecker = -1;
+			});
+		}		
+		
 // 		main grid
 		var Grid = tui.Grid;
 		Grid.applyTheme('clean', { 
@@ -321,6 +346,9 @@
 			if(ev.rowKey == null){
 				return false;
 			}else{
+				var crc = grid.getValue(ev.rowKey,"CRCLM_CD");
+				var year = grid.getValue(ev.rowKey,"CRCLM_YEAR");
+				var hlf = grid.getValue(ev.rowKey,"CRCLM_HALF");
 				$("#a").val(grid.getValue(ev.rowKey,"CRCLM_YEAR"));
 				$("#b").val(grid.getValue(ev.rowKey,"CRCLM_HALF"));
 				$("#c").val(grid.getValue(ev.rowKey,"CRCLM_CD"));
@@ -339,13 +367,25 @@
 				if(o=='N') {
 					$("#o").prop("checked",false);
 				}
-				$("#o").attr("disabled",false);
+				
 				$("#i").val(grid.getValue(ev.rowKey,"ROOM_NO"));
-				$("#i").attr("disabled",false);
-				$("#j").attr("disabled",false);
-				$("#k").attr("disabled",false);
-				$("#instructorSearchBtn").attr("disabled",false);
-				$("#insertBtn").attr("disabled",false);
+				$.fn.clsBgngCheck(crc,year,hlf);
+				if(clsBgngChecker == 1){
+					$("#o").attr("disabled",true);	
+					$("#i").attr("disabled",true);
+					$("#j").attr("disabled",true);
+					$("#k").attr("disabled",true);
+					$("#instructorSearchBtn").attr("disabled",true);
+					$("#saveBtn").attr("disabled",true);		
+				}else{
+					$("#o").attr("disabled",false);
+					$("#i").attr("disabled",false);
+					$("#j").attr("disabled",false);
+					$("#k").attr("disabled",false);
+					$("#instructorSearchBtn").attr("disabled",false);
+					$("#saveBtn").attr("disabled",false);	
+				}
+				
 				$.post({
 					url : "/estInstrAjax",
 					data : {
@@ -431,6 +471,8 @@
 			$("#c").attr("disabled",false);
 			$("#d").attr("disabled",false);				
 			$("#subjectSearchBtn").attr("disabled",false);
+			$("#saveBtn").attr("disabled",false);
+			$("#instructorSearchBtn").attr("disabled",false);
 			$("#g").attr("disabled",false);
 			$("#h").attr("disabled",false);
 			$("#i").attr("disabled",false);
@@ -471,7 +513,11 @@
 				alert("!");
 				return false;
 			}
-
+			$.fn.clsBgngCheck(crc,year,hlf);
+			if(clsBgngChecker==1){
+				alert("교과목을 생성 또는 수정할 수 없는 과정입니다");
+				return false;
+			}
 			if($("#o").prop("checked") == true){
 				esntl = "Y";
 			}else{
@@ -519,10 +565,24 @@
 // 		삭제 버튼 클릭 시 체크박스가 체크된 모든 데이터를 삭제할 예정, 현재는 값만 넘기고 구현되지 않음
 		$("#deleteBtn").click(function(){
 			var checkedRows = grid.getCheckedRows();
+			var ck = true;
 			if(checkedRows.length==0){
 				alert("체크박스를 선택해주세요");
 				return false;
 			}
+			$.each(checkedRows, function(index,row){
+				$.fn.clsBgngCheck(row.CRCLM_CD,row.CRCLM_YEAR,row.CRCLM_HALF);
+				alert(clsBgngChecker);
+				if(clsBgngChecker==1){
+					ck = false;
+				}
+			})
+			
+			if(ck==false){				
+				alert("교과목을 삭제할 수 없는 교육과정이 포함되어 있습니다");
+				return false;
+			}
+			
 			if(confirm("정말 삭제할겁니까?")!=true){
 				return false;
 			}else{
@@ -922,9 +982,7 @@
 							</select>
 						</div>
 						<div class="col-md-2">
-							<select class="form-select" id="yearSelect">
-								<option selected value=''>연도선택</option>
-							</select>
+							<input type="number" class="form-control" placeholder="연도" id="yearSelect">
 						</div>
 						<div class="col-md-2">
 							<select class="form-select" id="halfSelect">
@@ -964,10 +1022,8 @@
 										</select>
 									</div>
 									<div class="form-group col-md-3">
-										<label for="a" class="col-form-label">연도</label> <select
-											id="a" class="form-control" disabled>
-											<option>연도선택</option>
-										</select>
+										<label for="a" class="col-form-label">연도</label> 
+										<input type="number" id="a" class="form-control" disabled>
 									</div>
 									<div class="form-group col-md-3">
 										<label for="b" class="col-form-label">반기</label> <select
@@ -994,7 +1050,7 @@
 									</div>
 									<div class="form-group col-md-4">
 										<label for="e" class="col-form-label">개설과목명</label> <input
-											id="e" class="form-control" type="text">
+											id="e" class="form-control" type="text" disabled>
 									</div>
 									<div class="form-group col-md-4">
 										<label for="m" class="col-form-label">담당강사</label>
@@ -1027,7 +1083,7 @@
 										<div class="row">
 											<div class="form-group col-md-12">
 												<label for="f" class="col-form-label">과목설명</label>
-												<textarea id="f" class="form-control" rows="5"></textarea>
+												<textarea id="f" class="form-control" rows="5" disabled></textarea>
 											</div>
 										</div>
 										<div class="row">
