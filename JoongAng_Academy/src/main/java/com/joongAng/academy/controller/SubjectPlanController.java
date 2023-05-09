@@ -136,10 +136,29 @@ public class SubjectPlanController {
 		json.put("result", resultDetail);
 		return json.toString();
 	}
+	@ResponseBody
+	@PostMapping(value = "/estListForInstr", produces = "application/json;charset=UTF-8")
+	public String estListForInstr(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		Map<String, String[]> reqmap = request.getParameterMap();
+		Map<String,Object> map = new HashMap<String, Object>();
+		for (String key : reqmap.keySet()) {
+			String[] values = reqmap.get(key);
+			for (String value : values) {
+				System.out.println(key + " = " + value);
+				map.put(key.toString(), value);
+			}
+		}
+		List<Map<String, Object>> estList = planService.estListForInstr(map); 
+		JSONArray estListJ = new JSONArray(estList);
+		json.put("estList", estListJ);
+		return json.toString();
+	}
 	
-	@GetMapping("/insSubPlan")
-	public ModelAndView insSubPlan(HttpServletRequest request) {
-		ModelAndView mv = new ModelAndView("/instr/SbjctPlan");
+
+	@GetMapping("/instrSbjPlan")
+	public ModelAndView instrSbjPlan() {
+		ModelAndView mv = new ModelAndView("instr/instrSubjectPlan");
 		return mv;
 	}
 }

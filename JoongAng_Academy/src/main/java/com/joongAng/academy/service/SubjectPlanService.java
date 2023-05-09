@@ -54,6 +54,11 @@ public class SubjectPlanService {
 		// TODO Auto-generated method stub
 		return planDAO.planYN(map);
 	}
+
+	public List<Map<String, Object>> estListForInstr(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return planDAO.estListForInstr(map);
+	}
 	
 	
 }

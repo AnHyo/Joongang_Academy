@@ -26,4 +26,6 @@ public interface SubjectPlanDAO {
 
 	int planYN(Map<String, Object> map);
 
+	List<Map<String, Object>> estListForInstr(Map<String, Object> map);
+
 }
