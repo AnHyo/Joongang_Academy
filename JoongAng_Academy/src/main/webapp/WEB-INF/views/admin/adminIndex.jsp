@@ -48,7 +48,14 @@ $(function() {
         var menuHref = $(this).attr('href');
         addTab(menuName, menuHref);
     });
+    
     $('#collapseLayouts4 .nav-link').click(function() {
+        var menuName = $(this).text();
+        var menuHref = $(this).attr('href');
+        addTab(menuName, menuHref);
+    });
+    
+    $('#collapseLayouts5 .nav-link').click(function() {
         var menuName = $(this).text();
         var menuHref = $(this).attr('href');
         addTab(menuName, menuHref);
