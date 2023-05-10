@@ -26,7 +26,12 @@ public class LoginController {
 		return "/login/login";
 	}
 	@GetMapping("/")
-	public String index() {
+	public String index(HttpSession session) {
+	
+		if(session.getAttribute("id") == null) {
+			return "portalIndex";
+		}
+		
 		return "portalIndex";
 	}
 
@@ -43,6 +48,7 @@ public class LoginController {
 		
 			session.setAttribute("id", result.getUSER_ID());
 			session.setAttribute("username", result.getKORN_FLNM());
+			session.setAttribute("groupCD", groupCD);
 			
 			//비밀번호 시도횟수 초기화
 			paramap.put("PSWD_ERR_NMTM", 0);

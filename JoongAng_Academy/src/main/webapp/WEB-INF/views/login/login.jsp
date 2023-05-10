@@ -145,6 +145,16 @@
 											alert("입력한 아이디 또는 비밀번호가 올바르지 않습니다. \n다시 확인해주세요.");
 										</script>
 									</c:if>
+									<c:if test="${param.error eq 1234}">
+										<script>
+											alert("접근 권한이 없습니다.");
+										</script>
+									</c:if>
+									<c:if test="${param.error eq 4321}">
+										<script>
+											alert("로그인 후 접근 가능합니다.");
+										</script>
+									</c:if>
 								</div>
 							</div>
 						</div>
