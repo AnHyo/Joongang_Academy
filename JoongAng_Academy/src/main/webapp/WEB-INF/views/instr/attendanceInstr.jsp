@@ -1,10 +1,15 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
 <%
 String id = (String) session.getAttribute("id") ; 
-if (id == null) {
-	response.sendRedirect("/login");
+if (id != null) {
+   if (!session.getAttribute("groupCD").equals("0020")) {
+      response.sendRedirect("/login?error=1234");
+   }
+} else {
+   response.sendRedirect("/login?error=4321");
 }
 %>
 
@@ -283,7 +288,7 @@ if (id == null) {
 			$.post({
 				url : "/atndInstr-crclmList",
 				data : {
-					"id" : "L202300002",
+					"id" : id,
 					"crclm_year" : crclm_year,
 					"crclm_half" : crclm_half,
 					"searchCrclm" : searchCrclm,
