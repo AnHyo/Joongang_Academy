@@ -27,5 +27,9 @@ public class AtndInstrService {
 		return atndInstrDAO.stdntList(map);
 	}
 
+	public void updateStuAtnd(List<Map<String, Object>> stuAtndArr) {
+		atndInstrDAO.updateStuAtnd(stuAtndArr);
+	}
+
 
 }

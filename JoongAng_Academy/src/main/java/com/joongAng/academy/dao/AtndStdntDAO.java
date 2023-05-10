@@ -14,6 +14,6 @@ public interface AtndStdntDAO {
 
 	List<Map<String, Object>> sbjctList(Map<String, Object> map);
 
-	List<Map<String, Object>> atndList(String id);
+	List<Map<String, Object>> atndList(Map<String, Object> map);
 
 }

@@ -2,8 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
-String id = (String) session.getAttribute("id") ; 
-if (id == null) {
+if (session.getAttribute("id") == null) {
 	response.sendRedirect("/login");
 }
 %>
@@ -41,6 +40,7 @@ if (id == null) {
 	href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
 <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
 
+<% String id = (String) session.getAttribute("id") ; %>
 
 <style type="text/css">
 .tui-grid-cell {
@@ -72,7 +72,7 @@ if (id == null) {
 <script>
 	$(function() {
 		
-		const id = '<%= id %>';
+		var id = '<%= id %>';
 
 		tui.Grid.applyTheme('default', {
 			cell : {
@@ -117,22 +117,18 @@ if (id == null) {
 			}, {
 				header : '훈련과정명',
 				name : 'CRCLM_NM',
-				sortable: true
 			}, {
 				header : '과목코드',
 				name : 'SBJCT_NO',
 				width : 80,
-				sortable: true
 			}, {
 				header : '개설과목',
 				name : 'SBJCT_NM',
 				width : 250,
-				sortable: true
 			}, {
 				header : '필수구분',
 				name : 'ESNTL_YN',
-				width : 80,
-				sortable: true
+				width : 80
 			},{
 				header : '수강인원',
 				name : 'cls_stdntNum',
@@ -143,9 +139,8 @@ if (id == null) {
 				width : 200
 			}, {
 				header : '강의실',
-				name : 'ROOM_NM',
-				width : 100,
-				sortable: true
+				name : 'ROOM_NO',
+				width : 80
 			} ],
 			
 			bodyHeight : 150,
@@ -167,15 +162,15 @@ if (id == null) {
 				name : 'WEEK_NUM',
 				width : 100,
 			}, {
-				header : '강의일자',
+				header : '수업일자',
 				name : 'LECT_YMD',
 			}, {
 				header : '요일',
-				name : 'LECT_DAY_CD',
+				name : 'LECT_DAY_KORN',
 				width : 80,
 			}, {
 				header : '교시',
-				name : 'CLS_CD',
+				name : 'CLS_KORN',
 				width : 80,
 			}, {
 				header : '비고',
@@ -220,17 +215,15 @@ if (id == null) {
 			},
 			columns : [ {
 				header : '학번',
-				name : 'STDNT_NO',
-				width : 100,
-				sortable: true
+				name : 'lec_day',
+				width : 100
 			}, {
 				header : '이름',
-				name : 'STDNT_NM',
+				name : 'cls_hour',
 				width : 80,
-				sortable: true
 			}, {
 				header : '출결구분',
-				name : 'ATND_STT',
+				name : 'atnd_stt',
 				editor : {
 					type : 'select',
 					options: {
@@ -252,24 +245,22 @@ if (id == null) {
 				}
 			}, {
 				header : '비고',
-				name : 'RMRK',
+				name : 'cls_hour',
 				width : 80,
-				editor : 'text'
 			} ],
 			
-			bodyHeight : 360
+			bodyHeight : 400
 		});
 	
 		
 // ---- 조회버튼 : 강의목록 ------		
 		$("#getCrclmList").click(function(){
 			
-			alert("(고정해둠) 강사아이디 : " + id);
+			alert("강사아이디 : " + id);
 			
 			lecDetailList.resetData([]);
 			stuAtndList.resetData([]);
-			$("#setStuAtnd").prop("disabled", true);
-			$("#lecWeekCount").html("0");
+			$("#setStuAtnd").prop('disabled', true);
 			
 			let crclm_year = $.trim($("#crclm_year").val());
 			let crclm_half = $.trim($("#crclm_half").val());
@@ -281,9 +272,9 @@ if (id == null) {
 			alert("과정명 : " + searchCrclm + " / 과목명 : " + searchSbjct + " / 강사명 : " + searchInstr);
 			
 			$.post({
-				url : "/atndInstr-crclmList",
+				url : "/atndInstr_crclmList",
 				data : {
-					"id" : "L202300002",
+					"id" : 'L202300002',
 					"crclm_year" : crclm_year,
 					"crclm_half" : crclm_half,
 					"searchCrclm" : searchCrclm,
@@ -294,7 +285,7 @@ if (id == null) {
 			}).done(function(data){
 				//alert("성공");
 				lectureList.resetData(data.crclmList);
-				$("#crclmCount").html(lectureList.getRowCount());
+				
 				
 			}).fail(function(xhr){
 				alert("문제발생");
@@ -302,20 +293,15 @@ if (id == null) {
 			
 		});
 		
-// ---- 강의목록 행 클릭 : 강의주차 출력 ----
+// ---- 강의목록 행 클릭 ----
 		lectureList.on('click',function(ev){
-			
-			$('#setStuAtnd').prop("disabled", true);
-			stuAtndList.resetData([]);
-			$("#lec_date").html("");
-			$("#lec_hour").html("");
 			
 			let rowKey = ev.rowKey;
 			let row = lectureList.getRow(rowKey);
-			let crclm_cd = lectureList.getValue(rowKey, "CRCLM_CD");
-			let crclm_year = lectureList.getValue(rowKey, "CRCLM_YEAR");		
-			let crclm_half = lectureList.getValue(rowKey, "CRCLM_HALF");
-			let sbjct_no = lectureList.getValue(rowKey, "SBJCT_NO");
+			let crclm_cd = lectureList.getValue(rowKey, 'CRCLM_CD');
+			let crclm_year = lectureList.getValue(rowKey, 'CRCLM_YEAR');		
+			let crclm_half = lectureList.getValue(rowKey, 'CRCLM_HALF');
+			let sbjct_no = lectureList.getValue(rowKey, 'SBJCT_NO');
 			alert(crclm_cd + " / " + crclm_year + " / " + crclm_half + " / " + sbjct_no);
 			
 			$.post({
@@ -330,7 +316,7 @@ if (id == null) {
 			}).done(function(data){
 				
 				lecDetailList.resetData(data.weekList);
-				$("#lecWeekCount").html(lecDetailList.getRowCount());
+				
 				
 			}).fail(function(xhr){
 				
@@ -338,11 +324,9 @@ if (id == null) {
 			
 		});
 
-// ---- 강의주차 행 클릭 : 수강생명단 출력 ----
+// ---- 강의주차 행 클릭 ----
 		
 		lecDetailList.on('click', function(ev){
-			
-			$("#setStuAtnd").prop("disabled", false);
 			
 			let rowKey = ev.rowKey;
 			let row = lecDetailList.getRow(rowKey);
@@ -351,142 +335,10 @@ if (id == null) {
 			let crclm_half = lecDetailList.getValue(rowKey, 'CRCLM_HALF');
 			let sbjct_no = lecDetailList.getValue(rowKey, 'SBJCT_NO');
 			let lec_date = (lecDetailList.getValue(rowKey, 'LECT_YMD')).replace(/-/g, '');
-			let lec_day = lecDetailList.getValue(rowKey, 'LECT_DAY_CD');
-			let cls_hour = "000" + ((lecDetailList.getValue(rowKey, 'CLS_CD')).substr(0, 1));
+			let lec_day = lecDetailList.getValue(rowKey, 'LECT_DAY_KORN');
+			let cls_hour = lecDetailList.getValue(rowKey, 'CLS_KORN');
 			alert(crclm_cd + " / " + crclm_year + " / " + crclm_half + " / " + sbjct_no + " / " + lec_date + " / " + lec_day + " / " + cls_hour);
 			
-			
-			
-			$.post({
-				url : "/clsStdntList",
-				data : {
-					"crclm_cd" : crclm_cd,
-					"crclm_year" : crclm_year,
-					"crclm_half" : crclm_half,
-					"sbjct_no" : sbjct_no,
-					"lec_date" : lec_date,
-					"lec_day" : lec_day,
-					"cls_hour" : cls_hour
-				},
-				dataType : "json"
-			}).done(function(data){
-				
-				stuAtndList.resetData(data.stdntList);
-				$("#lec_date").html(data.stdntList[0].LECT_YMD);
-				$("#lec_hour").html(data.stdntList[0].CLS_CD);
-				
-			}).fail(function(xhr){
-				
-			});
-			
-		});
-		
-// ---- 출결저장버튼 ----
-		$("#setStuAtnd").click(function(){
-			
-			let lec_date = $("#lec_date").text();
-			let lec_hour = $("#lec_hour").text();
-			
-			let dt_focusedCell = lecDetailList.getFocusedCell();
-			let dt_focusedRow = lecDetailList.getRow(dt_focusedCell.rowKey);
-			console.log(dt_focusedCell);
-			
-			if(confirm(lec_date + " " + lec_hour + " 출결을 저장하시겠습니까?")){
-				
-				
-				let crclm_cd = dt_focusedRow.CRCLM_CD;
-				let crclm_year = dt_focusedRow.CRCLM_YEAR;
-				let crclm_half = dt_focusedRow.CRCLM_HALF;
-				let sbjct_no = dt_focusedRow.SBJCT_NO;
-				let lect_ymd = (dt_focusedRow.LECT_YMD).replace(/-/g, '');
-				let cls_cd = "000" + ((dt_focusedRow.CLS_CD).substr(0, 1));
-				
-				var stuAtndData = stuAtndList.getData();
-				var stuAtndArr = [];
-				
-				for(let i = 0; i < stuAtndData.length; i++){
-					
-					let stdnt_no = stuAtndData[i].STDNT_NO;
-					let atnd_stt = stuAtndData[i].ATND_STT;
-					
-					if(atnd_stt == '출석'){
-						atnd_stt = '0010';
-					} else if(atnd_stt == '지각'){
-						atnd_stt = '0020';
-					} else if(atnd_stt == '결석'){
-						atnd_stt = '0030';
-					}
-					
-					let rmrk = stuAtndData[i].RMRK;
-					
-					stuAtndArr.push({
-						"crclm_cd" : crclm_cd,
-						"crclm_year" : crclm_year,
-						"crclm_half" : crclm_half,
-						"sbjct_no" : sbjct_no,
-						"lect_ymd" : lect_ymd,
-						"cls_cd" : cls_cd,
-						"stdnt_no" : stdnt_no,
-						"atnd_stt" : atnd_stt,
-						"rmrk" : rmrk
-					});
-				}
-				
-				console.log(stuAtndArr);
-				
-				function setStuAtnd(){
-					return new Promise(function(resolve, reject){
-						$.post({
-							url : "/atndInstr-stuAtnd",
-							data : JSON.stringify(stuAtndArr),
-							contentType : "application/json"
-						}).done(function(data){
-							alert("저장이 완료되었습니다.");
-							resolve();
-						}).fail(function(xhr){
-							alert("문제발생");
-							
-						});
-					});
-				}
-				
-				function reloadList(){
-					
-					let lec_focusedCell = lectureList.getFocusedCell();
-					let lec_rowKey = lec_focusedCell.rowKey;
-					console.log("lec_focusedCell : " + lec_focusedCell.rowKey);
-					
-					let row = lectureList.getRow(lec_rowKey);
-					let crclm_cd = lectureList.getValue(lec_rowKey, 'CRCLM_CD');
-					let crclm_year = lectureList.getValue(lec_rowKey, 'CRCLM_YEAR');		
-					let crclm_half = lectureList.getValue(lec_rowKey, 'CRCLM_HALF');
-					let sbjct_no = lectureList.getValue(lec_rowKey, 'SBJCT_NO');
-					console.log(crclm_cd + " / " + crclm_year + " / " + crclm_half + " / " + sbjct_no);
-					
-					$.post({
-						url : "/lectureWeekList",
-						data : {
-							"crclm_cd" : crclm_cd,
-							"crclm_year" : crclm_year,
-							"crclm_half" : crclm_half,
-							"sbjct_no" : sbjct_no
-						},
-						dataType : "json"
-					}).done(function(data){
-						
-						lecDetailList.resetData(data.weekList);
-						lecDetailList.focus(dt_focusedCell.rowKey, 'LECT_YMD', true);
-						
-					}).fail(function(xhr){
-						
-					});
-					
-					return "";
-				}
-				
-				setStuAtnd().then(reloadList);
-			
-			}
 			
 		});
 		
@@ -569,13 +421,8 @@ if (id == null) {
 									</div>
 									<div style="width: 80px; height: 27px; font-size: 17px; font-weight: bold; line-height: 30px; margin: 0 10px;">
 										강의목록</div>
-									<div class="position-relative"
-											style="display: flex; width: 150px; height: 27px; font-size: 13px; color: #a3a3a7; line-height: 35px; margin: 0 10px;">
-											<div id="crclmCount"
-												style="width: 17px; height: 27px; font-size: 13px; color: #a3a3a7; line-height: 35px;">
-												0</div>
-											건이 조회되었습니다.
-									</div>
+									<div style="width: 150px; height: 27px; font-size: 13px; color: #a3a3a7; line-height: 35px; margin: 0 10px;">
+										00건이 조회되었습니다.</div>
 									<!-- 강의목록 그리드 -->
 								</div>
 								<div>
@@ -593,13 +440,8 @@ if (id == null) {
 										</div>
 										<div style="width: 80px; height: 27px; font-size: 17px; font-weight: bold; line-height: 30px; margin: 0 10px;">
 											강의주차</div>
-										<div class="position-relative"
-											style="display: flex; width: 150px; height: 27px; font-size: 13px; color: #a3a3a7; line-height: 35px; margin: 0 10px;">
-											<div id="lecWeekCount"
-												style="width: 17px; height: 27px; font-size: 13px; color: #a3a3a7; line-height: 35px;">
-												0</div>
-											건이 조회되었습니다.
-										</div>
+										<div style="width: 150px; height: 27px; font-size: 13px; color: #a3a3a7; line-height: 35px; margin: 0 10px;">
+											00건이 조회되었습니다.</div>
 									</div>
 									<div class="mt-2" style="width: 100%; text-align: center; font-size: 14px;">
 										<!-- 출석정보 그리드 -->
@@ -622,20 +464,10 @@ if (id == null) {
 											</button>
 										</div>
 									</div>
-
-									<div class="mt-2"
-										style="width: 100%; text-align: center; font-size: 14px;">
-										<div class="mt-2 position-relative"
-											style="display: flex; width: 100%; height: 30px; line-height: 27px; padding: 0 20px; font-weight: bold; font-size: 14px; background-color: #f9f9f9; border-style: solid; border-width: 1px; border-color: lightgray;">
-											<div style="width: 80px; text-align: center;">강의일자</div>
-											<div id="lec_date"
-												style="width: 230px; text-align: center; color: #08559c;"></div>
-											<div style="width: 50px; text-align: center;">교시</div>
-											<div id="lec_hour"
-												style="width: 150px; text-align: center; color: #08559c;"></div>
-										</div>
-										<!-- 수강생명단 그리드 -->
-										<div class="mt-2" id="stuAtndList"></div>
+									
+									<div class="mt-2" style="width: 100%; text-align: center; font-size: 14px;">
+										<!-- 개인출결 그리드 -->
+										<div id="stuAtndList"></div>
 									</div>
 								</div>
 								<!-- 수강생명단 -->

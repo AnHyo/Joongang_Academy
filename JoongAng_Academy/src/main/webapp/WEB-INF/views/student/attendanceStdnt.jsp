@@ -113,18 +113,22 @@ if (id == null) {
 			}, {
 				header : '과목코드',
 				name : 'SBJCT_NO',
+				width : 80,
+				sortable: true
 			}, {
 				header : '필수구분',
 				name : 'ESNTL_YN',
 				width : 80,
+				sortable: true
 			}, {
 				header : '과목명',
 				name : 'SBJCT_NM',
-				width : 200,
+				sortable: true
 			}, {
 				header : '담당강사',
 				name : 'KORN_FLNM',
-				width : 80
+				width : 80,
+				sortable: true
 			}, {
 				header : '강의시간',
 				name : 'cls_dayhour',
@@ -132,7 +136,8 @@ if (id == null) {
 			}, {
 				header : '강의실',
 				name : 'ROOM_NM',
-				width : 100
+				width : 100,
+				sortable: true
 			} ],
 			
 			bodyHeight : 500,
@@ -167,7 +172,7 @@ if (id == null) {
 				width : 70
 			}, {
 				header : '수업일자',
-				name : 'LECT_YMD',
+				name : 'LECT_YMD'
 			}, {
 				header : '요일',
 				name : 'LECT_DAY',
@@ -179,7 +184,8 @@ if (id == null) {
 			}, {
 				header : '출결',
 				name : 'ATND_KORN',
-				width : 70
+				width : 70,
+				sortable: true
 			}, {
 				header : '비고',
 				name : 'RMRK',
@@ -194,7 +200,7 @@ if (id == null) {
 		const id = '<%= id %>';
 		
 		$.post({
-			url : "/atnd_stdntInfo",
+			url : "/atndStdnt-stdntInfo",
 			data : { "id" : id },
 			dataType : "json"
 		}).done(function(data){
@@ -202,20 +208,20 @@ if (id == null) {
 			$("#half").html(data.stdntInfo.CRCLM_HALF);
 			$("#crclmName").html(data.stdntInfo.CRCLM_NM);
 		}).fail(function(xhr){
-			
+			alert("문제발생");
 		});
 				
 // ---- 조회버튼 : 강의목록 ------		
 		$("#getCrclmList").click(function(){
 			
-			alert("학생아이디 : " + id)
+			//alert("학생아이디 : " + id)
 			atndDetailList.resetData([]);
 			
 			let searchSbjct = $.trim($("#searchSbjct").val());
-			alert("과목명 : " + searchSbjct);
+			//alert("과목명 : " + searchSbjct);
 			
 			$.post({
-				url : "/atndStdnt_sbjctList",
+				url : "/atndStdnt-sbjctList",
 				data : {
 					"id" : id,
 					"searchSbjct" : searchSbjct,
@@ -224,6 +230,7 @@ if (id == null) {
 			}).done(function(data){
 				//alert("성공");
 				sbjctList.resetData(data.sbjctList);
+				$("#crclmCount").html(sbjctList.getRowCount());
 				
 			}).fail(function(xhr){
 				alert("문제발생");
@@ -236,27 +243,25 @@ if (id == null) {
 			
 			let rowKey = ev.rowKey;
 			let row = sbjctList.getRow(rowKey);
-			let crclm_cd = sbjctList.getValue(rowKey, 'CRCLM_CD');
-			let crclm_year = sbjctList.getValue(rowKey, 'CRCLM_YEAR');		
-			let crclm_half = sbjctList.getValue(rowKey, 'CRCLM_HALF');
 			let sbjct_no = sbjctList.getValue(rowKey, 'SBJCT_NO');
-			alert(crclm_cd + " / " + crclm_year + " / " + crclm_half + " / " + sbjct_no);
+			//alert("과목코드 : " + sbjct_no);
 			
 			$.post({
-				url : "/atndStdnt_atndList",
-				data : { "id" : id },
+				url : "/atndStdnt-atndList",
+				data : { 
+					"id" : id,
+					"sbjct_no" : sbjct_no
+				},
 				dataType : "json"
 			}).done(function(data){
 				
 				atndDetailList.resetData(data.atndList);
 				
 			}).fail(function(xhr){
-				
+				alert("문제발생");
 			});
 			
 		});
-		
-		
 		
 	});
 </script>
@@ -334,8 +339,13 @@ if (id == null) {
 										</div>
 										<div style="width: 80px; height: 27px; font-size: 17px; font-weight: bold; line-height: 30px; margin: 0 10px;">
 											강의목록</div>
-										<div style="width: 150px; height: 27px; font-size: 13px; color: #a3a3a7; line-height: 35px; margin: 0 10px;">
-											00건이 조회되었습니다.</div>
+										<div class="position-relative"
+											style="display: flex; width: 150px; height: 27px; font-size: 13px; color: #a3a3a7; line-height: 35px; margin: 0 10px;">
+											<div id="crclmCount"
+												style="width: 17px; height: 27px; font-size: 13px; color: #a3a3a7; line-height: 35px;">
+												0</div>
+											건이 조회되었습니다.
+										</div>
 									</div>
 									<div class="mt-2" style="width: 100%; text-align: center; font-size: 14px;">
 										<!-- 강의목록 그리드 -->
@@ -353,39 +363,13 @@ if (id == null) {
 
 									<div class="mt-2"
 										style="width: 100%; text-align: center; font-size: 14px;">
-										<!-- 출석정보 요약 그리드 -->
-										<!-- 
-										<table style="width: 100%; border-style: solid; border-width: 1px;">
-											<thead>
-												<tr>
-													<th>총훈련일수</th>
-													<th>실시일수</th>
-													<th>출석일</th>
-													<th>결석일</th>
-													<th>출석률</th>
-												</tr>
-											</thead>
-											<tbody>
-												<tr>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-												</tr>
-											</tbody>
-										</table>
-										 -->
 										<!-- 출석정보 디테일 그리드 -->
 										<div class="mt-2" id="atndDetailList"></div>
 									</div>
 								</div>
-								
 							</div>
 						</div>
 					</div> <!-- 두번째card -->
-					
-
 				</div>
 			</div>
 		</div>

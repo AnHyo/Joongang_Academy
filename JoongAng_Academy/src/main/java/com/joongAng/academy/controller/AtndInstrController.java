@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -28,7 +29,7 @@ public class AtndInstrController {
 	}
 	
 	@ResponseBody
-	@PostMapping("/atndInstr_crclmList")
+	@PostMapping("/atndInstr-crclmList")
 	public String crclmList(@RequestParam Map<String, Object> map) {
 		System.err.println(map);
 		
@@ -53,7 +54,7 @@ public class AtndInstrController {
 	}
 	
 	@ResponseBody
-	@PostMapping("/clsStdntList")
+	@PostMapping(value = "/clsStdntList", produces = "application/json;charset=UTF-8")
 	public String stdntList(@RequestParam Map<String, Object> map) {
 		
 		List<Map<String, Object>> stdntList = atndInstService.stdntList(map);
@@ -63,6 +64,19 @@ public class AtndInstrController {
 		
 		return json.toString();
 	}
-
+	
+	@ResponseBody
+	@PostMapping("/atndInstr-stuAtnd")
+	public String setStuAtnd(@RequestBody List<Map<String, Object>> stuAtndArr) {
+		
+		//System.err.println(stuAtndArr);
+		//System.err.println(stuAtndArr.size());
+		
+		atndInstService.updateStuAtnd(stuAtndArr);
+		
+		JSONObject json = new JSONObject();
+		
+		return json.toString();
+	}
 	
 }

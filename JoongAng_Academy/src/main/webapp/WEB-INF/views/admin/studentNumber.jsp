@@ -231,11 +231,11 @@ body {
 		});
 		
 		crclmList.on('click', function(ev){
-			var rowKey = ev.rowKey;
-			var row = crclmList.getRow(rowKey);		// 행
-			var crclm_cd = crclmList.getValue(rowKey, 'crclm_cd');			// 해당 행의 hidden 컬럼을 가져오기.
-			var year = crclmList.getValue(rowKey, 'crclm_year');		
-			var half = crclmList.getValue(rowKey, 'crclm_half');
+			let rowKey = ev.rowKey;
+			let row = crclmList.getRow(rowKey);		// 행
+			let crclm_cd = crclmList.getValue(rowKey, 'crclm_cd');			// 해당 행의 hidden 컬럼을 가져오기.
+			let year = crclmList.getValue(rowKey, 'crclm_year');		
+			let half = crclmList.getValue(rowKey, 'crclm_half');
 			// alert(crclm_cd + " / " + crclm_year + " / " + crclm_half);
 			
 			$.post({
@@ -372,7 +372,7 @@ body {
 
 					<div class="mt-2">
 						<div class="position-relative justify-content-center"
-							style="display: flex; width: 100%; height: 45px; font-weight: bold; padding: 10px 0 10px 0; background-color: #eef4f8;">
+							style="display: flex; width: 100%; height: 50px; font-weight: bold; padding: 12px 0 12px 0; border-style:solid; border-width: 1px; border-color: lightgray;">
 							<div style="width: 70px; height: 25px; font-size: 14px; text-align: right; line-height: 25px; margin: 0 10px 0 0;">
 								학년도</div>
 							<div style="width: 100px; height: 30px; margin: 0 10px 0 0;">
