@@ -1,8 +1,16 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%
+if (session.getAttribute("id") != null) {
+   if (!session.getAttribute("groupCD").equals("0010")) {
+      response.sendRedirect("/login?error=1234");
+   }
+} else {
+   response.sendRedirect("/login?error=4321");
+}
+%>
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="ie=edge" />

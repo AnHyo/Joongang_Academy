@@ -23,12 +23,12 @@
 		EDU_HR=#{EDU_HR}
 	</insert>
 
-	<update id="delsbj" parameterType="HashMap">
+	<delete id="delsbj" parameterType="HashMap">
 		DELETE FROM SBJCT_INFO
 		WHERE
 		SBJCT_NO =#{rowcnt}
-	</update>
-	<update id="updatesbj" parameterType="HashMap">
+	</delete>
+	<update id="updatesbj" parameterType="HashMap">     
 		UPDATE SBJCT_INFO SET
 		SBJCT_NM = #{SBJCT_NM},
 		SBJCT_EXPLN = #{SBJCT_EXPLN},

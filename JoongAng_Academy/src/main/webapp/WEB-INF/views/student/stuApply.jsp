@@ -2,8 +2,12 @@
 	pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
-if (session.getAttribute("id") == null) {
-	response.sendRedirect("/login");
+if (session.getAttribute("id") != null) {
+   if (!session.getAttribute("groupCD").equals("0010")) {
+      response.sendRedirect("/login?error=1234");
+   }
+} else {
+   response.sendRedirect("/login?error=4321");
 }
 %>
 <!DOCTYPE html>
@@ -653,7 +657,7 @@ if (session.getAttribute("id") == null) {
 											disabled="disabled"
 											class="form-control form-control-sm border-gray col-md-8"
 											placeholder="검색어를 입력하세요">
-										<button class="btn btn-dark btn-sm" type="button"
+										<button class="btn btn-outline-success btn-sm" type="button"
 											disabled="disabled" id="sbjSearchbtn">
 											<i class="fas fa-search"></i>
 										</button>

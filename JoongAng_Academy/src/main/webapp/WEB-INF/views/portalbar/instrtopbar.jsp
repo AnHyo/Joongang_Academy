@@ -13,19 +13,17 @@
 				</button>
 				<div class="collapse navbar-collapse" id="navbarSupportedContent">
 					<ul class="navbar-nav ms-auto mb-2 mb-lg-0 small fw-bolder">
-						<li class="nav-item"><a class="nav-link" href="/instrIndex">Home</a></li>
-						<li class="nav-item"><a class="nav-link" href="resume.html">출결관리</a></li>
-						<li class="nav-item"><a class="nav-link" href="projects.html">설문조사</a></li>
+						<li class="nav-item"><a class="nav-link" href="">출결관리</a></li>
+						<li class="nav-item"><a class="nav-link" href="">설문조사</a></li>
 							<li class="nav-item dropdown"><a
 							class="nav-link dropdown-toggle" id="navbarDropdown" href="#"
 							role="button" data-bs-toggle="dropdown" aria-expanded="false">강의관리</a>
 							<ul class="dropdown-menu dropdown-menu-end"
 								aria-labelledby="navbarDropdown">
-								<li><a class="dropdown-item" href="/stuinfoMod">강의별 학생조회</a></li>
+								<li><a class="dropdown-item" href="/stuinfoMod">학생정보조회</a></li>
 								<li><a class="dropdown-item" href="/stuinfoMod">강의계획서관리</a></li>
-								<li><hr class="dropdown-divider" /></li>
-								<li><a class="dropdown-item" href="/pwCheckMod">강의시간표조회</a></li>
 							</ul></li>
+						<li class="nav-item"><a class="nav-link" href="/instrTime">시간표</a></li>
 					</ul>
 					
 					<c:if test="${not empty sessionScope.username}">
