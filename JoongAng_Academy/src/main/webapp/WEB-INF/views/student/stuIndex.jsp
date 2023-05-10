@@ -90,7 +90,7 @@ if (session.getAttribute("id") != null) {
                             </a>
                             <!-- End Single Category -->
                             <!-- Start Single Category -->
-                            <a href="" class="single-cat">
+                            <a href="/atndStdnt" class="single-cat">
                                 <div class="icon mt-1 mb-0">
                                     <i class="fa-solid fa-chalkboard-user fa-2xl" style="width:28px; height:28px; color: #20c997;"></i>
                                 </div>

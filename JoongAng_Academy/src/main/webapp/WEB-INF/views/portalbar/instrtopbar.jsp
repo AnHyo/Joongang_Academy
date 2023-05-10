@@ -13,15 +13,15 @@
 				</button>
 				<div class="collapse navbar-collapse" id="navbarSupportedContent">
 					<ul class="navbar-nav ms-auto mb-2 mb-lg-0 small fw-bolder">
-						<li class="nav-item"><a class="nav-link" href="">출결관리</a></li>
+						<li class="nav-item"><a class="nav-link" href="/atndInstr">출결관리</a></li>
 						<li class="nav-item"><a class="nav-link" href="">설문조사</a></li>
 							<li class="nav-item dropdown"><a
 							class="nav-link dropdown-toggle" id="navbarDropdown" href="#"
 							role="button" data-bs-toggle="dropdown" aria-expanded="false">강의관리</a>
 							<ul class="dropdown-menu dropdown-menu-end"
 								aria-labelledby="navbarDropdown">
-								<li><a class="dropdown-item" href="/stuinfoMod">학생정보조회</a></li>
-								<li><a class="dropdown-item" href="/stuinfoMod">강의계획서관리</a></li>
+								<li><a class="dropdown-item" href="/instrSearchStu">학생정보조회</a></li>
+								<li><a class="dropdown-item" href="/instrSbjPlan">강의계획서관리</a></li>
 							</ul></li>
 						<li class="nav-item"><a class="nav-link" href="/instrTime">시간표</a></li>
 					</ul>
@@ -35,7 +35,7 @@
 							${sessionScope.username}님</a>
 							<ul class="dropdown-menu dropdown-menu-end"
 								aria-labelledby="navbarDropdown">
-								<li><a class="dropdown-item" href="/stuinfoMod">개인정보수정</a></li>
+								<li><a class="dropdown-item" href="/instrinfoMod">개인정보수정</a></li>
 								<li><a class="dropdown-item" href="/pwCheckMod">비밀번호 수정</a></li>
 								<li><hr class="dropdown-divider" /></li>
 								<li><a class="dropdown-item logout" href="/logout">로그아웃</a></li>

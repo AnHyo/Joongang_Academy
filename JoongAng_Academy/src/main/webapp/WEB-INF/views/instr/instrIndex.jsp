@@ -11,7 +11,6 @@ if (session.getAttribute("id") != null) {
 %>
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="ie=edge" />
@@ -82,7 +81,7 @@ if (session.getAttribute("id") != null) {
                 <div class="row">
                     <div class="col-12 p-0">
                         <div class="category-slider">
-                            <a href="" class="single-cat">
+                            <a href="/atndInstr" class="single-cat">
                                 <div class="icon mt-1 mb-0">
                                     <i class="fa-solid fa-chalkboard-user fa-2xl" style="width:28px; height:28px; color: #20c997;"></i>
                                 </div>
@@ -94,7 +93,7 @@ if (session.getAttribute("id") != null) {
                                 </div>
                                 <h3>설문조사</h3>
                             </a>
-                            <a href="" class="single-cat">
+                            <a href="/instrSbjPlan" class="single-cat">
                                 <div class="icon mt-1 mb-0">
                                    <i class="fa-solid fa-clipboard-list fa-2xl" style="width:28px; height:28px;color: #20c997;"></i>
                                 </div>
@@ -107,13 +106,13 @@ if (session.getAttribute("id") != null) {
                                 </div>
                                 <h3>강의 시간표</h3>
                             </a>
-                            <a href="category.html" class="single-cat">
+                            <a href="/instrSearchStu" class="single-cat">
                                 <div class="icon mt-1 mb-0">
                                     <i class="fa-solid fa-users fa-2xl" style="width:28px; height:28px;color: #20c997;"></i>
                                 </div>
                                 <h3>학생정보조회</h3>
                             </a>
-                            <a href="category.html" class="single-cat">
+                            <a href="/instrinfoMod" class="single-cat">
                                 <div class="icon mt-1 mb-0">
                                    <i class="fa-solid fa-user-tag fa-2xl" style="width:28px; height:28px;color: #20c997;"></i>
                                 </div>
