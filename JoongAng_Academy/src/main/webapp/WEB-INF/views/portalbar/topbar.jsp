@@ -16,7 +16,7 @@
 				style="font-weight: bolder;">
 				<li class="nav-item"><a class="nav-link" href="/stuApply">수강신청</a></li>
 				<li class="nav-item"><a class="nav-link" href="">설문조사</a></li>
-				<li class="nav-item"><a class="nav-link" href="">출결확인</a></li>
+				<li class="nav-item"><a class="nav-link" href="/atndStdnt">출결확인</a></li>
 				<li class="nav-item"><a class="nav-link" href="/timetable">시간표</a></li>
 			</ul>
 
