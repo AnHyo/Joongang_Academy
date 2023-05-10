@@ -1,7 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-
-	
+<%
+if (session.getAttribute("id") != null) {
+   if (!session.getAttribute("groupCD").equals("0030")) {
+      response.sendRedirect("/login?error=1234");
+   }
+} else {
+   response.sendRedirect("/login?error=4321");
+}
+%>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -30,7 +37,11 @@
 
 <script>
 $(function(){
-	
+/* 	$("#crclm_year").on("change",function(){
+		if ($("#crclm_year").val() == 0) {
+			$("#crclm_year").val(1);
+		}
+	}); */
 	function loadData2(){
 	var searchNM = $.trim($("#searchNM2").val());
 	var searchyear = $.trim($("#crclm_year").val());

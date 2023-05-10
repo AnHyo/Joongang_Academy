@@ -1,5 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%
+if (session.getAttribute("id") != null) {
+   if (!session.getAttribute("groupCD").equals("0020")) {
+      response.sendRedirect("/login?error=1234");
+   }
+} else {
+   response.sendRedirect("/login?error=4321");
+}
+%>
 <!DOCTYPE html>
 <html lang="ko">
 
@@ -73,23 +82,18 @@
                 <div class="row">
                     <div class="col-12 p-0">
                         <div class="category-slider">
-                            <!-- Start Single Category -->
                             <a href="" class="single-cat">
                                 <div class="icon mt-1 mb-0">
                                     <i class="fa-solid fa-chalkboard-user fa-2xl" style="width:28px; height:28px; color: #20c997;"></i>
                                 </div>
                                 <h3>출결관리</h3>
                             </a>
-                            <!-- End Single Category -->
-                            <!-- Start Single Category -->
                             <a href="" class="single-cat">
                                 <div class="icon mt-1 mb-0">
                                     <i class="fa-solid fa-square-poll-vertical fa-2xl" style="width:28px; height:28px;color: #20c997;"></i>
                                 </div>
                                 <h3>설문조사</h3>
                             </a>
-                            <!-- End Single Category -->
-                             <!-- Start Single Category -->
                             <a href="" class="single-cat">
                                 <div class="icon mt-1 mb-0">
                                    <i class="fa-solid fa-clipboard-list fa-2xl" style="width:28px; height:28px;color: #20c997;"></i>
@@ -97,30 +101,25 @@
                                 <h3>강의계획서 관리</h3>
                             </a>
                             <!-- End Single Category -->
-                            <!-- Start Single Category -->
-                            <a href="" class="single-cat">
+                            <a href="/instrTime" class="single-cat">
                                 <div class="icon mt-1 mb-0">
                                    <i class="fa-regular fa-calendar-days fa-2xl" style="width:28px; height:28px;color: #20c997;"></i>
                                 </div>
                                 <h3>강의 시간표</h3>
                             </a>
-                            <!-- End Single Category -->
-                            <!-- Start Single Category -->
+                            <a href="category.html" class="single-cat">
+                                <div class="icon mt-1 mb-0">
+                                    <i class="fa-solid fa-users fa-2xl" style="width:28px; height:28px;color: #20c997;"></i>
+                                </div>
+                                <h3>학생정보조회</h3>
+                            </a>
                             <a href="category.html" class="single-cat">
                                 <div class="icon mt-1 mb-0">
                                    <i class="fa-solid fa-user-tag fa-2xl" style="width:28px; height:28px;color: #20c997;"></i>
                                 </div>
                                 <h3>개인정보 수정</h3>
                             </a>
-                            <!-- End Single Category -->
-                            <!-- Start Single Category -->
-                            <a href="category.html" class="single-cat">
-                                <div class="icon mt-1 mb-0">
-                                    <i class="fa-solid fa-user-shield fa-2xl" style="width:28px; height:28px;color: #20c997;"></i>
-                                </div>
-                                <h3>비밀번호 수정</h3>
-                            </a>
-                            <!-- End Single Category -->
+                            
                         </div>
                     </div>
                 </div>
