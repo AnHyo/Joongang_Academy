@@ -1,10 +1,15 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
 <%
 String id = (String) session.getAttribute("id") ; 
-if (id == null) {
-	response.sendRedirect("/login");
+if (id != null) {
+   if (!session.getAttribute("groupCD").equals("0030")) {
+      response.sendRedirect("/login?error=1234");
+   }
+} else {
+   response.sendRedirect("/login?error=4321");
 }
 %>
 <!DOCTYPE html>
@@ -302,29 +307,18 @@ if (id == null) {
 		});
 		
 		
-		var lectureRowKey = null;
-		
 // ---- 강의목록 행 클릭 ----
 		lectureList.on('click', function(ev){
 			
 			$("#setStuAtnd").prop('disabled', true);
 			
-			/* 하이라이팅
-			if(lectureRowKey != null){
-				lectureList.removeRowClassName(lectureRowKey, 'selectedRow');
-			}
-			*/
-			
-			lectureRowKey = ev.rowKey;
+			let lectureRowKey = ev.rowKey;
 			let row = lectureList.getRow(lectureRowKey);		// 행
 			let crclm_cd = lectureList.getValue(lectureRowKey, 'CRCLM_CD');			
 			let crclm_year = lectureList.getValue(lectureRowKey, 'CRCLM_YEAR');		
 			let crclm_half = lectureList.getValue(lectureRowKey, 'CRCLM_HALF');
 			let sbjct_no = lectureList.getValue(lectureRowKey, 'SBJCT_NO');
 			alert(crclm_cd + " / " + crclm_year + " / " + crclm_half + " / " + sbjct_no);
-			
-			// 하이라이팅
-			//lectureList.addRowClassName(lectureRowKey, 'selectedRow');
 			
 			$.post({
 				url : "/atndList",
@@ -410,18 +404,10 @@ if (id == null) {
 		});
 
 
-		var stdntRowKey = null;
-
 // ---- 학생목록 행 클릭 ----
 		atndList.on('click', function(ev){
 			
-			/* 하이라이팅
-			if(stdntRowKey != null){
-				atndList.removeRowClassName(stdntRowKey, 'selectedRow');
-			}
-			*/
-			
-			stdntRowKey = ev.rowKey;
+			let stdntRowKey = ev.rowKey;
 			let row = atndList.getRow(stdntRowKey);		// 행
 			let crclm_cd = atndList.getValue(stdntRowKey, 'CRCLM_CD');			// 해당 행의 hidden 컬럼을 가져오기.
 			let crclm_year = atndList.getValue(stdntRowKey, 'CRCLM_YEAR');		
@@ -434,8 +420,6 @@ if (id == null) {
 			let lectureDay = crclm_year + columnName.replace('.','');
 			alert(crclm_cd + " / " + crclm_year + " / " + crclm_half + " / " + sbjct_no + " / " + stdnt_no + " / " + lectureDay);
 			
-			// 하이라이팅
-			//atndList.addRowClassName(stdntRowKey, 'selectedRow');
 			
 			$("#stdnt_no").html(stdnt_no);
 			$("#stdnt_name").html(stdnt_name);
