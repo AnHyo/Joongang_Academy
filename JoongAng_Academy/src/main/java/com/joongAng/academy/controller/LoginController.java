@@ -54,8 +54,9 @@ public class LoginController {
 				
 			} else if(groupCD.equals("0020")) {
 				return "/instr/instrIndex";
+				
 			}  else if(groupCD.equals("0030")) {
-			return "/index";
+				return "/admin/adminIndex";
 		
 			}
 			
