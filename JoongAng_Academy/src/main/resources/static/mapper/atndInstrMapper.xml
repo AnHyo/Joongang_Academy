@@ -19,18 +19,29 @@
 	</select>
 	
 	<select id="weekList" parameterType="HashMap" resultType="HashMap">
-		SELECT CRCLM_CD, CRCLM_YEAR, CRCLM_HALF, SBJCT_NO, (SELECT INSERT(INSERT(LECT_YMD,5,0,'-'),8,0,'-')) AS LECT_YMD, LECT_DAY_KORN, CLS_KORN, CONCAT(WEEK_NUM, '주차') AS WEEK_NUM, CONCAT(ATND_SUM, ' / ', ABSC_SUM) AS ATND_SUM
+		SELECT CRCLM_CD, CRCLM_YEAR, CRCLM_HALF, SBJCT_NO, (SELECT INSERT(INSERT(LECT_YMD,5,0,'-'),8,0,'-')) AS LECT_YMD, LECT_DAY_CD, CLS_CD, CONCAT(WEEK_NUM, '주차') AS WEEK_NUM, CONCAT(ATND_SUM, ' / ', ABSC_SUM) AS ATND_SUM
 		FROM atndInstrWeekView
-		WHERE CRCLM_CD = #{crclm_cd } AND CRCLM_YEAR = #{crclm_year } AND CRCLM_HALF = #{crclm_half } AND SBJCT_NO = #{sbjct_no }
-		ORDER BY LECT_YMD, CLS_KORN
+		WHERE CRCLM_CD = #{crclm_cd } AND CRCLM_YEAR = #{crclm_year } AND CRCLM_HALF = #{crclm_half } AND SBJCT_NO = #{sbjct_no } 
+			AND LECT_YMD <![CDATA[<=]]> DATE_FORMAT(NOW(),'%Y%m%d')
+		ORDER BY LECT_YMD DESC, CLS_CD ASC
 	</select>
 	
 	<select id="stdntList" parameterType="HashMap" resultType="HashMap">
-		SELECT STDNT_NO, (SELECT KORN_FLNM FROM APPL_INFO Ai WHERE APPL_ATND.STDNT_NO = Ai.STDNT_NO) AS STDNT_NM, CodeFind('0014', ATND_CD) AS ATND_STT
+		SELECT (SELECT INSERT(INSERT(LECT_YMD,5,0,'-'),8,0,'-')) AS LECT_YMD, CodeFind('0017',CLS_CD) AS CLS_CD
+				, STDNT_NO, (SELECT KORN_FLNM FROM APPL_INFO Ai WHERE APPL_ATND.STDNT_NO = Ai.STDNT_NO) AS STDNT_NM, CodeFind('0014', ATND_CD) AS ATND_STT, RMRK
 		FROM APPL_ATND
 		WHERE CRCLM_CD = #{crclm_cd } AND CRCLM_YEAR = #{crclm_year } AND CRCLM_HALF = #{crclm_half } AND SBJCT_NO = #{sbjct_no }
-		GROUP BY STDNT_NO
+			 	AND LECT_YMD = #{lec_date } AND CLS_CD = #{cls_hour } 
 		ORDER BY STDNT_NM
 	</select>
+	
+	<update id="updateStuAtnd" parameterType="List">
+		<foreach collection="list" item="item"  separator=";">
+		UPDATE APPL_ATND
+		SET ATND_CD = #{item.atnd_stt }, RMRK = #{item.rmrk }
+		WHERE CRCLM_CD = #{item.crclm_cd } AND CRCLM_YEAR = #{item.crclm_year } AND CRCLM_HALF = #{item.crclm_half } AND SBJCT_NO = #{item.sbjct_no }
+				AND STDNT_NO = #{item.stdnt_no } AND LECT_YMD = #{item.lect_ymd } AND CLS_CD = #{item.cls_cd }
+		</foreach>
+	</update>
 
 </mapper>

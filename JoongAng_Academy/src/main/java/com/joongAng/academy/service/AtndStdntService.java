@@ -24,8 +24,8 @@ public class AtndStdntService {
 		return atndStdntDAO.sbjctList(map);
 	}
 
-	public List<Map<String, Object>> atndList(String id) {
-		return atndStdntDAO.atndList(id);
+	public List<Map<String, Object>> atndList(Map<String, Object> map) {
+		return atndStdntDAO.atndList(map);
 	}
 
 

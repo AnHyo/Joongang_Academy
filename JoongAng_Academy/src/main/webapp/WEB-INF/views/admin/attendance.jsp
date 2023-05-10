@@ -1,6 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%
+String id = (String) session.getAttribute("id") ; 
+if (id == null) {
+	response.sendRedirect("/login");
+}
+%>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -79,40 +85,43 @@
 			scrollY : true,
 			rowHeight : 30,
 			minRowHeight : 30,
-			//rowHeaders : ['checkbox'],
 			header : {
 				height : 30
 			},
 			columns : [ {
 				header : '훈련과정코드',
-				name : 'crclm_cd',
+				name : 'CRCLM_CD',
 				hidden : true
 			},{
 				header : '학년도',
-				name : 'crclm_year',
+				name : 'CRCLM_YEAR',
 				hidden : true
 			}, {
 				header : '기간',
-				name : 'crclm_half',
+				name : 'CRCLM_HALF',
 				hidden : true
 			}, {
 				header : '훈련과정명',
-				name : 'crclm_name',
+				name : 'CRCLM_NM',
+				sortable: true
 			}, {
 				header : '과목코드',
-				name : 'sbjct_no',
+				name : 'SBJCT_NO',
 				width : 80,
+				sortable: true
 			}, {
 				header : '개설과목',
-				name : 'sbjct_name',
+				name : 'SBJCT_NM',
 				width : 250,
+				sortable: true
 			}, {
 				header : '필수구분',
-				name : 'esntl_yn',
-				width : 80
+				name : 'ESNTL_YN',
+				width : 80,
+				sortable: true
 			},{
 				header : '강의시수',
-				name : 'edu_hr',
+				name : 'EDU_HR',
 				width : 80
 			},{
 				header : '수강인원',
@@ -121,15 +130,17 @@
 			}, {
 				header : '담당강사',
 				name : 'instr_name',
-				width : 200
+				width : 200,
+				sortable: true
 			}, {
 				header : '강의시간',
 				name : 'cls_dayhour',
 				width : 200
 			}, {
 				header : '강의실',
-				name : 'cls_room',
-				width : 150
+				name : 'ROOM_NM',
+				width : 150,
+				sortable: true
 			} ],
 			
 			bodyHeight : 230,
@@ -148,35 +159,39 @@
 			},
 			columns : [ {
 				header : '학번',
-				name : 'stdnt_no',
+				name : 'STDNT_NO',
 				width : 120,
+				sortable: true
 			}, {
 				header : '이름',
 				name : 'stdnt_name',
 				width : 100,
+				sortable: true
 			}, {
 				header : '출석시수',
 				name : 'atnd_hour',
-				width : 70,
+				width : 80,
+				sortable: true
 			},{
 				header : '결석시수',
 				name : 'notAtnd_hour',
-				width : 70,
+				width : 80,
+				sortable: true
 			}, {
 				header : '훈련과정코드',
-				name : 'crclm_cd',
+				name : 'CRCLM_CD',
 				hidden : true
 			},{
 				header : '학년도',
-				name : 'crclm_year',
+				name : 'CRCLM_YEAR',
 				hidden : true
 			}, {
 				header : '기간',
-				name : 'crclm_half',
+				name : 'CRCLM_HALF',
 				hidden : true
 			}, {
 				header : '과목코드',
-				name : 'sbjct_no',
+				name : 'SBJCT_NO',
 				hidden : true
 			}  ],
 			
@@ -202,11 +217,11 @@
 			columns : [ {
 				header : '강의일자',
 				name : 'lec_day',
-				width : 100
+				width : 90
 			}, {
 				header : '교시',
 				name : 'cls_hour',
-				width : 70,
+				width : 80,
 			}, {
 				header : '출결구분',
 				name : 'atnd_stt',
@@ -230,8 +245,13 @@
 					}
 				},
 				copyOptions: {
-	          	  useListItemText: true // 왜 안되지.. when this option is used, the copy value is concatenated text
+	          	  useListItemText: true 
 	         	}
+			}, {
+				header : '비고',
+				name : 'RMRK',
+				width : 80,
+				editor : 'text'
 			} ],
 			
 			bodyHeight : 191
@@ -273,7 +293,7 @@
 			}).done(function(data){
 				//alert("성공");
 				lectureList.resetData(data.crclmList);
-				
+				$("#sbjctCount").html(lectureList.getRowCount());
 				
 			}).fail(function(xhr){
 				alert("문제발생");
@@ -282,38 +302,29 @@
 		});
 		
 		
+		var lectureRowKey = null;
 		
 // ---- 강의목록 행 클릭 ----
 		lectureList.on('click', function(ev){
 			
 			$("#setStuAtnd").prop('disabled', true);
 			
-			let rowKey = ev.rowKey;
-			let row = lectureList.getRow(rowKey);		// 행
-			let crclm_cd = lectureList.getValue(rowKey, 'crclm_cd');			
-			let crclm_year = lectureList.getValue(rowKey, 'crclm_year');		
-			let crclm_half = lectureList.getValue(rowKey, 'crclm_half');
-			let sbjct_no = lectureList.getValue(rowKey, 'sbjct_no');
-			alert(crclm_cd + " / " + crclm_year + " / " + crclm_half + " / " + sbjct_no);
-			
-			// 행 클릭시 하이라이팅 주기
-			console.log(lectureList.getRowClassName(rowKey));
-			/*
-			if(lectureList.getRowClassName(rowKey)){
-				lectureList.removeRowClassName(rowKey, 'selectedRow');
+			/* 하이라이팅
+			if(lectureRowKey != null){
+				lectureList.removeRowClassName(lectureRowKey, 'selectedRow');
 			}
 			*/
-			rowKey = ev.rowKey
-			lectureList.addRowClassName(rowKey, 'selectedRow');
 			
-			/*
-			lectureList.setSelectionRange({
-				start: [rowKey, 0],
-				end: [rowKey, lectureList.getColumns().length]
-			});
-			*/
+			lectureRowKey = ev.rowKey;
+			let row = lectureList.getRow(lectureRowKey);		// 행
+			let crclm_cd = lectureList.getValue(lectureRowKey, 'CRCLM_CD');			
+			let crclm_year = lectureList.getValue(lectureRowKey, 'CRCLM_YEAR');		
+			let crclm_half = lectureList.getValue(lectureRowKey, 'CRCLM_HALF');
+			let sbjct_no = lectureList.getValue(lectureRowKey, 'SBJCT_NO');
+			alert(crclm_cd + " / " + crclm_year + " / " + crclm_half + " / " + sbjct_no);
 			
-			
+			// 하이라이팅
+			//lectureList.addRowClassName(lectureRowKey, 'selectedRow');
 			
 			$.post({
 				url : "/atndList",
@@ -334,11 +345,11 @@
 				
 				let atndColumns = atndList.getColumns();
 				
-				// 새 컬럼을 추가했더니 기존 컬럼의 너비가 변경됨.. 다시 지정
+				// 새 컬럼을 추가했더니 기존 컬럼의 너비가 변경됨. 다시 지정
 				atndColumns[0].width = 120;
 				atndColumns[1].width = 100;
-				atndColumns[2].width = 70;
-				atndColumns[3].width = 70;
+				atndColumns[2].width = 80;
+				atndColumns[3].width = 80;
 				
 				
 				atndColumns.splice(8);
@@ -347,7 +358,6 @@
 				let dayList = data.dayList;
 				
 				let dayColumns = dayList.map(day => ({
- 					//header : day.lec_day,
 					name : day.lec_day,
 					width: 50,
 				}));
@@ -385,42 +395,47 @@
 					let findColumn = atndList.getColumns().find(col => col.name == lec_day);
 					let dayColumn = findColumn.name;
 					
-					let findRow = atndList.findRows(row => row.stdnt_no == stdnt_no);
+					let findRow = atndList.findRows(row => row.STDNT_NO == stdnt_no);
 					let rowKey = findRow[0].rowKey;
-					//console.log(stdnt_name + " / " + lec_day + " / " + atnd_day);
-					//console.log("dayColumn : " + (JSON.stringify(dayColumn)));
-					//console.log("findRow : " + (JSON.stringify(findRow)));
-					//console.log("rowKey : " + rowKey);
 					
 					atndList.setValue(rowKey, dayColumn, atnd_day);
 					
 				}
+				
+				$("#stdntCount").html(atndList.getRowCount());
 			
 			}).fail(function(xhr){
 				alert("문제발생");
 			});
 		});
 
+
+		var stdntRowKey = null;
+
 // ---- 학생목록 행 클릭 ----
 		atndList.on('click', function(ev){
 			
-			let rowKey = ev.rowKey;
-			let row = atndList.getRow(rowKey);		// 행
-			let crclm_cd = atndList.getValue(rowKey, 'crclm_cd');			// 해당 행의 hidden 컬럼을 가져오기.
-			let crclm_year = atndList.getValue(rowKey, 'crclm_year');		
-			let crclm_half = atndList.getValue(rowKey, 'crclm_half');
-			let sbjct_no = atndList.getValue(rowKey, 'sbjct_no');
-			let stdnt_no = atndList.getValue(rowKey, 'stdnt_no');
-			let stdnt_name = atndList.getValue(rowKey, 'stdnt_name');
+			/* 하이라이팅
+			if(stdntRowKey != null){
+				atndList.removeRowClassName(stdntRowKey, 'selectedRow');
+			}
+			*/
+			
+			stdntRowKey = ev.rowKey;
+			let row = atndList.getRow(stdntRowKey);		// 행
+			let crclm_cd = atndList.getValue(stdntRowKey, 'CRCLM_CD');			// 해당 행의 hidden 컬럼을 가져오기.
+			let crclm_year = atndList.getValue(stdntRowKey, 'CRCLM_YEAR');		
+			let crclm_half = atndList.getValue(stdntRowKey, 'CRCLM_HALF');
+			let sbjct_no = atndList.getValue(stdntRowKey, 'SBJCT_NO');
+			let stdnt_no = atndList.getValue(stdntRowKey, 'STDNT_NO');
+			let stdnt_name = atndList.getValue(stdntRowKey, 'stdnt_name');
 			let columnName = ev.columnName;
 			
 			let lectureDay = crclm_year + columnName.replace('.','');
 			alert(crclm_cd + " / " + crclm_year + " / " + crclm_half + " / " + sbjct_no + " / " + stdnt_no + " / " + lectureDay);
 			
-			atndList.setSelectionRange({
-				start: [rowKey, 0],
-				end: [rowKey, atndList.getColumns().length]
-			});
+			// 하이라이팅
+			//atndList.addRowClassName(stdntRowKey, 'selectedRow');
 			
 			$("#stdnt_no").html(stdnt_no);
 			$("#stdnt_name").html(stdnt_name);
@@ -455,15 +470,21 @@
 // ---- 출결저장버튼 클릭 ----
 		$("#setStuAtnd").click(function(){
 			
-			let count = 0;
-			const stuAtndData = stuAtndList.getData();
 			//console.log(stuAtndData);
 			
 			const STDNT_NO = $("#stdnt_no").text();
+			
 			if(STDNT_NO != ''){
 			
+				let atndListfocusedCell = atndList.getFocusedCell();
+				let focusedColumnName = atndListfocusedCell.columnName;
+				//console.log(atndListfocusedCell);
+				
 				if(confirm("저장하시겠습니까?")){
 					//alert("!");
+					
+					let stuAtndData = stuAtndList.getData();
+					var stuAtndArr = [];
 					
 					for(let i = 0; i < stuAtndData.length; i++){
 						
@@ -471,6 +492,7 @@
 						let CRCLM_YEAR = stuAtndData[i].CRCLM_YEAR;
 						let CRCLM_HALF = stuAtndData[i].CRCLM_HALF;
 						let SBJCT_NO = stuAtndData[i].SBJCT_NO;
+						
 						let lec_day = CRCLM_YEAR + (stuAtndData[i].lec_day).replace('.','');
 						let cls_hour = '000' + (stuAtndData[i].cls_hour).substr(0,1);
 						let atnd_stt = stuAtndData[i].atnd_stt;
@@ -482,41 +504,50 @@
 						} else {
 							atnd_stt = '0030';
 						}
-							
-						$.post({
-							url : "/setStuAtnd",
-							data : {
-								"STDNT_NO" : STDNT_NO,
-			 					"CRCLM_CD" : CRCLM_CD,
-								"CRCLM_YEAR" : CRCLM_YEAR,
-								"CRCLM_HALF" : CRCLM_HALF,
-								"SBJCT_NO" : SBJCT_NO,
-								"lec_day" : lec_day,
-								"cls_hour" : cls_hour,
-								"atnd_stt" : atnd_stt
-							},
-							dataType : "json",
-							async: false
-						}).done(function(data){
-							count+=1;
-							alert(count);
-						}).fail(function(xhr){
 						
+						let rmrk = stuAtndData[i].RMRK;
+							
+						stuAtndArr.push({ 
+							"STDNT_NO" : STDNT_NO
+							, "CRCLM_CD" : CRCLM_CD
+							, "CRCLM_YEAR" : CRCLM_YEAR
+							, "CRCLM_HALF" : CRCLM_HALF
+							, "SBJCT_NO" : SBJCT_NO
+							, "lec_day" : lec_day
+							, "cls_hour" : cls_hour
+							, "atnd_stt" : atnd_stt
+							, "rmrk" : rmrk 
 						});
+					
 					}
 					
-					if(count == stuAtndData.length){
-						alert("저장이 완료되었습니다.");
-						
+					console.log(stuAtndArr);
+					
+					function setStuAtnd(){
+						return new Promise(function(resolve, reject){
+							$.post({
+								url : "/stuAtnd",
+								data : JSON.stringify(stuAtndArr),
+								contentType : "application/json"
+							}).done(function(data){
+								alert("저장이 완료되었습니다.");
+								resolve();
+							}).fail(function(xhr){
+								alert("문제발생");
+							});
+						});
+					}
+
+					function reloadList(){
 						let lec_focusedCell = lectureList.getFocusedCell();
 						let lec_rowKey = lec_focusedCell.rowKey;
 						//console.log("lec_focusedCell : " + lec_focusedCell.rowKey);
 						
-						let row = lectureList.getRow(lec_rowKey);		// 행
-						let crclm_cd = lectureList.getValue(lec_rowKey, 'crclm_cd');			// 해당 행의 hidden 컬럼을 가져오기.
-						let crclm_year = lectureList.getValue(lec_rowKey, 'crclm_year');		
-						let crclm_half = lectureList.getValue(lec_rowKey, 'crclm_half');
-						let sbjct_no = lectureList.getValue(lec_rowKey, 'sbjct_no');
+						let row = lectureList.getRow(lec_rowKey);
+						let crclm_cd = lectureList.getValue(lec_rowKey, 'CRCLM_CD');
+						let crclm_year = lectureList.getValue(lec_rowKey, 'CRCLM_YEAR');		
+						let crclm_half = lectureList.getValue(lec_rowKey, 'CRCLM_HALF');
+						let sbjct_no = lectureList.getValue(lec_rowKey, 'SBJCT_NO');
 						//console.log(crclm_cd + " / " + crclm_year + " / " + crclm_half + " / " + sbjct_no);
 						
 						$.post({
@@ -535,7 +566,6 @@
 							
 							// ------- 날짜별 출석 --------
 							let dayAtndList = data.dayAtndList;
-						
 							let rowCount = atndList.getRowCount();
 							
 							for (let i = 0; i < dayAtndList.length; i++) {
@@ -544,6 +574,7 @@
 								let stdnt_no = dayAtnd.STDNT_NO;
 								let lec_day = dayAtnd.lec_day;
 								let atnd_day = Number(dayAtnd.ATND_DAY);
+								console.log("stdnt_no : " + stdnt_no);
 								
 								if(atnd_day == 2){
 									atnd_day = ' ';
@@ -556,22 +587,27 @@
 								let findColumn = atndList.getColumns().find(col => col.name == lec_day);
 								let dayColumn = findColumn.name;
 								
-								let findRow = atndList.findRows(row => row.stdnt_no == stdnt_no);
+								let findRow = atndList.findRows(row => row.STDNT_NO == stdnt_no);
 								let rowKey = findRow[0].rowKey;
 								
 								atndList.setValue(rowKey, dayColumn, atnd_day);
 								
 							}
+							
+							atndList.focus(atndListfocusedCell.rowKey, focusedColumnName, true );
 						
 						}).fail(function(xhr){
 							alert("문제발생");
 						});
-					
-					} else {
-						alert("문제발생");
+						
+						return "";
 					}
+					
+					setStuAtnd().then(reloadList);
+					
 				}
-			} 
+				
+			}
 		});		
 		
 // ---- 출석부생성 버튼 ----		
@@ -588,7 +624,7 @@
 				function checkSchdlYN(){
 					return new Promise(function(resolve, reject){
 						$.post({
-							url : "/checkSchdlYN",
+							url : "/crclmSchdlYN",
 							data : {
 								"crclm_year" : crclm_year,
 								"crclm_half" : crclm_half
@@ -610,7 +646,7 @@
 				function createAtnd(){
 					//alert("!!!!!");
 					$.post({
-						url : "/createAtnd",
+						url : "/sbjctAtndList",
 						data : {
 							"crclm_year" : crclm_year,
 							"crclm_half" : crclm_half
@@ -627,11 +663,8 @@
 				
 				checkSchdlYN().then(createAtnd);
 				
-				
 			}
-			
 		});
-		
 		
 	});
 	
@@ -643,7 +676,7 @@
 	<%-- 	<%@include file="../bar/sidebar.jsp"%> --%>
 	<div id="layoutSidenav_content">
 		<main>
-			<div class="container-fluid px-4" >
+			<div class="container-fluid px-4 mb-4" >
 				<div class="mt-1 position-relative row" >
 					<div style="width: 30px;">
 						<img src="./image/joongang_logo.png" style="width: 25px;">
@@ -699,9 +732,9 @@
 								<input type="text" class="form-control" id="searchCrclm" style="height: 25px; font-size: 13px;">
 							</div>
 						</div>
-						<div style="width:50px; height:30px;">
+						<!-- <div style="width:50px; height:30px;">
 							<i class="fa-solid fa-magnifying-glass" id="searchCrclmBtn" style="cursor:pointer;"></i>
-						</div>
+						</div> -->
 						<div style="width: 100px; height: 25px; font-size: 14px; text-align: right; line-height: 25px; margin: 0 0 0 20px;">
 							개설과목
 						</div>
@@ -728,9 +761,13 @@
 					<div
 						style="width: 80px; height: 27px; font-size: 17px; font-weight: bold; line-height: 30px; margin: 0 10px;">
 						강의목록</div>
-					<div
-						style="width: 150px; height: 27px; font-size: 13px; color: #a3a3a7; line-height: 35px; margin: 0 10px;">
-						00건이 조회되었습니다.</div>
+					<div class="position-relative"
+						style="display: flex; width: 150px; height: 27px; font-size: 13px; color: #a3a3a7; line-height: 35px; margin: 0 10px;">
+						<div id="sbjctCount"
+							style="width: 17px; height: 27px; font-size: 13px; color: #a3a3a7; line-height: 35px;">
+							0</div>
+						건이 조회되었습니다.
+					</div>
 				</div>
 
 				<div style="width: 100%; height: auto;">
@@ -746,9 +783,16 @@
 								<div
 									style="width: 80px; height: 27px; font-size: 17px; font-weight: bold; line-height: 30px; margin: 0 10px;">
 									출석정보</div>
-								<div
-									style="width: 150px; height: 27px; font-size: 13px; color: #a3a3a7; line-height: 35px; margin: 0 10px;">
-									00건이 조회되었습니다.</div>
+								<div class="position-relative"
+									style="display: flex; width: 150px; height: 27px; font-size: 13px; color: #a3a3a7; line-height: 35px; margin: 0 10px;">
+									<div id="stdntCount"
+										style="width: 17px; height: 27px; font-size: 13px; color: #a3a3a7; line-height: 35px;">
+										0</div>
+									건이 조회되었습니다.
+								</div>
+								<div style=" height: 27px; font-size: 13px; color: blue; line-height: 35px;">
+									출결을 수정하고자 하는 학생 줄에서 해당 날짜를 클릭하세요.
+								</div>
 							</div>
 							<div class="mt-2"
 								style="width: 100%; text-align: center; font-size: 14px;">

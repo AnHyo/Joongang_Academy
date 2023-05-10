@@ -16,4 +16,6 @@ public interface AtndInstrDAO {
 
 	List<Map<String, Object>> stdntList(Map<String, Object> map);
 
+	void updateStuAtnd(List<Map<String, Object>> stuAtndArr);
+
 }

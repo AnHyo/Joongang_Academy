@@ -8,14 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.joongAng.academy.service.AttendanceService;
-
-
-
-
 
 @Controller
 public class AttendanceController {
@@ -87,11 +84,11 @@ public class AttendanceController {
 
 // ---- 출결저장 ----
 	@ResponseBody
-	@PostMapping("/setStuAtnd")
-	public String setStuAtnd(@RequestParam Map<String, Object> map) {
+	@PostMapping("/stuAtnd")
+	public String setStuAtnd(@RequestBody List<Map<String, Object>> stuAtndArr) {
 		
-		System.err.println(map);
-		atndService.setStuAtnd(map);
+		System.err.println(stuAtndArr);
+		atndService.setStuAtnd(stuAtndArr);
 		
 		JSONObject json = new JSONObject();
 		
@@ -100,7 +97,7 @@ public class AttendanceController {
 		
 // ---- 수강신청기간확인 ----
 	@ResponseBody
-	@PostMapping("/checkSchdlYN")
+	@PostMapping("/crclmSchdlYN")
 	public String checkSchdlYN(@RequestParam Map<String, Object> map) {
 		
 		JSONObject json = new JSONObject();
@@ -124,7 +121,7 @@ public class AttendanceController {
 	
 // ---- 수강신청내역으로 출석부생성 ----
 	@ResponseBody
-	@PostMapping("/createAtnd")
+	@PostMapping("/sbjctAtndList")
 	public String createAtnd(@RequestParam Map<String, Object> map ) {
 		
 		int createResult = atndService.createAtnd(map);
