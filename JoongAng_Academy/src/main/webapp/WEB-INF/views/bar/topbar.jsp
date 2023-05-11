@@ -3,6 +3,15 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <script src="js/pwChange.js"></script>
 <script src="js/admininfoMod.js"></script>
+<script>
+$(function(){
+	
+	$("#logout").click(function(){
+		location.href="/logout";
+	});
+});
+
+</script>
 <nav class="sb-topnav navbar navbar-expand navbar-dark bg-team2">
 	<!-- Navbar Brand-->
 	<a class="navbar-brand ps-3"
@@ -14,17 +23,8 @@
 		<i class="fas fa-bars"></i>
 	</button>
 	<!-- Navbar Search-->
-	<form
+	<div
 		class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
-		<div class="input-group">
-			<input class="form-control" type="text" placeholder="Search for..."
-				aria-label="Search for..." aria-describedby="btnNavbarSearch" />
-			<button class="btn btn-dark" id="btnNavbarSearch" type="button">
-				<i class="fas fa-search"></i>
-			</button>
-		</div>
-	</form>
-
 	
 					<c:if test="${not empty sessionScope.username}">
 					<ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
@@ -38,10 +38,11 @@
 								<li><a class="dropdown-item" id="infoModal">개인정보수정</a></li>
 								<li><a class="dropdown-item" id="pwModal">비밀번호 수정</a></li>
 								<li><hr class="dropdown-divider" /></li>
-								<li><a class="dropdown-item logout" href="/logout">로그아웃</a></li>
+								<li><a class="dropdown-item logout" id="logout">로그아웃</a></li>
 							</ul></li>
 					</ul>
 					</c:if>
+	</div>
 </nav>
 
 	<%@include file="../admin/pwChangeModal.jsp"%>
