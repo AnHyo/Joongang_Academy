@@ -679,7 +679,7 @@ if (id != null) {
 						style="width: 300px; height: auto; padding: 0;">
 						<button type="button" id="createAtndList" class="btn btn-secondary" style="height:27px; font-size: 13px; line-height:10px;">출석부생성</button>
 						<!-- <button type="button" class="btn btn-secondary" style="height:27px; font-size: 13px; line-height:10px";>출석부출력</button>-->
-						<button type="button" class="btn btn-secondary" style="height:27px; font-size: 13px; line-height:10px";>수강신청명단</button>
+						<!-- <button type="button" class="btn btn-secondary" style="height:27px; font-size: 13px; line-height:10px";>수강신청명단</button> -->
 					</div>
 					<div class="float-end"
 						style="width: 75px; height: auto; padding: 0;">
