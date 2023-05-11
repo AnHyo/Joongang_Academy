@@ -8,6 +8,12 @@
 		WHERE USER_ID = #{userid} AND PSWD =#{userpw};
 	
 	</select>
+	<select id="loginCK" parameterType="Hashmap" resultType="LoginDTO">
+		SELECT COUNT(*) as count , USER_ID, PSWD, KORN_FLNM ,USER_NO, USER_GROUP_CD, PSWD_ERR_NMTM
+		FROM USER_INFO
+		WHERE USER_ID = #{userid};
+	
+	</select>
 	
 	<update id="loginTry" parameterType="Hashmap">
 		UPDATE USER_INFO SET

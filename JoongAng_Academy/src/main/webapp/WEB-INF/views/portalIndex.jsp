@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+    <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html lang="ko">
     <head>
@@ -33,11 +34,11 @@
                                 <div class="fs-3 fw-light text-muted">중앙정보처리학원</div>
                                 <h1 class="display-3 fw-bolder mb-5"><span class="text-gradient d-inline">포털 시스템</span></h1>
                                 <div class="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-xxl-start mb-3">
-									<a class="btn btn-team2_2 btn-lg px-5 py-3 me-sm-3 fs-6 fw-bolder" style="width:290px;" href="/login">학생</a>
+									<a class="btn btn-team2_2 btn-lg px-5 py-3 me-sm-3 fs-6 fw-bolder" style="width:290px;" href="/login?group=0010" >학생</a>
                                 </div>
                                 <div class="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-xxl-start mb-3">
-									<a class="btn btn-outline-info btn-lg px-5 py-2 me-sm-3 fs-6 fw-bolder " style=" border:2px solid #0dcaf0;"href="/login">강사</a>
-                                    <a class="btn btn-outline-info btn-lg px-5 py-2 me-sm-3 fs-6 fw-bolder" style=" border:2px solid #0dcaf0;" href="/login">직원</a>
+									<a class="btn btn-outline-info btn-lg px-5 py-2 me-sm-3 fs-6 fw-bolder " style=" border:2px solid #0dcaf0;"href="/login?group=0020">강사</a>
+                                    <a class="btn btn-outline-info btn-lg px-5 py-2 me-sm-3 fs-6 fw-bolder" style=" border:2px solid #0dcaf0;" href="/login?group=0030">직원</a>
                                 </div>
                             </div>
                         </div>
@@ -160,6 +161,16 @@
                                         </svg>
                                         <!-- END of SVG dots-->
                                     </div>
+                                    	<c:if test="${param.error eq 0033}">
+										<script>
+											alert("로그인 권한이 없습니다.");
+										</script>
+									</c:if>
+									<c:if test="${param.error eq 4569 }">
+										<script type="text/javascript">
+											alert("로그인 횟수를 초과하였습니다.\n로그인 할 수 없습니다.");
+										</script>
+									</c:if>
                                 </div>
                             </div>
                         </div>
