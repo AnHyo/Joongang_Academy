@@ -22,6 +22,7 @@ if (session.getAttribute("id") == null) {
 <link rel="stylesheet"
 	href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
 <link href="css/styles.css" rel="stylesheet" />
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/xeicon@2.3.3/xeicon.min.css">
 <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js"
 	crossorigin="anonymous"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
@@ -59,7 +60,7 @@ ml-10 {
 						<div
 							style="position: absolute; width: 100%; top: 50%; transform: translateY(-50%) translateX(10%);">
 							<div class="input-group " style="width: calc(20%); float: left;">
-								학년도 <input type="text" class="form-control form-control-sm"
+								학년도 <input type="number" class="form-control form-control-sm"
 									style="margin-left: 10px;" value="2022" maxlength="4"
 									id="s_CRCLM_YEAR" numberOnly> <select
 									class="form-select form-select-sm s_CRCLM_HALF"
@@ -156,18 +157,18 @@ ml-10 {
 												</td>
 
 
-												<td style="text-align: right;">등록일자</td>
-												<td><input type="date" min="year+'-01-01'"
-													class="form-control form-control-sm DGSTFN_RGDATE"
+<!-- 												<td style="text-align: right;">등록일자</td> -->
+<!-- 												<td><input type="date" min="year+'-01-01'" -->
+<!-- 													class="form-control form-control-sm DGSTFN_RGDATE" -->
+<!-- 													disabled="disabled"></td> -->
+												<td style="text-align: right;">설문시작일시</td>
+												<td><input type="text"
+													class="form-control form-control-sm SCHDL_BGNG_DT"
 													disabled="disabled"></td>
-												<td style="text-align: right;">설문개설여부</td>
-												<td><select
-													class="form-select form-select-sm DGSTFN_OP_YN"
-													disabled="disabled">
-														<option value="">선택</option>
-														<option value="N">N</option>
-														<option value="Y">Y</option>
-												</select></td>
+												<td style="text-align: right;">설문종료일시</td>
+												<td><input type="text"
+													class="form-control form-control-sm SCHDL_END_DT"
+													disabled="disabled"></td>
 
 											</tr>
 											<tr style="height: 50px">
@@ -175,14 +176,23 @@ ml-10 {
 												<td><input type="text"
 													class="form-control form-control-sm DGSTFN_TITLE"
 													disabled="disabled"></td>
-												<td style="text-align: right;">설문시작일시</td>
+												
+													<td style="text-align: right;">설문개설여부</td>
+												<td><select
+													class="form-select form-select-sm DGSTFN_OP_YN"
+													disabled="disabled">
+														<option value="">선택</option>
+														<option value="N">N</option>
+														<option value="Y">Y</option>
+												</select></td>
+<!-- 												<td style="text-align: right;">설문시작일시</td>
 												<td><input type="date"
-													class="form-control form-control-sm DGSTFN_SDATE"
+													class="form-control form-control-sm SCHDL_BGNG_DT"
 													disabled="disabled"></td>
 												<td style="text-align: right;">설문종료일시</td>
 												<td><input type="date"
-													class="form-control form-control-sm DGSTFN_FDATE"
-													disabled="disabled"></td>
+													class="form-control form-control-sm SCHDL_END_DT"
+													disabled="disabled"></td> -->
 											</tr>
 											<tr>
 												<td style="text-align: right;">안내문구</td>
@@ -210,16 +220,24 @@ ml-10 {
 										<div id="grid2"></div>
 									</div>
 									<!-- 문한정보 버튼 -->
-									<div style="right: 25px; display: none; position: absolute;"
-										id="btn2" class="mt-2">
-										<button type="button" class="btn btn-secondary btn-sm"
-											id="add_btn2" disabled="disabled">신규</button>
-										<button type="button" class="btn btn-secondary btn-sm"
-											id="del_btn2" disabled="disabled">삭제</button>
-										<button type="button" class="btn btn-secondary btn-sm"
-											id="save_btn2" disabled="disabled">저장</button>
+									<div style="width:240px; float:right;">
+										<div id="help" 
+											style="display:none; text-align: right; font-size: 11px; margin-right:3px; color:gray; float:left;margin-top:8px;">
+										        <span>문항은 최대 23개까지</span>
+										        <br>
+										        <span>생성가능합니다.</span>
+										</div>
+										<div style=" display: none; position: relative; float:right;"
+											id="btn2" class="mt-2">
+											<i class="xi-help-o xi-x" title="최대 23개까지 생성 가능합니다." style="color:#adb5bd;margin-top:8px; margin-right:7px;" id="help-o"></i>
+											<button type="button" class="btn btn-secondary btn-sm" title="최대 23개까지 생성 가능합니다."
+												id="add_btn2" disabled="disabled">신규</button>
+											<button type="button" class="btn btn-secondary btn-sm"
+												id="del_btn2" disabled="disabled">삭제</button>
+											<button type="button" class="btn btn-secondary btn-sm"
+												id="save_btn2" disabled="disabled">저장</button>
+										</div>
 									</div>
-
 
 									<div class="mt-3 mb-1">
 										<h6 class="mt-2 fw-bolder" style="display: inline-block;">답변정보</h6>

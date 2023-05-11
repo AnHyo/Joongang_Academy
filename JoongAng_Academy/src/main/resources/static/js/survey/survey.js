@@ -51,14 +51,14 @@ $(function() {
 			{
 				header : '년도',
 				name : 'CRCLM_YEAR',
-				width: 70,
+				//width: 70,
 				align : 'center',
 				sortable: true,
 			    sortingType: 'desc'
 			}, {
 				header : '분기',
 				name : 'CRCLM_HALF_NM',
-				width: 60,
+			//	width: 60,
 				align : 'center',
 				sortable: true,
 			    sortingType: 'desc'
@@ -73,12 +73,12 @@ $(function() {
 			{
 				header : '과목명',
 				name : 'SBJCT_NM',
-				width: 150,
+				//width: 150,
 				align : 'center',
 				sortable: true,
 			    sortingType: 'desc'
 			},
-			{
+			/*{
 				header : '등록일자',
 				name : 'DGSTFN_RGDATE',
 				width: 110,
@@ -91,24 +91,25 @@ $(function() {
 				align : 'center',
 				sortable: true,
 			    sortingType: 'desc'
-			}, {
+			}, */
+			{
 				header : '설문시작일',
-				name : 'DGSTFN_SDATE',
-				width: 110,
+				name : 'SCHDL_BGNG_DT',
+				//width: 110,
 				align : 'center',
 				sortable: true,
 			    sortingType: 'desc'
 			}, {
 				header : '설문종료일',
-				name : 'DGSTFN_FDATE',
-				width: 110,
+				name : 'SCHDL_END_DT',
+				//width: 110,
 				align : 'center',
 				sortable: true,
 			    sortingType: 'desc'
 			},{
 				header : '개설여부',
 				name : 'DGSTFN_OP_YN',
-				width: 40,
+				//width: 40,
 				align : 'center',
 				sortable: true,
 			    sortingType: 'desc'
@@ -329,7 +330,7 @@ $(function() {
 //  			alert("s_CRCLM_HALF:"+s_CRCLM_HALF);//ok
 //  			alert("s_SBJCT_NM:"+s_SBJCT_NM);//ok
 //  			alert("s_CRCLM_CD:"+s_CRCLM_CD);//ok
-			const inputTags = $("tbody input, tbody textarea");
+			const inputTags = $("tbody input, tbody textarea, tbody select");
 			inputTags.each(function() {
 			 	 $(this).prop('disabled', true);
 			});
@@ -376,14 +377,22 @@ $(function() {
 			
 		//grid 행 클릭시    	
 		grid.on('click', function(ev) {
-
+			
+	
 			var rowKey = ev.rowKey; // 클릭한 행의 키값
 			var rowData = grid.getRow(rowKey); // 클릭한 행의 데이터
 			//alert("rowKey:"+rowKey);//ok
 			//alert("rowData:"+JSON.stringify(rowData));//ok
 			
+		
+
 			grid2_2.resetData([]);
-			
+		     /*   var rowCount = grid2_2.getRowCount(); // grid2 객체의 총 row 개수 구하기
+		        alert(rowCount);*/
+
+
+		
+	
 			//저장버튼 활성화
 			$("#save_btn").prop('disabled', false);
 			//input 활성화
@@ -397,12 +406,14 @@ $(function() {
 			 	 $(this).prop('disabled', true);
 			});
 				
-			//사용자 입력칸 입력가능
+			//사용자 입력불가능 칸
 			$(".SBJCT_NM").prop('disabled', true);
 			$(".CRCLM_NO").prop('disabled', true);
 			$(".CRCLM_YEAR").prop('disabled', true); 
 			$(".CRCLM_HALF").prop('disabled', true); 
 			$(".crclmNameList").prop('disabled', true); 
+			$(".SCHDL_BGNG_DT").prop('disabled', true); 
+			$(".SCHDL_END_DT").prop('disabled', true); 
 			
 			
 			//클릭한 행의 정보들
@@ -413,15 +424,17 @@ $(function() {
 			var CRCLM_YEAR = rowData.CRCLM_YEAR; // 연도
 			var CRCLM_HALF = rowData.CRCLM_HALF; // 상/하반기
 			var DGSTFN_OP_YN = rowData.DGSTFN_OP_YN; //개설여부
-			var rgdate = rowData.DGSTFN_RGDATE; // 등록일
-			var sdate = rowData.DGSTFN_SDATE; // 시작일
-			var fdate = rowData.DGSTFN_FDATE; // 종료일
+			//var rgdate = rowData.DGSTFN_RGDATE; // 등록일
+			var sdate = rowData.SCHDL_BGNG_DT; // 시작일
+			var fdate = rowData.SCHDL_END_DT; // 종료일
 			var DGSTFN_TITLE = rowData.DGSTFN_TITLE;			
 			var DGSTFN_INTRO = rowData.DGSTFN_INTRO;; //안내문구	
 			//var CRCLM_NM = rowData.CRCLM_CD_NM;	
-			//alert(CRCLM_NM);
+			//alert(sdate); //ok
+			//alert(fdate); //ok
+			
 			//날짜포맷( "-"를 구분자 넣기) //if로 예외처리함
-			if(rgdate != null){
+			/*if(rgdate != null){
 				var DGSTFN_RGDATE = rgdate.replace(/^(\d{4})(\d{2})(\d{2})$/, "$1-$2-$3");
 			}
 			if(sdate != null){
@@ -429,16 +442,16 @@ $(function() {
 			}
 			if(fdate != null){
 				var DGSTFN_FDATE = fdate.replace(/^(\d{4})(\d{2})(\d{2})$/, "$1-$2-$3");
-			}
+			}*/
 			//아래행에 정보넣기
 			$(".SBJCT_NM").val(SBJCT_NM);
 			$(".CRCLM_NO").val(CRCLM_NO);
 			$(".CRCLM_YEAR").val(CRCLM_YEAR);
 			$(".CRCLM_HALF").val(CRCLM_HALF);
 			$(".DGSTFN_OP_YN").val(DGSTFN_OP_YN);
-			$(".DGSTFN_RGDATE").val(DGSTFN_RGDATE);
-			$(".DGSTFN_SDATE").val(DGSTFN_SDATE);
-			$(".DGSTFN_FDATE").val(DGSTFN_FDATE);
+			//$(".DGSTFN_RGDATE").val(DGSTFN_RGDATE);
+			$(".SCHDL_BGNG_DT").val(sdate);
+			$(".SCHDL_END_DT").val(fdate);
 			$(".DGSTFN_TITLE").val(DGSTFN_TITLE);
 			$(".DGSTFN_INTRO").val(DGSTFN_INTRO);
 			$(".crclmNameList").val(CRCLM_CD);
@@ -462,6 +475,17 @@ $(function() {
 				detaillist = data.detaillist;
 				grid2.refreshLayout();
 				grid2.resetData(detaillist);
+				var rowCount = grid2.getRowCount(); // grid 객체의 총 row 개수 구하기
+			    //alert(rowCount);
+				//문항갯수 23개 이상이면 신규버튼 불가능 
+				if(rowCount >= 23){
+					$("#add_btn2").prop('disabled',true);
+					$("#help").show();
+					$("#help-o").hide();
+				} else{
+					$("#help").hide();
+					$("#help-o").show();
+				}
 				grid2.disableColumn('DGSTFN_NO');
 			}).fail(function() {
 				alert("문제가 발생했습니다.");
@@ -673,6 +697,7 @@ $(function() {
 	
 	// 문항정보 저장 버튼(추가,수정,삭제)
 	$('#save_btn2').on('click', function(){
+		
 		//필수값 입력하기 함수
 		function checkRequiredValues(){
 			if(DGSTFN_NO == "" || DGSTFN_NO == null){
@@ -775,17 +800,20 @@ $(function() {
 					alert("이미 등록된 번호입니다.");
 				} else if(data.result == 1){
 					alert("(신규)저장되었습니다.");
-					grid2.resetData([]);
+					
 					//grid.resetData(data.list); //신규버튼이 Disable안풀림
 					//grid2.refreshLayout(); //신규버튼이 Disable풀리는데 2개이상 신규못함(중복)
 					//$("#save_btn2").prop('disabled', true);
 					//$("#save_btn2").prop('disabled', false);
 					var rowKey = grid2.getRowCount() - 1;
 				    grid2.disableCell(rowKey, 'DGSTFN_NO');
-
-					const inputTags_c = $("#btn2 button");
-					inputTags_c.each(function() {
-				 			$(this).prop('disabled', false);
+						grid2.resetData([]);
+						//createdRows = [];
+						grid2.refreshLayout();
+						grid2_2.resetData([]);
+						const inputTags_c = $("#btn2 button");
+						inputTags_c.each(function() {
+				 			$(this).prop('disabled', true);
 					});
 					//$("#del_btn2_2").prop('disabled', true);
 					//grid2.focus(createdRows[0].rowKey); //안됨. 마지막로우가 포커스됨
@@ -863,6 +891,10 @@ $(function() {
 						deletedRows = [];
 						grid2.refreshLayout();
 						grid2_2.resetData([]);
+						const inputTags_c = $("#btn2 button");
+						inputTags_c.each(function() {
+				 			$(this).prop('disabled', true);
+					});
 						//grid1.focus(updatedRows[0].rowKey); //안됨. 마지막로우가 포커스됨
 					}
 				}).fail(function() {

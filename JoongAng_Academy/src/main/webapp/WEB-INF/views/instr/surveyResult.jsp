@@ -2,8 +2,12 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
-if (session.getAttribute("id") == null) {
-	response.sendRedirect("/login");
+if (session.getAttribute("id") != null) {
+   if (!session.getAttribute("groupCD").equals("0020")) {
+      response.sendRedirect("/login?error=1234");
+   }
+} else {
+   response.sendRedirect("/login?error=4321");
 }
 %>
 <!DOCTYPE html>
@@ -16,15 +20,29 @@ if (session.getAttribute("id") == null) {
 <meta name="description" content="" />
 <meta name="author" content="" />
 <title>중앙정보처리학원</title>
+<!-- Favicon-->
+<link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+<!-- Custom Google font-->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link
-	href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css"
+	href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@100;200;300;400;500;600;700;800;900&amp;display=swap"
 	rel="stylesheet" />
-<link rel="stylesheet"
-	href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
-<link href="css/styles.css" rel="stylesheet" />
+<link
+	href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap"
+	rel="stylesheet">
+<!-- Bootstrap icons-->
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css"
+	rel="stylesheet" />
 <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js"
 	crossorigin="anonymous"></script>
+<!-- Core theme CSS (includes Bootstrap)-->
 <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<link href="css/styles2.css" rel="stylesheet" />
+<link rel="stylesheet"
+	href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/xeicon@2.3.3/xeicon.min.css">
 <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
 <script type="text/javascript">
 $(function(){
@@ -45,6 +63,7 @@ var Grid = tui.Grid;
 	/* 설문과목정보 ajax */
 	$.post({
 		url: "/surveyResultAjax",
+		async: false,
 		data: {
 			"loginID": loginID
 		},
@@ -52,134 +71,151 @@ var Grid = tui.Grid;
 		dataType: "json"
 	}).done(function(data) {
 		var list = data.list;
-		suvGrid.refreshLayout();
+
+		class buttonRenderer{
+			constructor(props) {
+				const el = document.createElement('input');
+				el.type='button';
+				const Nn = document.createElement('span');
+				Nn.textContent = '';
+				this.value = props.value; // 1 (해당 컬럼 값)
+				this.rowKey = props.rowKey;
+				this.el = el;
+				this.n = Nn;
+				this.render(props); //필수 !!!!!!!!!!!
+			}
+			
+			getElement(){    	
+				if(this.value =='0'){
+					return this.n;
+				} 
+				else {
+					return this.el;
+				}
+			}
+			
+			render(props){
+				var { rowKey } = props;
+				var row = suvGrid.getRow(rowKey);
+				var CRCLM_CD = row.CRCLM_CD;
+				var CRCLM_YEAR = row.CRCLM_YEAR;
+				var CRCLM_HALF = row.CRCLM_HALF;
+				var SBJCT_NO = row.SBJCT_NO;
+				/* console.log("CRCLM_CD:"+CRCLM_CD);
+				console.log("CRCLM_YEAR:"+CRCLM_YEAR);
+				console.log("CRCLM_HALF:"+CRCLM_HALF);
+				console.log("SBJCT_NO:"+SBJCT_NO); */
+				
+				this.el.value="결과보기"; //value 값
+				this.el.id="survRs"; // id 값
+				this.el.setAttribute("class", "btn btn-success rounded-2 fw-bold "); // class값
+				this.el.setAttribute("style","width:60px; color:white;"); //style값
+				
+				this.el.addEventListener('click', (event) => {
+					window.location.href = 
+					"http://localhost/surveyResultDetail?CC=" + 
+					CRCLM_CD + "&CY=" + CRCLM_YEAR + "&CH=" + CRCLM_HALF + "&SN=" + SBJCT_NO;
+				});
+				return this.getElement();
+			}
+		} 
+		
+		var suvGrid = new tui.Grid({
+		      el: document.getElementById('suvListGrid'),
+		      scrollX: true,
+		      scrollY: true,
+		      columns: [
+		    	{
+			          header: '년도',
+			          name: 'CRCLM_YEAR',
+			          align:'center',
+					  sortingType: 'desc',
+					  sortable: true,
+			     },
+		    	{
+			          header: '분기',
+			          name: 'CRCLM_HALF_NM',
+			          align:'center',
+					  sortingType: 'desc',
+					  sortable: true,
+			     },
+		    	{
+			          header: '과목코드',
+			          name: 'SBJCT_NO',
+			          align:'center',
+					  sortingType: 'desc',
+					  sortable: true,
+					  hidden: true
+			     },
+		    	{
+			          header: '과목코드',
+			          name: 'SBJCT_NO',
+			          align:'center',
+					  sortingType: 'desc',
+					  sortable: true,
+					  hidden: true
+			     },
+		        {
+		          header: '훈련과정명',
+		          name: 'CRCLM_CD_NM',
+		          align:'center',
+				  sortingType: 'desc',
+				  sortable: true
+		        },
+		        {
+		          header: '과목명',
+		          name: 'SBJCT_NM',
+		          align:'center',
+				  sortingType: 'desc',
+				  sortable: true
+		        },
+		        {
+		          header: '설문명',
+		          name: 'DGSTFN_TITLE',
+		          align:'center',
+				  sortingType: 'desc',
+				  sortable: true
+		        },
+				{
+					  header : '결과조회',
+					  name : 'BUTTON',
+					  align:'center',
+					  sortingType: 'desc',
+					  sortable: true,
+					  renderer: buttonRenderer
+					  //formatter: buttonFormatter
+					}
+			/* 	{
+					  header : '결과조회2',
+					  name : 'BUTTON',
+					  align:'center',
+					  sortingType: 'desc',
+					  sortable: true,
+					  formatter: function (value, row) {
+						  return buttonRenderer(value, row);
+						}
+
+					},  */
+					
+				],
+			selectionUnit: 'row'
+			
+			});
+		
+		
 		suvGrid.resetData(list);
+		//suvGrid.refreshLayout(list);
 		
 	
 	}).fail(function() {
 		alert("문제가 발생 했습니다.");
 	});
-
-	
-	class buttonRenderer{
-		constructor(props) {
-			const el = document.createElement('input');
-			el.type='button';
-			const Nn = document.createElement('span');
-			Nn.textContent = '';
-			this.value = props.value; // 1 (해당 컬럼 값)
-			this.el = el;
-			this.n = Nn;
-			this.rowKey = props.rowKey;
-		}
-		
-		getElement(){    	
-			if(this.value =='0'){
-				return this.el;
-			} 
-			else {
-				return this.n;
-			}
-
-		}
-		
-		render(props){
-			var { rowKey } = props;
-			var row = suvGrid.getRow(rowKey);
-			var CRCLM_CD = row.CRCLM_CD;
-			var CRCLM_YEAR = row.CRCLM_YEAR;
-			var CRCLM_HALF = row.CRCLM_HALF;
-			var SBJCT_NO = row.SBJCT_NO;
-			  
-			console.log("CRCLM_CD:"+CRCLM_CD);
-			console.log("CRCLM_YEAR:"+CRCLM_YEAR);
-			console.log("CRCLM_HALF:"+CRCLM_HALF);
-			console.log("SBJCT_NO:"+SBJCT_NO);
-			
-			this.el.value="결과보기"; //value 값
-			this.el.id="survRs"; // id 값
-			this.el.setAttribute("class", "btn btn-success rounded-2 fw-bold "); // class값
-			this.el.setAttribute("style","width:60px; color:white;"); //style값
-			
-			this.el.addEventListener('click', (event) => {
-				window.location.href = 
-				"http://localhost/surveyResultDetail?CC=" + 
-				CRCLM_CD + "&CY=" + CRCLM_YEAR + "&CH=" + CRCLM_HALF + "&SN=" + SBJCT_NO;
-			});
-			
-		}
-	}
 	
 	
 	
-	var suvGrid = new tui.Grid({
-	      el: document.getElementById('suvListGrid'),
-	      scrollX: true,
-	      scrollY: true,
-	      columns: [
-	    	{
-		          header: '년도',
-		          name: 'CRCLM_YEAR',
-		          align:'center',
-				  sortingType: 'desc',
-				  sortable: true,
-		     },
-	    	{
-		          header: '분기',
-		          name: 'CRCLM_HALF_NM',
-		          align:'center',
-				  sortingType: 'desc',
-				  sortable: true,
-		     },
-	    	{
-		          header: '과목코드',
-		          name: 'SBJCT_NO',
-		          align:'center',
-				  sortingType: 'desc',
-				  sortable: true,
-				  hidden: true
-		     },
-	    	{
-		          header: '과목코드',
-		          name: 'SBJCT_NO',
-		          align:'center',
-				  sortingType: 'desc',
-				  sortable: true,
-				  hidden: true
-		     },
-	        {
-	          header: '훈련과정명',
-	          name: 'CRCLM_CD_NM',
-	          align:'center',
-			  sortingType: 'desc',
-			  sortable: true
-	        },
-	        {
-	          header: '과목명',
-	          name: 'SBJCT_NM',
-	          align:'center',
-			  sortingType: 'desc',
-			  sortable: true
-	        },
-	        {
-	          header: '설문명',
-	          name: 'DGSTFN_TITLE',
-	          align:'center',
-			  sortingType: 'desc',
-			  sortable: true
-	        },
-			{
-				  header : '결과조회',
-				  name : 'BUTTON',
-				  align:'center',
-				  sortingType: 'desc',
-				  sortable: true,
-				  renderer: { type: buttonRenderer },
-				}		
-			],
-		selectionUnit: 'row'
-		
-		});
+	
+	
+	
 	
 });
 
@@ -213,6 +249,16 @@ var Grid = tui.Grid;
 					
 					<div class="d-flex align-items-center justify-content-between mb-4 px-3">
 						<h4 class="text-success fw-bolder mb-0">과목현황</h4>
+						<!-- 엑셀다운 설명-->
+							<!-- <div style="display: flex; align-items: center;">
+							    <div style="flex: 1; text-align: right; font-size: 11px; margin-right:8px; color:gray;">
+							        <span>표를 오른쪽 클릭 하시면</span>
+							        <br>
+							        <span>엑셀 다운받기가 가능합니다.</span>
+							    </div>
+							    <div style="line-height:0;">
+							    <i class="xi-help xi-x" style="color:gray;"></i></div>
+							</div> -->
 					</div>
 					<!-- 설문조사 현황  -->
 					<div class="card shadow border-0 rounded-2 mb-5">

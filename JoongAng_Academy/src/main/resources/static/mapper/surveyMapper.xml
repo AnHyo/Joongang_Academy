@@ -140,26 +140,41 @@
 		ORDER BY CRCLM_YEAR DESC
 	</select>
 	
-	<select id="ResultDetailAjax" resultType="HashMap" parameterType="HashMap">
+<!-- 	<select id="ResultDetailAjax" resultType="HashMap" parameterType="HashMap">
 		SELECT *     
-		FROM APPL_DGSTFN_RSLT
+		FROM surveyResultDetail1
 		WHERE (CRCLM_CD = #{CRCLM_CD} AND CRCLM_HALF = #{CRCLM_HALF} AND 
 		CRCLM_YEAR = #{CRCLM_YEAR} AND SBJCT_NO = #{SBJCT_NO})
+	</select> -->
+	<select id="ResultDetailAjax" resultType="HashMap" parameterType="HashMap">
+	  SELECT sr.*, COUNT(ari.DGSTFN_NO) as DGSTFN_COUNT
+	  FROM surveyResultDetail1 sr
+	  LEFT JOIN APPL_DGSTFN_ITEM ari ON sr.CRCLM_CD = ari.CRCLM_CD 
+	    AND sr.CRCLM_HALF = ari.CRCLM_HALF 
+	    AND sr.CRCLM_YEAR = ari.CRCLM_YEAR 
+	    AND sr.SBJCT_NO = ari.SBJCT_NO
+	  WHERE sr.CRCLM_CD = #{CRCLM_CD} 
+	    AND sr.CRCLM_HALF = #{CRCLM_HALF} 
+	    AND sr.CRCLM_YEAR = #{CRCLM_YEAR} 
+	    AND sr.SBJCT_NO = #{SBJCT_NO}
+	    GROUP BY sr.STDNT_NO
 	</select>
 	
-	<select id="dgstfnNo" resultType="HashMap" parameterType="HashMap">
+	
+<!-- 	<select id="dgstfnNo" resultType="HashMap" parameterType="HashMap">
 		SELECT *
 		FROM APPL_DGSTFN_RSLT adr JOIN APPL_DGSTFN_ITEM adi on (
 		WHERE (CRCLM_CD = #{CRCLM_CD} AND CRCLM_HALF = #{CRCLM_HALF} AND 
 		CRCLM_YEAR = #{CRCLM_YEAR} AND SBJCT_NO = #{SBJCT_NO}) )
-	</select> 
+	</select>  -->
 	
 	<select id="ResultDetailAjax2" resultType="HashMap" parameterType="HashMap">
-		SELECT APPL  
-		FROM APPL_DGSTFN_RSLT
+		SELECT *     
+		FROM surveyresult2
 		WHERE (CRCLM_CD = #{CRCLM_CD} AND CRCLM_HALF = #{CRCLM_HALF} AND 
-		CRCLM_YEAR = #{CRCLM_YEAR} AND SBJCT_NO = #{SBJCT_NO})
-	</select>
+		CRCLM_YEAR = #{CRCLM_YEAR} AND SBJCT_NO = #{SBJCT_NO}) AND 
+		AVG_CHC_ANS_CD != 0
+	</select> 
 	
 	
 	
