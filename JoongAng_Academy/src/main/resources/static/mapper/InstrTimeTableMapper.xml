@@ -22,7 +22,10 @@
 		SELECT  STDNT_NO, KORN_FLNM, USER_BRDT, GENDER_CD, EML_ADDR, TELNO, REG_CD
 		FROM instrsearchview
 		WHERE CRCLM_YEAR = #{inputYear} AND CRCLM_HALF = #{selectHalf } AND SBJCT_NO =#{sbjctNo }
-		
+		<if test="inputStuName != null and inputStuName !='' ">
+			AND ( STDNT_NO LIKE CONCAT('%',#{inputStuName},'%')
+			OR KORN_FLNM LIKE CONCAT('%',#{inputStuName},'%') )
+		</if>
 	</select>
 
 

@@ -46,6 +46,19 @@ if (session.getAttribute("id") != null) {
 
 <script>
 	$(function() {
+//-----엔터처리		
+		$("#inputStuName ").keydown(function(key) {
+	        if (key.keyCode == 13) {
+	            $("#BtnStuSearch").click();
+	        }
+	   		 });
+		$("#inputYear ").keydown(function(key) {
+	        if (key.keyCode == 13) {
+	            $("#BtnSbjSearch").click();
+	        }
+	   		 });
+		
+		
 //-----과목조회 버튼
 		$("#BtnSbjSearch").click(function () {
 		var instrNo = $("#loginID").val();
@@ -161,7 +174,37 @@ if (session.getAttribute("id") != null) {
 				}).fail(function (xhr, status, errorThown) {
 					alert("문제가 발생했습니다.");
 				});
-			
+				
+		
+				
+				//학생검색
+				$("#BtnStuSearch").on("click",function(){
+					var inputStuName = $("#inputStuName").val();
+					$.post({
+						url :"/stuAjax",
+						cache: false,
+						data : JSON.stringify({
+							"sbjctNo" : sbjctNo,
+							"selectHalf" : selectHalf,
+							"inputYear" : inputYear,
+							"inputStuName":inputStuName
+						}),
+						dataType : "json",
+						contentType : 'application/json'
+					}).done(function(data){
+						var stuList = data.list;
+						grid2.resetData(stuList);
+						
+						let sCount = stuList.length;
+						$("#searchCountStu").html(sCount);
+				
+					}).fail(function (xhr, status, errorThown) {
+						alert("문제가 발생했습니다.");
+					});
+					
+				
+				});
+				
 				
 			});//그리드 클릭
 				var grid2 = new tui.Grid({
@@ -222,6 +265,8 @@ if (session.getAttribute("id") != null) {
 					
 					
 					});//grid
+					
+				
 			
 			
 	});//func
@@ -229,7 +274,7 @@ if (session.getAttribute("id") != null) {
 </head>
 <body class="d-flex flex-column h-100 bg-light">
 	<main class="flex-shrink-0">
-		<%@include file="../portalbar/topbar.jsp"%>
+		<%@include file="../portalbar/instrtopbar.jsp"%>
 		<!-- Page Content-->
 		<div class="my-5">
 			<div class="text-center mb-5">
@@ -306,7 +351,7 @@ if (session.getAttribute("id") != null) {
 										<span class="input-group-text"
 											style="width: calc(20%); background-color: white;" id="grade">이름(학번)</span>
 										<input type="text" class="form-control form-control-sm"
-											aria-label="학년도" placeholder="이름(학번)을 입력하세요." id="inputYear"
+											aria-label="학년도" placeholder="이름(학번)을 입력하세요." id="inputStuName"
 											numberOnly>
 										<button class="btn btn-outline-success" type="button"
 											id="BtnStuSearch">조회</button>
