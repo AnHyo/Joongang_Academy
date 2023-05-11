@@ -1,7 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%
-if (session.getAttribute("id") != null) {
+String id = (String) session.getAttribute("id");
+if (id != null) {
    if (!session.getAttribute("groupCD").equals("0010")) {
       response.sendRedirect("/login?error=1234");
    }
@@ -98,7 +99,7 @@ if (session.getAttribute("id") != null) {
                             </a>
                             <!-- End Single Category -->
                             <!-- Start Single Category -->
-                            <a href="" class="single-cat">
+                            <a href="/stuSuv" class="single-cat">
                                 <div class="icon mt-1 mb-0">
                                     <i class="fa-solid fa-square-poll-vertical fa-2xl" style="width:28px; height:28px;color: #20c997;"></i>
                                 </div>

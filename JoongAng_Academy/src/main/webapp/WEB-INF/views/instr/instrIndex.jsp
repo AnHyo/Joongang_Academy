@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html lang="ko">
 <%
 if (session.getAttribute("id") != null) {
    if (!session.getAttribute("groupCD").equals("0020")) {
@@ -9,8 +11,6 @@ if (session.getAttribute("id") != null) {
    response.sendRedirect("/login?error=4321");
 }
 %>
-<!DOCTYPE html>
-<html lang="ko">
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="ie=edge" />
@@ -87,7 +87,7 @@ if (session.getAttribute("id") != null) {
                                 </div>
                                 <h3>출결관리</h3>
                             </a>
-                            <a href="" class="single-cat">
+                            <a href="/surveyResult" class="single-cat">
                                 <div class="icon mt-1 mb-0">
                                     <i class="fa-solid fa-square-poll-vertical fa-2xl" style="width:28px; height:28px;color: #20c997;"></i>
                                 </div>

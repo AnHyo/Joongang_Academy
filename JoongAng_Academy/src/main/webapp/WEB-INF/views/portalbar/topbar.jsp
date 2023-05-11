@@ -15,7 +15,7 @@
 			<ul class="navbar-nav ms-auto mb-2 mb-lg-0 small"
 				style="font-weight: bolder;">
 				<li class="nav-item"><a class="nav-link" href="/stuApply">수강신청</a></li>
-				<li class="nav-item"><a class="nav-link" href="">설문조사</a></li>
+				<li class="nav-item"><a class="nav-link" href="/stuSuv">설문조사</a></li>
 				<li class="nav-item"><a class="nav-link" href="/atndStdnt">출결확인</a></li>
 				<li class="nav-item"><a class="nav-link" href="/timetable">시간표</a></li>
 			</ul>
