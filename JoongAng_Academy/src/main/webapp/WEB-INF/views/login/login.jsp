@@ -109,7 +109,7 @@
 								style="font-family: 'Noto Sans KR', sans-serif; font-weight: 700; font-size: 48px;">중앙정보처리학원</div>
 							<div class="card shadow-lg border-0 rounded-lg mt-5">
 								<div class="card-body" style="height: 300px;">
-									<form action="/login" method="post">
+									<form id="myForm" method="post">
 										<div class="form-floating mb-3 mt-3">
 											<input class="form-control" id="userid" name="userid"
 												type="userid" placeholder="아이디" /> <label for="inputEmail">아이디</label>
@@ -135,11 +135,6 @@
 												id="loginBtn">로그인</button>
 										</div>
 									</form>
-									<c:if test="${param.error eq 4569 }">
-										<script type="text/javascript">
-											alert("로그인 횟수를 초과하였습니다.\n로그인 할 수 없습니다.");
-										</script>
-									</c:if>
 									<c:if test="${param.error eq 1222}">
 										<script>
 											alert("입력한 아이디 또는 비밀번호가 올바르지 않습니다. \n다시 확인해주세요.");
@@ -155,6 +150,29 @@
 											alert("로그인 후 접근 가능합니다.");
 										</script>
 									</c:if>
+									<c:if test="${param.group eq 0010}">
+										<script>
+											$("#loginBtn").click(function(){
+												$("#myForm").attr("action", "/loginStu");
+											});
+										</script>
+									</c:if>
+									<c:if test="${param.group eq 0020}">
+										<script>
+											$("#loginBtn").click(function(){
+												$("#myForm").attr("action", "/loginInstr");
+											});
+										</script>
+									</c:if>
+									<c:if test="${param.group eq 0030}">
+										<script>
+											$("#loginBtn").click(function(){
+												$("#myForm").attr("action", "/loginAdmin");
+											});
+										</script>
+									</c:if>
+									
+									
 								</div>
 							</div>
 						</div>

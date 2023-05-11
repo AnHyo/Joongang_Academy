@@ -27,4 +27,7 @@ public interface LoginDAO {
 	public int updatePW(Map<String, Object> paramap);
 
 
+	public LoginDTO loginCK(Map<String, Object> paramap);
+
+
 }

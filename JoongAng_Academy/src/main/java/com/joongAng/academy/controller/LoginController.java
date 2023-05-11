@@ -25,11 +25,20 @@ public class LoginController {
 	public String login() {
 		return "/login/login";
 	}
+	
 	@GetMapping("/")
 	public String index(HttpSession session) {
 	
 		if(session.getAttribute("id") == null) {
 			return "portalIndex";
+		} else if(session.getAttribute("groupCD").equals("0010")) {
+			return "/student/stuIndex";
+			
+		} else if(session.getAttribute("groupCD").equals("0020")) {
+			return "/instr/instrIndex";
+			
+		} else if(session.getAttribute("groupCD").equals("0030")) {
+			return "/admin/adminIndex";
 		}
 		
 		return "portalIndex";
@@ -37,11 +46,12 @@ public class LoginController {
 
 	
 	
-	@PostMapping("/login")
-	public String login(@RequestParam Map<String, Object> paramap, HttpSession session) {
+	@PostMapping("/loginStu")
+	public String loginStu(@RequestParam Map<String, Object> paramap, HttpSession session) {
 		
 		LoginDTO result = loginService.login(paramap);
-		
+		// 로그인 시도 횟수 확인
+		LoginDTO result1 = loginService.loginCK(paramap);
 
 		if(result.getCount() == 1 && result.getPSWD_ERR_NMTM() < 3) { //일치데이터확인
 			String groupCD = result.getUSER_GROUP_CD();
@@ -59,21 +69,106 @@ public class LoginController {
 
 				
 			} else if(groupCD.equals("0020")) {
-				return "/instr/instrIndex";
+				return "redirect:/portal?error=0033";
 				
 			}  else if(groupCD.equals("0030")) {
-				return "/admin/adminIndex";
+				return "redirect:/portal?error=0033";
 		
 			}
 			
-		} else if(result.getPSWD_ERR_NMTM() >=3){
-			return "redirect:/login?error=4569";
+		} else if(result1.getPSWD_ERR_NMTM() >=3){
+			return "redirect:/portal?error=4569";
 
 		}else{
 			//일치하지 않는다면// +1
 			
 			loginService.loginTry(paramap);	
-			return "redirect:/login?error=1222";
+			return "redirect:/login?group=0010&error=1222";
+		}
+		
+		
+		return "redirect:/login";
+	}
+	@PostMapping("/loginAdmin")
+	public String loginAdmin(@RequestParam Map<String, Object> paramap, HttpSession session) {
+		
+		LoginDTO result = loginService.login(paramap);
+		// 로그인 시도 횟수 확인
+		LoginDTO result1 = loginService.loginCK(paramap);
+		
+		if(result.getCount() == 1 && result.getPSWD_ERR_NMTM() < 3) { //일치데이터확인
+			String groupCD = result.getUSER_GROUP_CD();
+			
+			session.setAttribute("id", result.getUSER_ID());
+			session.setAttribute("username", result.getKORN_FLNM());
+			session.setAttribute("groupCD", groupCD);
+			
+			//비밀번호 시도횟수 초기화
+			paramap.put("PSWD_ERR_NMTM", 0);
+			loginService.loginTry(paramap);	
+			
+			if( groupCD.equals("0010")) {
+				return "redirect:/portal?error=0033";
+				
+				
+			} else if(groupCD.equals("0020")) {
+				return "redirect:/portal?error=0033";
+				
+			}  else if(groupCD.equals("0030")) {
+				return "/admin/adminIndex";
+			}
+			
+		} else if(result1.getPSWD_ERR_NMTM() >=3){
+			return "redirect:/portal?error=4569";
+			
+		}else{
+			//일치하지 않는다면// +1
+			
+			loginService.loginTry(paramap);	
+			return "redirect:/login?group=0030&error=1222";
+		}
+		
+		
+		return "redirect:/login";
+	}
+	@PostMapping("/loginInstr")
+	public String loginInstr(@RequestParam Map<String, Object> paramap, HttpSession session) {
+		
+		LoginDTO result = loginService.login(paramap);
+		// 로그인 시도 횟수 확인
+		LoginDTO result1 = loginService.loginCK(paramap);
+		
+		if(result.getCount() == 1 && result.getPSWD_ERR_NMTM() < 3) { //일치데이터확인
+			String groupCD = result.getUSER_GROUP_CD();
+			
+			session.setAttribute("id", result.getUSER_ID());
+			session.setAttribute("username", result.getKORN_FLNM());
+			session.setAttribute("groupCD", groupCD);
+			
+			//비밀번호 시도횟수 초기화
+			paramap.put("PSWD_ERR_NMTM", 0);
+			loginService.loginTry(paramap);	
+			
+			if( groupCD.equals("0010")) {
+				return "redirect:/portal?error=0033";
+				
+				
+			} else if(groupCD.equals("0020")) {
+				return "/instr/instrIndex";
+				
+			}  else if(groupCD.equals("0030")) {
+				return "redirect:/portal?error=0033";
+				
+			}
+			
+		} else if(result1.getPSWD_ERR_NMTM() >=3){
+			return "redirect:/portal?error=4569";
+			
+		}else{
+			//일치하지 않는다면// +1
+			
+			loginService.loginTry(paramap);	
+			return "redirect:/login?group=0020&error=1222";
 		}
 		
 		
@@ -90,11 +185,14 @@ public class LoginController {
 		if(session.getAttribute("username") != null) {
 			session.removeAttribute("username");
 		}
+		if(session.getAttribute("groupCD") != null) {
+			session.removeAttribute("groupCD");
+		}
 		//전체종료
 		session.invalidate();
 		
 		
-		return "/login/login";
+		return "portalIndex";
 	}
 	
 	

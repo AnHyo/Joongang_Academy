@@ -18,6 +18,9 @@ public class LoginService {
 	public LoginDTO login(Map<String, Object> paramap) {
 		return loginDAO.login(paramap);
 	}
+	public LoginDTO loginCK(Map<String, Object> paramap) {
+		return loginDAO.loginCK(paramap);
+	}
 
 	public void loginTry( Map<String, Object> paramap) {
 		loginDAO.loginTry(paramap);
@@ -34,6 +37,8 @@ public class LoginService {
 	public int updatePW(Map<String, Object> paramap) {
 		return loginDAO.updatePW(paramap);
 	}
+
+	
 
 
 
