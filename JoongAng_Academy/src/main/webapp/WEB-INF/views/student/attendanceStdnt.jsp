@@ -172,11 +172,11 @@ if (id != null) {
 				hidden : true
 			}, {
 				header : '주차',
-				name : 'WEEK_NUM',
-				width : 70
+				name : 'WEEK_NUM'
 			}, {
 				header : '수업일자',
-				name : 'LECT_YMD'
+				name : 'LECT_YMD',
+				width : 70
 			}, {
 				header : '요일',
 				name : 'LECT_DAY',
@@ -188,7 +188,7 @@ if (id != null) {
 			}, {
 				header : '출결',
 				name : 'ATND_KORN',
-				width : 70,
+				width : 60,
 				sortable: true
 			}, {
 				header : '비고',
@@ -287,17 +287,17 @@ if (id != null) {
 					<div class="card shadow border-0 rounded-2 mb-1 ">
 						<div class="card-body p-4">
 							<div class="mt-2">
-								<div class="position-relative justify-content-center" style="display: flex; width: 100%; height: 45px; font-weight: bold; padding: 10px 0 10px 0; margin: 10px 0;">
-									<div style="width: 70px; height: 25px; font-size: 14px; text-align: right; line-height: 25px; margin: 0 20px 0 0;">
+								<div class="position-relative justify-content-center" style="display: flex; width: 100%; height: 45px;  padding: 10px 0 10px 0; margin: 10px 0;">
+									<div style="width: 70px; height: 25px; font-size: 14px; text-align: right; font-weight: bold; line-height: 25px; margin: 0 20px 0 0;">
 										학년도
 									</div>
-									<div id="year" style="width: 50px; height: 25px; margin: 0 10px 0 0; font-size: 15px; text-align:right; line-height:25px; color: blue;">
+									<div id="year" style="width: 50px; height: 25px; margin: 0 10px 0 0; font-size: 15px; text-align:right; line-height:25px; color: black;">
 									</div>
-									<div id="half" style="width: 50px; height: 25px; margin: 0 10px 0 0; font-size: 15px; text-align:center; line-height:25px; color: blue;">
+									<div id="half" style="width: 50px; height: 25px; margin: 0 10px 0 0; font-size: 15px; text-align:center; line-height:25px; color: black;">
 									</div>
-									<div style="width: 100px; height: 25px; font-size: 14px; text-align: right; line-height: 25px; margin: 0 0 0 20px;">
+									<div style="width: 100px; height: 25px; font-size: 14px; font-weight: bold; text-align: right; line-height: 25px; margin: 0 0 0 20px;">
 										훈련과정명</div>
-									<div id="crclmName" style="width: 400px; height: 25px; margin: 0 10px 0 0; font-size: 15px; text-align:center; line-height:25px; color: blue;">
+									<div id="crclmName" style="width: 400px; height: 25px; margin: 0 10px 0 0; font-size: 15px; text-align:center; line-height:25px; color: black;">
 									</div>
 									<!-- 
 									<div>
@@ -306,7 +306,7 @@ if (id != null) {
 										</div>
 									</div>
 									 -->
-									<div style="width: 60px; height: 25px; font-size: 14px; text-align: right; line-height: 25px; margin: 0 0 0 10px;">
+									<div style="width: 60px; height: 25px; font-size: 14px; text-align: right; font-weight: bold; line-height: 25px; margin: 0 0 0 10px;">
 										과목명</div>
 									<div>
 										<div style="width: 150px; height: 30px; margin: 0 10px;">
