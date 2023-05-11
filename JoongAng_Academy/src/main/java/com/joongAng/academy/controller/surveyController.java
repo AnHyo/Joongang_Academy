@@ -190,10 +190,10 @@ public class surveyController {
 		List<Map<String, Object>> resultDetail = surveyService.ResultDetailAjax(map); 
 		//JSONArray resultDetail = new JSONArray(resultDetail);
 		json.put("resultDetail", resultDetail);
-		
-		
-		List<Map<String, Object>> dgstfnNo = surveyService.dgstfnNo(map); 
-		json.put("dgstfnNo", dgstfnNo);
+//		
+//		
+//		List<Map<String, Object>> dgstfnNo = surveyService.dgstfnNo(map); 
+//		json.put("dgstfnNo", dgstfnNo);
 		
 		//총계표
 		List<Map<String, Object>> resultDetail2 = surveyService.ResultDetailAjax2(map); 

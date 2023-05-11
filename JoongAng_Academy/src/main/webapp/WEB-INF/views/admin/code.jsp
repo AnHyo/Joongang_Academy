@@ -1,11 +1,15 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%-- <%
-if (session.getAttribute("id") == null) {
-	response.sendRedirect("/login");
+<%
+if (session.getAttribute("id") != null) {
+   if (!session.getAttribute("groupCD").equals("0030")) {
+      response.sendRedirect("/login?error=1234");
+   }
+} else {
+   response.sendRedirect("/login?error=4321");
 }
-%> --%>
+%>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -86,7 +90,7 @@ $(function() {
                listItems: [
                  { text: 'Y', value : 'Y'},
                  { text: 'N', value : 'N'}
-               ], defaultValue: "'N'"
+               ], defaultValue: "'Y'"
              }
            } 
 		}, 
@@ -188,19 +192,19 @@ $(function() {
 				width: 100,
 				align : 'center',
 				sortable: true,
-			    sortingType: 'desc'
-			/* 	copyOptions:{
-					 useListItemText: true
-				},formatter: 'listItemText',
-		          editor: {
-		              type: 'radio',
-		              options: {
-		                listItems: [
-		                  { text: 'Y', value: '0010' },
-		                  { text: 'N', value: '0020' }
-		                ]
-		              }
-		            } */
+			    sortingType: 'desc',
+			    copyOptions:{
+				 useListItemText: true
+			},formatter: 'listItemText',
+	         editor: {
+	             type: 'radio',
+	             options: {
+	               listItems: [
+	                 { text: 'Y', value : 'Y'},
+	                 { text: 'N', value : 'N'}
+	               ], defaultValue: "'Y'"
+	             }
+	           } 
 			}, {
 				header : '코드설명',
 				name : 'CD_EXPLN',
@@ -467,34 +471,56 @@ $(function() {
 			if(deletedRows.length > 0){
 				
 			    var deleteData = []; //삭제된행의 모든정보
+			    var hasYn;
+			    
 			    for (var i = 0; i < deletedRows.length; i++) {
 			      var row = deletedRows[i];
-			      deleteData.push({
-			        CD_CLSF: row.CD_CLSF,
-			        CD: row.CD,
-			        CD_NM: row.CD_NM,
-			        CD_USE_YN: row.CD_USE_YN,
-			        CD_EXPLN: row.CD_EXPLN,
-			        CD_SORT_SN: row.CD_SORT_SN
-			      });
+			      if(row.CD_USE_YN == "Y"){
+			    	  hasYn = true;
+			    	  
+			      } else {
+				      deleteData.push({
+				        CD_CLSF: row.CD_CLSF,
+				        CD: row.CD,
+				        CD_NM: row.CD_NM,
+				        CD_USE_YN: row.CD_USE_YN,
+				        CD_EXPLN: row.CD_EXPLN,
+				        CD_SORT_SN: row.CD_SORT_SN
+				      });
+				    }
 			    }
-				
-				$.post({
-					url : "/codeDelete",
-					    contentType: 'application/json;charset=UTF-8',
-					    data: JSON.stringify(deleteData),
-						dataType : "json"
-				}).done(function(data) {
-					if(data.result > 0){
-						alert("삭제 되었습니다.");
-						deletedRows = [];
-						grid1.resetData(data.list);
-						grid2.resetData([]);
-						//grid1.focus(updatedRows[0].rowKey); //안됨. 마지막로우가 포커스됨
-					}
-				}).fail(function() {
-					alert("문제가 발생했습니다.");
-				});
+			    if(hasYn){
+			    	alert("사용여부가 'N'인 코드만 삭제가 가능합니다.");
+			    	//grid 전체리스트     
+			    	$.post({
+			    		url : "/codeListAjax",
+			    		dataType : "json"
+			    	}).done(function(data) {
+			      		grid1.resetData(data.list);
+			    		grid1.disableColumn('CD_CLSF');
+			    		grid1.disableColumn('CD');
+			    		grid2.resetData([]);
+			    	}).fail(function() {
+			    		alert("문제가 발생했습니다.");
+			    	});
+			    } else if(hasYn != true){
+				    $.post({
+						url : "/codeDelete",
+						    contentType: 'application/json;charset=UTF-8',
+						    data: JSON.stringify(deleteData),
+							dataType : "json"
+					}).done(function(data) {
+						if(data.result > 0){
+							alert("삭제 되었습니다.");
+							deletedRows = [];
+							grid1.resetData(data.list);
+							grid2.resetData([]);
+							//grid1.focus(updatedRows[0].rowKey); //안됨. 마지막로우가 포커스됨
+						}
+					}).fail(function() {
+						alert("이미 사용중인 코드입니다.");
+					});
+			    }
 		}//delete 끝
 		
 		}
@@ -699,35 +725,57 @@ $(function() {
 			if(deletedRows.length > 0){
 				
 			    var deleteData = []; //삭제된행의 모든정보
+			    var hasYn2 = false;
+			    
 			    for (var i = 0; i < deletedRows.length; i++) {
 			      var row = deletedRows[i];
-			      deleteData.push({
-			        CD_CLSF: row.CD_CLSF,
-			        CD: row.CD,
-			        CD_NM: row.CD_NM,
-			        CD_USE_YN: row.CD_USE_YN,
-			        CD_EXPLN: row.CD_EXPLN,
-			        CD_SORT_SN: row.CD_SORT_SN
-			      });
+			      if(row.CD_USE_YN == 'Y'){
+			    	  hasYn2 = true;
+			      }else{
+				      deleteData.push({
+				        CD_CLSF: row.CD_CLSF,
+				        CD: row.CD,
+				        CD_NM: row.CD_NM,
+				        CD_USE_YN: row.CD_USE_YN,
+				        CD_EXPLN: row.CD_EXPLN,
+				        CD_SORT_SN: row.CD_SORT_SN
+				      });
+			      }
 			    }
 				
-				$.post({
-					url : "/codeDelete",
-					    contentType: 'application/json;charset=UTF-8',
-					    data: JSON.stringify(deleteData),
-					dataType : "json"
-				}).done(function(data) {
-					if(data.result > 0){
-						alert("삭제 되었습니다.");
-						deletedRows = [];
-						grid1.resetData(data.list);
-						grid2.resetData([]);
-						//grid1.focus(updatedRows[0].rowKey); //안됨. 마지막로우가 포커스됨
-					}
-				}).fail(function() {
-					alert("문제가 발생했습니다.");
-				});
-		}//delete 끝
+			    if(hasYn2){
+			    	alert("사용여부가 'N'인 코드만 삭제가 가능합니다.");
+			    	//grid 전체리스트     
+			    	$.post({
+			    		url : "/codeListAjax",
+			    		dataType : "json"
+			    	}).done(function(data) {
+			      		grid1.resetData(data.list);
+			    		grid1.disableColumn('CD_CLSF');
+			    		grid1.disableColumn('CD');
+			    		grid2.resetData([]);
+			    	}).fail(function() {
+			    		alert("문제가 발생했습니다.");
+			    	});
+			    }else if(hasYn2=="N"){
+					$.post({
+						url : "/codeDelete",
+						    contentType: 'application/json;charset=UTF-8',
+						    data: JSON.stringify(deleteData),
+						dataType : "json"
+					}).done(function(data) {
+						if(data.result > 0){
+							alert("삭제 되었습니다.");
+							deletedRows = [];
+							grid1.resetData(data.list);
+							grid2.resetData([]);
+							//grid1.focus(updatedRows[0].rowKey); //안됨. 마지막로우가 포커스됨
+						}
+					}).fail(function() {
+						alert("문제가 발생했습니다.");
+					});
+			    }
+			}//delete 끝
 		
 		}
 		else {
