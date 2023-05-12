@@ -30,10 +30,8 @@ public class AttendanceController {
 	@ResponseBody
 	@PostMapping("/atndCrclmList")
 	public String getCrclmList(@RequestParam Map<String, Object> map) {
-		//System.err.println(map);
 		
 		List<Map<String, Object>> crclmList = atndService.crclmList(map);
-		//System.err.println(crclmList);
 		
 		JSONObject json = new JSONObject();
 		json.put("crclmList", crclmList);
@@ -45,19 +43,15 @@ public class AttendanceController {
 	@ResponseBody
 	@PostMapping("/atndList")
 	public String getAtndList(@RequestParam Map<String, Object> map) {
-		//System.err.println("강의목록파람 : " +map);
 		
 		// ---- 강의날짜리스트----
 		List<Map<String, Object>> dayList = atndService.dayList(map);
-		//System.err.println("dayList : " + dayList);
 		
 		// ---- 학생리스트 ----
 		List<Map<String, Object>> stdntList = atndService.stdntList(map);
-		System.err.println("stdntList : " +stdntList);
 		
 		// ---- 학생별 일자별 출첵 ----
 		List<Map<String, Object>> dayAtndList = atndService.dayAtndList(map);
-		System.err.println("dayAtndList : " + dayAtndList);
 		
 		JSONObject json = new JSONObject();
 		json.put("dayList", dayList);
@@ -71,10 +65,8 @@ public class AttendanceController {
 	@ResponseBody
 	@PostMapping("/stuAtndList")
 	public String stuAtndList(@RequestParam Map<String, Object> map) {
-		//System.err.println("출석정보파람 : " + map);
 		
 		List<Map<String, Object>> stuAtndList = atndService.stuAtndList(map);
-		System.err.println("stuAtndList : " + stuAtndList);
 		
 		JSONObject json = new JSONObject();
 		json.put("stuAtndList", stuAtndList);
@@ -87,7 +79,6 @@ public class AttendanceController {
 	@PostMapping("/stuAtnd")
 	public String setStuAtnd(@RequestBody List<Map<String, Object>> stuAtndArr) {
 		
-		System.err.println(stuAtndArr);
 		atndService.setStuAtnd(stuAtndArr);
 		
 		JSONObject json = new JSONObject();
@@ -103,12 +94,9 @@ public class AttendanceController {
 		JSONObject json = new JSONObject();
 
 		Map<String, Object> check = atndService.checkSchdlYN(map);
-		System.err.println(check);
 		
 		String countCrclm = String.valueOf(check.get("countCrclm")) ;
 		String countY = String.valueOf(check.get("countY"));
-		System.out.println(countCrclm +" / " + countY);
-		System.err.println(countCrclm.equals(countY));
 		
 		if(countCrclm.equals(countY)) {
 			json.put("checkYN", "1");
@@ -124,7 +112,7 @@ public class AttendanceController {
 	@PostMapping("/sbjctAtndList")
 	public String createAtnd(@RequestParam Map<String, Object> map ) {
 		
-		int createResult = atndService.createAtnd(map);
+		atndService.createAtnd(map);
 		
 		JSONObject json = new JSONObject();
 		

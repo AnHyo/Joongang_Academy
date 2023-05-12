@@ -31,7 +31,6 @@ public class AtndInstrController {
 	@ResponseBody
 	@PostMapping("/atndInstr-crclmList")
 	public String crclmList(@RequestParam Map<String, Object> map) {
-		System.err.println(map);
 		
 		List<Map<String, Object>> crclmList = atndInstService.crclmList(map);
 		
@@ -68,9 +67,6 @@ public class AtndInstrController {
 	@ResponseBody
 	@PostMapping("/atndInstr-stuAtnd")
 	public String setStuAtnd(@RequestBody List<Map<String, Object>> stuAtndArr) {
-		
-		//System.err.println(stuAtndArr);
-		//System.err.println(stuAtndArr.size());
 		
 		atndInstService.updateStuAtnd(stuAtndArr);
 		

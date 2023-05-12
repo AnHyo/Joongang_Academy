@@ -28,15 +28,12 @@ public class StdntNumberController {
 	}
 	
 	@ResponseBody
-	@PostMapping("/getCrclmList")
+	@PostMapping("/stdntNo-crclmList")
 	public String getCrclmList(@RequestParam Map<String, Object> map) {
-		//System.out.println(map);
 		
 		List<Map<String, Object>> crclmList = numberService.getCrclmList(map);
-		//System.out.println(crclmList);
 		
 		String crclmCount = numberService.crclmCount(map);
-		
 		
 		JSONObject json = new JSONObject();
 		json.put("crclmList", crclmList);
@@ -46,12 +43,10 @@ public class StdntNumberController {
 	}
 	
 	@ResponseBody
-	@PostMapping("/getStuList")
+	@PostMapping("/stdntNo-stdntList")
 	public String getStuList(@RequestParam Map<String, Object> map) {
-		//System.err.println(map);
 		
 		List<Map<String, Object>> stuList = numberService.getStuList(map);
-		//System.err.println("stuList" + stuList);
 		
 		String stdntCount = numberService.stdntCount(map);
 		
@@ -66,12 +61,8 @@ public class StdntNumberController {
 	@PostMapping("/searchName")
 	public String searchName(@RequestParam Map<String, Object> map) {
 		
-		//System.err.println(map);
-		
 		List<Map<String, Object>> crclmList = numberService.getCrclmList(map);
 		List<Map<String, Object>> stuList = numberService.getStuList(map);
-		//System.err.println("stuList" + stuList);
-		
 		
 		JSONObject json = new JSONObject();
 		json.put("crclmList", crclmList);
@@ -81,15 +72,12 @@ public class StdntNumberController {
 	}
 	
 	@ResponseBody
-	@PostMapping("/setStdntNo")
+	@PostMapping("/stdntNo")
 	public String setStdntNo(@RequestParam Map<String, Object> map) {
-		//System.err.println(map);
 		
 		List<Map<String, Object>> setNoList = numberService.createStdntNo(map);
-		//System.err.println(setNoList);
 		
 		int setNoResult = numberService.updateStdntNo(setNoList);
-		//System.err.println(setNoResult);
 		
 		JSONObject json = new JSONObject();
 		json.put("setNoResult", setNoResult);
@@ -98,7 +86,7 @@ public class StdntNumberController {
 	}
 	
 	@ResponseBody
-	@PostMapping("setStdntIdPw")
+	@PostMapping("/stdntIdPw")
 	public String setStdntId(@RequestParam Map<String, Object> map) {
 		
 		int setIdResult = numberService.updateUserIdPw(map);
@@ -109,19 +97,16 @@ public class StdntNumberController {
 	}
 	
 	@ResponseBody
-	@PostMapping("/chooseRadio")
+	@PostMapping("/selectedRadio")
 	public String getAllStdntNo(@RequestParam Map<String, Object> map) {
 		
-		//System.err.println(map); //{year=2023, half=0010, radioVal=all}
 		
 		List<Map<String, Object>> crclmList = numberService.getCrclmList(map);
-		//List<Map<String, Object>> stuList = numberService.getStuList(map);
 		List<Map<String, Object>> radioList = numberService.radioList(map);
 		
 		
 		JSONObject json = new JSONObject();
 		json.put("crclmList", crclmList);
-		//json.put("stuList", stuList);
 		json.put("radioList", radioList);
 		
 		return json.toString();

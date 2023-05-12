@@ -16,4 +16,6 @@ public interface AtndStdntDAO {
 
 	List<Map<String, Object>> atndList(Map<String, Object> map);
 
+	Map<String, Object> atndHour(Map<String, Object> map);
+
 }

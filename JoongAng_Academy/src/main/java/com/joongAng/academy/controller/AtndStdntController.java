@@ -20,9 +20,6 @@ public class AtndStdntController {
 	@Autowired
 	private AtndStdntService atndStdntService;
 	
-	//@Autowired
-	//private AtndStdntDTO atndStdntDTO;
-
 	@GetMapping("/atndStdnt")
 	public String admin() {
 		
@@ -34,7 +31,6 @@ public class AtndStdntController {
 	public String stndtInfo(@RequestParam(value="id") String id) {
 		
 		Map<String, Object> stdntInfo = atndStdntService.stdntInfo(id);
-		//System.err.println(stdntInfo);
 		
 		JSONObject json = new JSONObject();
 		json.put("stdntInfo", stdntInfo);
@@ -47,7 +43,6 @@ public class AtndStdntController {
 	public String crclmList(@RequestParam Map<String, Object> map) {
 		
 		List<Map<String, Object>> sbjctList = atndStdntService.sbjctList(map);
-		//System.err.println(sbjctList);
 		
 		JSONObject json = new JSONObject();
 		json.put("sbjctList", sbjctList);
@@ -59,13 +54,12 @@ public class AtndStdntController {
 	@PostMapping("/atndStdnt-atndList")
 	public String atndList(@RequestParam Map<String, Object> map) {
 		
-		//System.err.println(atndStdntDTO);
-		
 		List<Map<String, Object>> atndList = atndStdntService.atndList(map);
-		//System.err.println(atndList);
+		Map<String, Object> atndHour = atndStdntService.atndHour(map);
 		
 		JSONObject json = new JSONObject();
 		json.put("atndList", atndList);
+		json.put("atndHour", atndHour);
 		
 		return json.toString();
 	}
