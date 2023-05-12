@@ -42,7 +42,6 @@ public class InstructorController {
 	@PostMapping(value = "/insListAjax", produces = "application/json;charset=UTF-8")
 	public String estListAjax(@RequestParam Map<String, Object> map) {
 		JSONObject json = new JSONObject();
-		System.err.println(map);
 		
 		List<Map<String, Object>> insList = instrService.insList(map); 
 		JSONArray insListJ = new JSONArray(insList);
@@ -57,9 +56,7 @@ public class InstructorController {
 		JSONObject json = new JSONObject();
 		List<Map<String, Object>> teacherUnreg = instrService.teacherUnreg(); 
 		
-		JSONArray listA = new JSONArray(teacherUnreg);
-		//System.err.println(listA);
-		
+		JSONArray listA = new JSONArray(teacherUnreg);		
 		json.put("unreglist", listA);
 	
 		return json.toString();
@@ -68,9 +65,7 @@ public class InstructorController {
 	@ResponseBody
 	@PostMapping(value = "/teacherInfoUpdate", produces = "application/json;charset=UTF-8")
 	public String teacherInfoUpdate(@RequestParam Map<String, Object> map) {
-		//System.err.println(map);
 		int result = instrService.teacherInfoUpdate(map);
-		//System.err.println(result);
 		
 		JSONObject json = new JSONObject();
 		json.put("result", result);
@@ -81,10 +76,8 @@ public class InstructorController {
 	@ResponseBody
 	@PostMapping(value = "/teacherNewRegist", produces = "application/json;charset=UTF-8")
 	public String teacherNewRegist(@RequestParam Map<String, Object> map) {
-		//System.err.println(map);
 		int result = instrService.teacherNewRegist(map);
 		result = instrService.teacherUserUpdate(map);
-		//System.err.println(result);
 		
 		JSONObject json = new JSONObject();
 		json.put("result", result);
@@ -96,11 +89,9 @@ public class InstructorController {
 	@ResponseBody
 	@PostMapping(value = "/telChenck", produces = "application/json;charset=UTF-8")
 	public String telChenck(@RequestParam(value="inst_no", required=false) String inst_no) {
-		//System.err.println(inst_no);
 		JSONObject json = new JSONObject();
 		
 		List<Map<String, Object>> telcheck = instrService.telcheck(inst_no); 
-		//System.err.println(telcheck);
 		JSONArray listJ = new JSONArray(telcheck);
 		json.put("telList", listJ);
 		
@@ -110,11 +101,9 @@ public class InstructorController {
 	@ResponseBody
 	@PostMapping(value = "/instrFoCheck", produces = "application/json;charset=UTF-8")
 	public String instrFoCheck(@RequestParam(value="instrNo", required=false) String instrNo) {
-		//System.err.println(instrNo);
 		JSONObject json = new JSONObject();
 		
 		List<Map<String, Object>> foCheck = instrService.foCheck(instrNo); 
-		//System.err.println(foCheck);
 		JSONArray listJ = new JSONArray(foCheck);
 		json.put("foCheck", foCheck);
 		
@@ -125,7 +114,6 @@ public class InstructorController {
 	@PostMapping(value = "/instrDel", produces = "application/json;charset=UTF-8")
 	public String instrDel(@RequestParam(value="instrNo", required=false) String instrNo) {
 		int result = instrService.instrDel(instrNo); 
-		//System.err.println(result);
 		
 		JSONObject json = new JSONObject();
 		json.put("result", result);
@@ -138,18 +126,12 @@ public class InstructorController {
 	@PostMapping(value = "/instrDelCen", produces = "application/json;charset=UTF-8")
 	public String instrDelCen(@RequestParam(value="instrNo", required=false) String instrNo) {
 		int result = instrService.instrDelCen(instrNo); 
-		//System.err.println(result);
 		
 		JSONObject json = new JSONObject();
 		json.put("result", result);
 		
 		return json.toString();
 
-	}
-	
-	@GetMapping("/admin")
-	public String adminIndex() {
-		return "admin/adminIndex";
 	}
 	
 	

@@ -26,7 +26,6 @@ $(function(){
 							dataType : "json"
 						}).done(function(data){
 							var result = data.stulist;
-							//alert(result);
 							grid.resetData(result);
 							let selectedRowKey = null;
 							grid.on('focusChange', (ev) => {
@@ -43,7 +42,6 @@ $(function(){
 									var keys = Object.values(obj);
 									var student_ID = keys[0];
 									var student_Name = keys[1];
-									//alert(code_num);
 
 									$.post({
 										url: "/studentDeInfo",
@@ -53,12 +51,10 @@ $(function(){
 										cache: false,
 										dataType: "json"
 									}).done(function(data) {
-										//alert("성공");
 										var list = data.list[0];
 										var elist = data.elist;
 										enrolGrid.resetData(elist);
 										
-										//alert(list.CRCLM_YEAR);
 										var tel = list.TELNO;
 										var etel = list.REL_TELNO;
 										var rel = list.REL_CD;
@@ -415,7 +411,6 @@ $(function(){
 		$(document).off("click",'#depShow').on("click",'#depShow', function(){
 			$("#depChoose").attr("disabled", false);
 			var dep_searchs = $.trim($("#dep_Search_text").val());
-			//alert(dep_searchs);
 			$.post({
 					url : "/depsearch",
 					data:{
@@ -424,7 +419,6 @@ $(function(){
 					cache : false,
 					dataType : "json"
 				}).done(function(data){
-					//alert("성공");
 					var result2 = data.list2;
 					grid2.resetData(result2);
 					let selectedRowKey = null;
@@ -436,7 +430,6 @@ $(function(){
 					});
 					
 					grid2.on('click', () => {
-						//alert("!");
 						var rowKey = grid2.getFocusedCell().rowKey;
 						var obj = grid2.getRow(rowKey);
 						var keys = Object.values(obj);
@@ -445,7 +438,6 @@ $(function(){
 						
 						//선택버튼 클릭 시
 						$(document).off("click","#depChoose").on("click","#depChoose",function(){
-							//alert(code_name);
 							$("#courseNum").text(code_num);
 							$("#courseInput").val(code_name);
 							$("#SearchModal").modal("hide");

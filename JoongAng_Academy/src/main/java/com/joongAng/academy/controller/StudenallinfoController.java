@@ -62,7 +62,6 @@ public class StudenallinfoController {
 		student.setStudent_ID(request.getParameter("student_ID"));
 		
 		List<StudentAllInfoDTO> studentDeInfo = studentAllInfoService.studentDeInfo(student);
-		//System.err.println(studentDeInfo);
 		List<StudentAllInfoDTO> studentDetail = studentAllInfoService.studentDetail(student);
 		List<StudentAllInfoDTO> elist = studentAllInfoService.elist(student);
 		

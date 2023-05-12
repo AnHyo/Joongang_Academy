@@ -36,11 +36,8 @@ public class StudentRecordController {
 	public String studentSearch(@RequestParam Map<String, Object> map) {
 		JSONObject json = new JSONObject();
 		
-		List<Map<String, Object>> studentInfo = studentRecordService.studentInfo(map); 
-		
+		List<Map<String, Object>> studentInfo = studentRecordService.studentInfo(map); 		
 		JSONArray listA = new JSONArray(studentInfo);
-		//System.err.println(listA);
-		
 		json.put("list", listA);
 		
 		return json.toString();
@@ -54,11 +51,8 @@ public class StudentRecordController {
 		StudentRecordDTO search = new StudentRecordDTO();
 		search.setDepsearchs(request.getParameter("depsearchs"));
 		
-		List<Map<String, Object>> depInfo = studentRecordService.depInfo(search); 
-		
+		List<Map<String, Object>> depInfo = studentRecordService.depInfo(search); 	
 		JSONArray listA = new JSONArray(depInfo);
-		//System.err.println(listA);
-		
 		json.put("list2", listA);
 		
 		return json.toString();
