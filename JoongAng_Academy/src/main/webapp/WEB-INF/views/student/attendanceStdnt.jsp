@@ -235,7 +235,6 @@ if (id != null) {
 			atndDetailList.resetData([]);
 			
 			let searchSbjct = $.trim($("#searchSbjct").val());
-			//alert("과목명 : " + searchSbjct);
 			
 			$.post({
 				url : "/atndStdnt-sbjctList",
@@ -245,7 +244,6 @@ if (id != null) {
 				},
 				dataType : "json"
 			}).done(function(data){
-				//alert("성공");
 				sbjctList.resetData(data.sbjctList);
 				$("#crclmCount").html(sbjctList.getRowCount());
 				
@@ -269,7 +267,6 @@ if (id != null) {
 			let sbjct_no = sbjctList.getValue(rowKey, 'SBJCT_NO');
 			let sbjct_name = sbjctList.getValue(rowKey, 'SBJCT_NM');
 			let edu_hour = sbjctList.getValue(rowKey, 'EDU_HR');
-			//alert("과목코드 : " + sbjct_no);
 			
 			$.post({
 				url : "/atndStdnt-atndList",
@@ -285,13 +282,11 @@ if (id != null) {
 				$("#summaryEduHour").html(edu_hour);
 				
 				let atnd_hour = data.atndHour.atnd_hour;
-				//console.log(atnd_hour);
 				$("#summaryAtndHour").html(atnd_hour);
 				$("#summaryAbscHour").html(data.atndHour.notAtnd_hour);
 				
 				if(atnd_hour){
 					let atndPercent = Math.floor( (Number(atnd_hour)) / (Number(edu_hour)) * 100 );
-					//console.log(atndPercent);
 					atndPercent = atndPercent + "" + "%";
 					$("#summaryAtndPercent").html(atndPercent);
 				}
