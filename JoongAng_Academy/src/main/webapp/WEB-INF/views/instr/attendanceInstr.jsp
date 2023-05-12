@@ -269,7 +269,7 @@ if (id != null) {
 // ---- 조회버튼 : 강의목록 ------		
 		$("#getCrclmList").click(function(){
 			
-			alert("(고정해둠) 강사아이디 : " + id);
+			//alert("강사아이디 : " + id);
 			
 			lecDetailList.resetData([]);
 			stuAtndList.resetData([]);
@@ -278,12 +278,12 @@ if (id != null) {
 			
 			let crclm_year = $.trim($("#crclm_year").val());
 			let crclm_half = $.trim($("#crclm_half").val());
-			alert("학년도 : " + crclm_year +" / "+ "상하반기 : " + crclm_half);
+			//alert("학년도 : " + crclm_year +" / "+ "상하반기 : " + crclm_half);
 			
 			let searchCrclm = $.trim($("#searchCrclm").val());
 			let searchSbjct = $.trim($("#searchSbjct").val());
 			let searchInstr = $.trim($("#searchInstr").val());
-			alert("과정명 : " + searchCrclm + " / 과목명 : " + searchSbjct + " / 강사명 : " + searchInstr);
+			//alert("과정명 : " + searchCrclm + " / 과목명 : " + searchSbjct + " / 강사명 : " + searchInstr);
 			
 			$.post({
 				url : "/atndInstr-crclmList",
@@ -321,7 +321,7 @@ if (id != null) {
 			let crclm_year = lectureList.getValue(rowKey, "CRCLM_YEAR");		
 			let crclm_half = lectureList.getValue(rowKey, "CRCLM_HALF");
 			let sbjct_no = lectureList.getValue(rowKey, "SBJCT_NO");
-			alert(crclm_cd + " / " + crclm_year + " / " + crclm_half + " / " + sbjct_no);
+			//alert(crclm_cd + " / " + crclm_year + " / " + crclm_half + " / " + sbjct_no);
 			
 			$.post({
 				url : "/lectureWeekList",
@@ -358,7 +358,7 @@ if (id != null) {
 			let lec_date = (lecDetailList.getValue(rowKey, 'LECT_YMD')).replace(/-/g, '');
 			let lec_day = lecDetailList.getValue(rowKey, 'LECT_DAY_CD');
 			let cls_hour = "000" + ((lecDetailList.getValue(rowKey, 'CLS_CD')).substr(0, 1));
-			alert(crclm_cd + " / " + crclm_year + " / " + crclm_half + " / " + sbjct_no + " / " + lec_date + " / " + lec_day + " / " + cls_hour);
+			//alert(crclm_cd + " / " + crclm_year + " / " + crclm_half + " / " + sbjct_no + " / " + lec_date + " / " + lec_day + " / " + cls_hour);
 			
 			
 			
@@ -394,7 +394,7 @@ if (id != null) {
 			
 			let dt_focusedCell = lecDetailList.getFocusedCell();
 			let dt_focusedRow = lecDetailList.getRow(dt_focusedCell.rowKey);
-			console.log(dt_focusedCell);
+			//console.log(dt_focusedCell);
 			
 			if(confirm(lec_date + " " + lec_hour + " 출결을 저장하시겠습니까?")){
 				
@@ -437,7 +437,7 @@ if (id != null) {
 					});
 				}
 				
-				console.log(stuAtndArr);
+				//console.log(stuAtndArr);
 				
 				function setStuAtnd(){
 					return new Promise(function(resolve, reject){
@@ -459,14 +459,14 @@ if (id != null) {
 					
 					let lec_focusedCell = lectureList.getFocusedCell();
 					let lec_rowKey = lec_focusedCell.rowKey;
-					console.log("lec_focusedCell : " + lec_focusedCell.rowKey);
+					//console.log("lec_focusedCell : " + lec_focusedCell.rowKey);
 					
 					let row = lectureList.getRow(lec_rowKey);
 					let crclm_cd = lectureList.getValue(lec_rowKey, 'CRCLM_CD');
 					let crclm_year = lectureList.getValue(lec_rowKey, 'CRCLM_YEAR');		
 					let crclm_half = lectureList.getValue(lec_rowKey, 'CRCLM_HALF');
 					let sbjct_no = lectureList.getValue(lec_rowKey, 'SBJCT_NO');
-					console.log(crclm_cd + " / " + crclm_year + " / " + crclm_half + " / " + sbjct_no);
+					//console.log(crclm_cd + " / " + crclm_year + " / " + crclm_half + " / " + sbjct_no);
 					
 					$.post({
 						url : "/lectureWeekList",
@@ -537,9 +537,11 @@ if (id != null) {
 											<input type="text" class="form-control" id="searchCrclm" style="height: 25px; font-size: 13px;">
 										</div>
 									</div>
+									<!-- 
 									<div style="width: 50px; height: 30px;">
 										<i class="fa-solid fa-magnifying-glass" id="searchCrclmBtn" style="cursor: pointer;"></i>
 									</div>
+									 -->
 									<div style="width: 80px; height: 25px; font-size: 14px; text-align: right; line-height: 25px; margin: 0 0 0 10px;">
 										강의과목</div>
 									<div>

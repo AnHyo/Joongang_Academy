@@ -188,7 +188,6 @@ body {
 					},
 					dataType : "json"
 				}).done(function(data){
-					//alert("성공");
 					crclmList.resetData([]);
 					studentList.resetData([]);
 					$("#stdntCount").html('0');
@@ -209,7 +208,7 @@ body {
 				
 			} else {
 				$.post({
-					url : "/getCrclmList",
+					url : "/stdntNo-crclmList",
 					data : {
 						"year" : year,
 						"half" : half,
@@ -218,8 +217,6 @@ body {
 					},
 					dataType : "json"
 				}).done(function(data) {
-	 				//alert("성공" + data.list);
-	 				//alert(data.list[0].crclm_name);
 	 				crclmList.resetData([]);
 					studentList.resetData([]);
 					$("#stdntCount").html('0');
@@ -249,7 +246,7 @@ body {
 			// alert(crclm_cd + " / " + crclm_year + " / " + crclm_half);
 			
 			$.post({
-				url : "/getStuList",
+				url : "/stdntNo-stdntList",
 				data : {
 					"crclm_cd" : crclm_cd,
 					"year" : year,
@@ -257,7 +254,6 @@ body {
 				},
 				dataType : "json"
 			}).done(function(data){
-				//alert(data.stuList);
 				studentList.resetData(data.stuList);
 				
 				let stdntCount = studentList.getRowCount();
@@ -275,7 +271,7 @@ body {
 				let half = $.trim($("#half").val());
 				
 				$.post({
-					url : "/setStdntNo",
+					url : "/stdntNo",
 					data : {
 						"year" : year,
 						"half" : half
@@ -301,7 +297,7 @@ body {
 				let half = $.trim($("#half").val());
 				
 				$.post({
-					url : "/setStdntIdPw",
+					url : "/stdntIdPw",
 					data : {
 						"year" : year,
 						"half" : half
@@ -327,7 +323,7 @@ body {
 			let half = $.trim($("#half").val());
 			
 			$.post({
-				url : "/chooseRadio",
+				url : "/selectedRadio",
 				data : {
 					"year" : year,
 					"half" : half,

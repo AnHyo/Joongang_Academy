@@ -28,5 +28,9 @@ public class AtndStdntService {
 		return atndStdntDAO.atndList(map);
 	}
 
+	public Map<String, Object> atndHour(Map<String, Object> map) {
+		return atndStdntDAO.atndHour(map);
+	}
+
 
 }

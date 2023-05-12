@@ -278,12 +278,12 @@ if (id != null) {
 			
 			let crclm_year = $.trim($("#crclm_year").val());
 			let crclm_half = $.trim($("#crclm_half").val());
-			alert("학년도 : " + crclm_year +" / "+ "상하반기 : " + crclm_half);
+			//alert("학년도 : " + crclm_year +" / "+ "상하반기 : " + crclm_half);
 			
 			let searchCrclm = $.trim($("#searchCrclm").val());
 			let searchSbjct = $.trim($("#searchSbjct").val());
 			let searchInstr = $.trim($("#searchInstr").val());
-			alert("과정명 : " + searchCrclm + " / 과목명 : " + searchSbjct + " / 강사명 : " + searchInstr);
+			//alert("과정명 : " + searchCrclm + " / 과목명 : " + searchSbjct + " / 강사명 : " + searchInstr);
 			
 			$.post({
 				url : "/atndCrclmList",
@@ -318,7 +318,7 @@ if (id != null) {
 			let crclm_year = lectureList.getValue(lectureRowKey, 'CRCLM_YEAR');		
 			let crclm_half = lectureList.getValue(lectureRowKey, 'CRCLM_HALF');
 			let sbjct_no = lectureList.getValue(lectureRowKey, 'SBJCT_NO');
-			alert(crclm_cd + " / " + crclm_year + " / " + crclm_half + " / " + sbjct_no);
+			//alert(crclm_cd + " / " + crclm_year + " / " + crclm_half + " / " + sbjct_no);
 			
 			$.post({
 				url : "/atndList",
@@ -418,7 +418,7 @@ if (id != null) {
 			let columnName = ev.columnName;
 			
 			let lectureDay = crclm_year + columnName.replace('.','');
-			alert(crclm_cd + " / " + crclm_year + " / " + crclm_half + " / " + sbjct_no + " / " + stdnt_no + " / " + lectureDay);
+			//alert(crclm_cd + " / " + crclm_year + " / " + crclm_half + " / " + sbjct_no + " / " + stdnt_no + " / " + lectureDay);
 			
 			
 			$("#stdnt_no").html(stdnt_no);
@@ -505,7 +505,7 @@ if (id != null) {
 					
 					}
 					
-					console.log(stuAtndArr);
+					//console.log(stuAtndArr);
 					
 					function setStuAtnd(){
 						return new Promise(function(resolve, reject){

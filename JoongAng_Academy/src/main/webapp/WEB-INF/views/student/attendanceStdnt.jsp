@@ -53,7 +53,9 @@ if (id != null) {
 	margin: 0;
 	padding: 0;
 }
-
+.margin0{
+	margin: 0;
+}
 .textheight25 {
 	height: 25px;
 }
@@ -142,9 +144,13 @@ if (id != null) {
 				name : 'ROOM_NM',
 				width : 100,
 				sortable: true
+			}, {
+				header : '강의시간',
+				name : 'EDU_HR',
+				hidden : true
 			} ],
 			
-			bodyHeight : 500,
+			bodyHeight : 577,
 
 		});
 		
@@ -196,9 +202,10 @@ if (id != null) {
 				width : 70
 			} ],
 			
-			bodyHeight : 500,
+			bodyHeight : 510,
 
 		});
+		
 		
 // ---- 내 정보	----	
 		const id = '<%= id %>';
@@ -217,6 +224,12 @@ if (id != null) {
 				
 // ---- 조회버튼 : 강의목록 ------		
 		$("#getCrclmList").click(function(){
+			
+			$("#summarySbjctName").html("");
+			$("#summaryEduHour").html("");
+			$("#summaryAtndHour").html("");
+			$("#summaryAbscHour").html("");
+			$("#summaryAtndPercent").html("");
 			
 			//alert("학생아이디 : " + id)
 			atndDetailList.resetData([]);
@@ -245,9 +258,17 @@ if (id != null) {
 // ---- 강의목록 행 클릭 ----
 		sbjctList.on('click',function(ev){
 			
+			$("#summarySbjctName").html("");
+			$("#summaryEduHour").html("");
+			$("#summaryAtndHour").html("");
+			$("#summaryAbscHour").html("");
+			$("#summaryAtndPercent").html("");
+			
 			let rowKey = ev.rowKey;
 			let row = sbjctList.getRow(rowKey);
 			let sbjct_no = sbjctList.getValue(rowKey, 'SBJCT_NO');
+			let sbjct_name = sbjctList.getValue(rowKey, 'SBJCT_NM');
+			let edu_hour = sbjctList.getValue(rowKey, 'EDU_HR');
 			//alert("과목코드 : " + sbjct_no);
 			
 			$.post({
@@ -260,6 +281,20 @@ if (id != null) {
 			}).done(function(data){
 				
 				atndDetailList.resetData(data.atndList);
+				$("#summarySbjctName").html(sbjct_name);
+				$("#summaryEduHour").html(edu_hour);
+				
+				let atnd_hour = data.atndHour.atnd_hour;
+				//console.log(atnd_hour);
+				$("#summaryAtndHour").html(atnd_hour);
+				$("#summaryAbscHour").html(data.atndHour.notAtnd_hour);
+				
+				if(atnd_hour){
+					let atndPercent = Math.floor( (Number(atnd_hour)) / (Number(edu_hour)) * 100 );
+					//console.log(atndPercent);
+					atndPercent = atndPercent + "" + "%";
+					$("#summaryAtndPercent").html(atndPercent);
+				}
 				
 			}).fail(function(xhr){
 				alert("문제발생");
@@ -274,7 +309,7 @@ if (id != null) {
 	<main class="flex-shrink-0">
 		<%@include file="../portalbar/topbar.jsp"%>
 		<!-- Page Content-->
-		<div class="my-5">
+		<div class="mt-5">
 			<div class="text-center mb-5">
 				<h1 class="display-5 fw-bold mb-0">
 					<span class="text-gradient d-inline">출결확인</span>
@@ -356,13 +391,38 @@ if (id != null) {
 										<div id="sbjctList"></div>
 									</div>
 								</div>
-							
+								
 								<!-- 출석정보 -->
 								<div style="width: 40%; height: auto;">
 									<div class="mt-3 position-relative" style="display: flex; width: 100%; height: 27px;">
 										<div class="float-start" style="width: 10px; height: 27px; background-color: #498c5f;"></div>
 										<div class="float-start" style="width: 100px; height: 27px; font-size: 17px; font-weight: bold; line-height: 30px; margin: 0 10px;">
 											출석정보</div>
+									</div>
+									
+									<div class="mt-2 summary"
+										style="width: 100%; text-align: center; font-size: 14px;">
+										<!-- 출석정보 요약 -->
+										<table style="width: 100%; height: 60px; font-size:14px; border-top: 1px solid; border-bottom: 1px solid; border-color: #aaaaaa; text-align: center;">
+											<thead style="height: 30px; background-color: #f9f9f9;  border-bottom: 1px solid; border-color: #e0e0e0;">
+												<tr class="row margin0">
+													<th class="col-3">과목</th>
+													<th class="col-3">총수업시수</th>
+													<th class="col-2">출석시수</th>
+													<th class="col-2">결석시수</th>
+													<th class="col-2">출석률</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr  class="row margin0">
+													<td  class="col-3" id="summarySbjctName"></td>
+													<td  class="col-3" id="summaryEduHour"></td>
+													<td  class="col-2" id="summaryAtndHour"></td>
+													<td  class="col-2" id="summaryAbscHour"></td>
+													<td  class="col-2" id="summaryAtndPercent"></td>
+												</tr>
+											</tbody>
+										</table>
 									</div>
 
 									<div class="mt-2"
