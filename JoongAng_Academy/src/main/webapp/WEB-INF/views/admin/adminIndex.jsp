@@ -85,7 +85,6 @@ $(function() {
     		}
     	
     	 existingTabIndex = menuNames.indexOf(tabName);
-    		//alert(existingTabIndex);
     	    if (existingTabIndex !== -1) { // 이미 해당 메뉴명을 가진 탭이 있는 경우
     	    	 $("#tab-list button").eq(existingTabIndex).click(); // 해당 탭을 클릭
     	    } else {

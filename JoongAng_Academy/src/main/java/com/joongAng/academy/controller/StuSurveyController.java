@@ -36,7 +36,6 @@ public class StuSurveyController {
 		JSONObject json = new JSONObject();
 		
 		List<Map<String, Object>> surveySbj = stuSurveyService.surveySbj(student_ID); 
-		//System.err.println(surveySbj);
 		JSONArray list = new JSONArray(surveySbj);
 		json.put("ssList", list);
 		
@@ -46,7 +45,6 @@ public class StuSurveyController {
 	@ResponseBody
 	@PostMapping(value = "suvTIs", produces = "application/json;charset=UTF-8")
 	public String suvTI(HttpServletRequest request) {
-		//System.out.println(student_ID + " " + sbjctNo);
 		JSONObject json = new JSONObject();
 		
 		StuSurveyDTO stuSuvTI = new StuSurveyDTO();
@@ -82,7 +80,6 @@ public class StuSurveyController {
 	@PostMapping(value = "svSave", produces = "application/json;charset=UTF-8")
 	public String svSave(@RequestBody List<Map<String, Object>> dataArr) {
 		JSONObject json = new JSONObject();
-		System.err.println(dataArr);
 		List<StuSurveyDTO> svList = new ArrayList<>();
 		for (Map<String, Object> dataMap : dataArr) {
 			StuSurveyDTO stuSuvDTO = new StuSurveyDTO();
@@ -104,7 +101,6 @@ public class StuSurveyController {
 			result += stuSurveyService.svSave(dto);
 			result += stuSurveyService.svUpdate(dto);
 		}
-		System.err.println(result);
 
 		json.put("result", result);
 		

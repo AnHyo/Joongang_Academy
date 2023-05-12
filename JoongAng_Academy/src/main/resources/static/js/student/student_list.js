@@ -23,7 +23,6 @@ $(function(){
 				dataType : "json"
 			}).done(function(data){
 				var result = data.list;
-				//alert(result[0].ZIP);
 				grid.resetData(result);
 				let selectedRowKey = null;
 				grid.on('focusChange', (ev) => {

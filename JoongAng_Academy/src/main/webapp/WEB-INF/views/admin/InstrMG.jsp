@@ -179,7 +179,6 @@ function test(obj){
 				dataType : "json"
 			}).done(function(data) {
 				grid.resetData(data.insList);
-				//alert(data.insList[0].GENDER_CD);
 				
 			}).fail(function() {
 				alert("문제가 발생했습니다.");
@@ -308,7 +307,6 @@ function test(obj){
 					cache: false,
 					dataType: "json"
 				}).done(function(data) {
-					//alert("성공");
 					var result = data.telList;
 					for(let i = 0; result.length > i; i++){
 							if($("#e").val() == result[i].TELNO){
@@ -389,7 +387,6 @@ function test(obj){
 						var SBJCT_INSTR = result.SBJCT_INSTR;
 						var CRCLM_INFO = result.CRCLM_INFO;
 						if(SBJCT_INSTR == null && CRCLM_INFO == null){
-							//alert(instrNo);
 						  if(confirm("삭제하시겠습니까?")){
 						 	$.post({
 								url: "/instrDel",

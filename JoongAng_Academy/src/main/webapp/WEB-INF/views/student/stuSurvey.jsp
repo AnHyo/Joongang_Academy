@@ -123,7 +123,6 @@ $("#mainSuv").hide();
 				const row = suvGrid.getRow(rowKey);
 				var keys = Object.values(row);
 				var sbjctNo = keys[0];
-			    //alert(loginID + " " + sbjctNo+ " " + CRCLM_YEAR + " " + CRCLM_CD + " " +CRCLM_HALF);
 			    	$.post({
 						url: "/suvTIs",
 						data: {
@@ -140,11 +139,9 @@ $("#mainSuv").hide();
 						var suvIn = data.surveyIn; //객관식
 						var suvIn2 = data.surveyIn2; //주관식
 						var codelist = data.codelist; // 코드(객관식)
-						//alert(suvIn.length); // 21
 						var table = "";
 						var DGSTFN_TITLE = suvTI.DGSTFN_TITLE;
 						var DGSTFN_INTRO = suvTI.DGSTFN_INTRO.replace(/(<br>|<br\/>|<br \/>)/g,'\r\n');
-						//alert(DGSTFN_INTRO);
 						$("#suvNM").text(DGSTFN_TITLE);
 						$("#suvInfo").css("white-space", "pre-wrap").html(DGSTFN_INTRO);
 						
@@ -209,8 +206,7 @@ $("#mainSuv").hide();
 						// -- 저장
 						$("#saveBtn").click(function(){
 							var dataArr = []; // 저장할 데이터를 담을 배열
-							//alert(loginID + " " + sbjctNo+ " " + CRCLM_YEAR + " " + CRCLM_CD + " " +CRCLM_HALF);
-							 //var unanswered = $("input[name^='answer']:checked").length;
+							
 							 var innm = "";
 							 var txnm = "";
 							 for (let i = 0; suvIn.length > i; i++) {
@@ -221,8 +217,6 @@ $("#mainSuv").hide();
 									  alert("설문"+DGSTFN_NO+"번 문항이 선택되지 않았습니다.");
 									  return false;
 								 } else {
-									 //alert(loginID + " " + sbjctNo+ " " + CRCLM_YEAR + " " + CRCLM_CD + " " +CRCLM_HALF+ " " + DGSTFN_NO + " " +innm);
-									// 데이터를 배열에 추가
 							            dataArr.push({
 							                "student_ID": loginID,
 							                "sbjctNo" : sbjctNo,
@@ -241,7 +235,6 @@ $("#mainSuv").hide();
 							 for (let i = 0; suvIn2.length > i; i++) {
 								var DGSTFN_NO = suvIn2[i].DGSTFN_NO;
 								txnm = $.trim($("#subShort"+DGSTFN_NO).val());
-								//alert(loginID + " " + sbjctNo+ " " + CRCLM_YEAR + " " + CRCLM_CD + " " +CRCLM_HALF+ " " + DGSTFN_NO + " " +txnm);
 								dataArr.push({
 						            "student_ID": loginID,
 						            "sbjctNo" : sbjctNo,

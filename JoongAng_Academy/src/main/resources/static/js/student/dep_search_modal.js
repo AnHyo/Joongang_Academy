@@ -9,7 +9,6 @@ $(function(){
 		$(document).off("click",'#depShow').on("click",'#depShow', function(){
 			$("#depChoose").attr("disabled", false);
 			var dep_searchs = $.trim($("#dep_Search_text").val());
-			//alert(dep_searchs);
 			$.post({
 					url : "/depsearch",
 					data:{
@@ -18,7 +17,6 @@ $(function(){
 					cache : false,
 					dataType : "json"
 				}).done(function(data){
-					//alert("성공");
 					var result2 = data.list2;
 					grid2.resetData(result2);
 					let selectedRowKey = null;
@@ -30,7 +28,6 @@ $(function(){
 					});
 					
 					grid2.on('click', () => {
-						//alert("!");
 						var rowKey = grid2.getFocusedCell().rowKey;
 						var obj = grid2.getRow(rowKey);
 						var keys = Object.values(obj);
@@ -39,7 +36,6 @@ $(function(){
 						
 						//선택버튼 클릭 시
 						$(document).off("click","#depChoose").on("click","#depChoose",function(){
-							//alert(code_name);
 							$("#inputGroup-sizing-sm").text(code_num);
 							$("#department").val(code_name);
 							$("#SearchModal").modal("hide");

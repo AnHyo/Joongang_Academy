@@ -153,7 +153,6 @@ $(function(){
 					cache: false,
 					dataType: "json"
 				}).done(function(data) {
-					//alert("성공");
 					var result = data.telList;
 					for(let i = 0; result.length > i; i++){
 							if($("#e").val() == result[i].TELNO){
