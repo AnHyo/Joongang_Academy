@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.joongAng.academy.service.AtndInstrService;
-import com.joongAng.academy.service.AttendanceService;
 
 
 @Controller
@@ -41,7 +40,7 @@ public class AtndInstrController {
 	}
 	
 	@ResponseBody
-	@PostMapping("/lectureWeekList")
+	@PostMapping("/atndInstr-weekList")
 	public String lectureWeekList(@RequestParam Map<String, Object> map) {
 		
 		List<Map<String, Object>> weekList = atndInstService.weekList(map);
@@ -53,7 +52,7 @@ public class AtndInstrController {
 	}
 	
 	@ResponseBody
-	@PostMapping(value = "/clsStdntList", produces = "application/json;charset=UTF-8")
+	@PostMapping("/atndInstr-stdntList")
 	public String stdntList(@RequestParam Map<String, Object> map) {
 		
 		List<Map<String, Object>> stdntList = atndInstService.stdntList(map);

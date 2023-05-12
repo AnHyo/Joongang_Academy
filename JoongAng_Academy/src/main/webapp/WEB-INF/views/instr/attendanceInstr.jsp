@@ -324,7 +324,7 @@ if (id != null) {
 			//alert(crclm_cd + " / " + crclm_year + " / " + crclm_half + " / " + sbjct_no);
 			
 			$.post({
-				url : "/lectureWeekList",
+				url : "/atndInstr-weekList",
 				data : {
 					"crclm_cd" : crclm_cd,
 					"crclm_year" : crclm_year,
@@ -363,7 +363,7 @@ if (id != null) {
 			
 			
 			$.post({
-				url : "/clsStdntList",
+				url : "/atndInstr-stdntList",
 				data : {
 					"crclm_cd" : crclm_cd,
 					"crclm_year" : crclm_year,
@@ -437,8 +437,6 @@ if (id != null) {
 					});
 				}
 				
-				//console.log(stuAtndArr);
-				
 				function setStuAtnd(){
 					return new Promise(function(resolve, reject){
 						$.post({
@@ -502,7 +500,7 @@ if (id != null) {
 </head>
 <body class="d-flex flex-column h-100 bg-light">
 	<main class="flex-shrink-0">
-		<%@include file="../portalbar/topbar.jsp"%>
+		<%@include file="../portalbar/instrtopbar.jsp"%>
 		<!-- Page Content-->
 		<div class="mt-5">
 			<div class="text-center mb-5">
