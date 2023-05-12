@@ -141,11 +141,13 @@
 									<c:if test="${param.error eq 1234}">
 										<script>
 											alert("접근 권한이 없습니다.");
+											location.href="/portal";
 										</script>
 									</c:if>
 									<c:if test="${param.error eq 4321}">
 										<script>
 											alert("로그인 후 접근 가능합니다.");
+											location.href="/portal";
 										</script>
 									</c:if>
 									<c:if test="${param.group eq 0010}">
