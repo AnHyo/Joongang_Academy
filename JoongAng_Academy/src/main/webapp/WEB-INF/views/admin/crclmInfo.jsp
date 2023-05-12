@@ -1005,6 +1005,7 @@ if (session.getAttribute("id") != null) {
 							} else {
 								if(data.saveResult==1){
 								alert("저장이 완료되었습니다.");
+								$("#newBtn").prop('disabled', false);
 								grid.resetData(data.saveAfter);
 								grid.focus(rowKey);
 								}
@@ -1050,7 +1051,7 @@ if (session.getAttribute("id") != null) {
 						});
 
 					}//else
-
+					
 				});//저장버튼
 				
 				
