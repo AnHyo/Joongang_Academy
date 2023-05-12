@@ -160,9 +160,7 @@ if (session.getAttribute("id") != null) {
         			this.el = el;
         			this.render(props);
         			this.el.addEventListener('click', (event) => {
-        				/* console.log(datetime);
-        				console.log(startTime);
-        				console.log(endTime); */
+        			
         			if(datetime>= startTime && datetime <= endTime){
         				alert("수강신청기간입니다.");
         				var STDNT_NO=$("#stdntNo").text();
