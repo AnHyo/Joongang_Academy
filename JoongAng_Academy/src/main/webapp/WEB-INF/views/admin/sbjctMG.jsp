@@ -104,7 +104,6 @@ if (session.getAttribute("id") != null) {
 			const rowKey = grid.getFocusedCell().rowKey
 			var obj = grid.getRow(rowKey);
 			var keys = Object.values(obj);
-			console.log(obj);
 			var sbjno = obj.SBJCT_NO;
 			var sbjnm = obj.SBJCT_NM;
 			var sbjex =obj.SBJCT_EXPLN;

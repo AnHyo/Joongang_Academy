@@ -83,7 +83,6 @@ public class PersonalinfoController {
 		
 		JSONObject json = new JSONObject();
 		json.put("result", result);
-		System.err.println(result);
 		return json.toString();
 	}
 	@ResponseBody

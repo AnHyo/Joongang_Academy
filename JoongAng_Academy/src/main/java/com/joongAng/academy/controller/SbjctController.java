@@ -69,7 +69,6 @@ public class SbjctController {
 	public String delsbjAjax(@RequestParam Map<String, Object> map) {
 		JSONObject json = new JSONObject();
 		int integrity = sbjctService.integrity(map);
-		System.err.println(integrity);
 		json.put("integrity", 1);
 		if (integrity == 1) {
 			int result = sbjctService.delsbj(map);
@@ -80,7 +79,6 @@ public class SbjctController {
 		} else {
 			json.put("integrity", 0);
 		}
-		System.err.println(json);
 		return json.toString();
 	}
 
