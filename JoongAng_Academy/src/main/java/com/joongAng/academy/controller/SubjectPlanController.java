@@ -74,7 +74,6 @@ public class SubjectPlanController {
 		for (String key : reqmap.keySet()) {
 		      String[] values = reqmap.get(key);
 		      for (String value : values) {
-		        System.out.println(key + " = " + value);
 		        map.put(key.toString(), value);
 		      }
 		}
@@ -97,7 +96,6 @@ public class SubjectPlanController {
 				map.put(key.toString(), value);
 			}
 		}
-		System.out.println(map);
 		int result = planService.updatePlanDetail(map);
 		json.put("result", result);
 		return json.toString();
@@ -111,7 +109,6 @@ public class SubjectPlanController {
 		for (String key : reqmap.keySet()) {
 			String[] values = reqmap.get(key);
 			for (String value : values) {
-				System.out.println(key + " = " + value);
 				map.put(key.toString(), value);
 			}
 		}
@@ -128,7 +125,6 @@ public class SubjectPlanController {
 		for (String key : reqmap.keySet()) {
 			String[] values = reqmap.get(key);
 			for (String value : values) {
-				System.out.println(key + " = " + value);
 				map.put(key.toString(), value);
 			}
 		}
@@ -145,7 +141,6 @@ public class SubjectPlanController {
 		for (String key : reqmap.keySet()) {
 			String[] values = reqmap.get(key);
 			for (String value : values) {
-				System.out.println(key + " = " + value);
 				map.put(key.toString(), value);
 			}
 		}

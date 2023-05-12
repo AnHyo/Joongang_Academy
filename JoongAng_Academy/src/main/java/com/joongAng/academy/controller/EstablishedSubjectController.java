@@ -243,7 +243,6 @@ public class EstablishedSubjectController {
 			}
 		}
 		int result = estService.estClsBgngCheck(map);
-		System.out.println(result);
 		json.put("result", result);
 		return json.toString();
 	}

@@ -1,6 +1,15 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%
+if (session.getAttribute("id") != null) {
+   if (!session.getAttribute("groupCD").equals("0030")) {
+      response.sendRedirect("/login?error=1234");
+   }
+} else {
+   response.sendRedirect("/login?error=4321");
+}
+%>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -572,7 +581,6 @@
 			}
 			$.each(checkedRows, function(index,row){
 				$.fn.clsBgngCheck(row.CRCLM_CD,row.CRCLM_YEAR,row.CRCLM_HALF);
-				alert(clsBgngChecker);
 				if(clsBgngChecker==1){
 					ck = false;
 				}
