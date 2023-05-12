@@ -80,9 +80,6 @@ if (session.getAttribute("id") != null) {
 		$("input[numberOnly]").on("input", function() {
 			$(this).val($(this).val().replace(/[^0-9]/g, ""));
 
-			/*    if($(this).val().length < minlength){
-				   alert("잘못된");
-			   } */
 		});
 
 		//훈련비용 , 추가
@@ -836,12 +833,9 @@ if (session.getAttribute("id") != null) {
 			    return row;
 			  }); 
 			
-			 // console.log(JSON.stringify(data)); //ok
 			var updatedRows = modifiedRows[0].updatedRows;
 			
-			//console.log(updatedRows.length);
-			//console.log(updatedRows[0].CRCLM_SCHDL_CD);
-			//var updatedRows = modifiedRows[].updatedRows;
+			;
 			  var updateRow1 = [];
 			for (let i = 0; i < updatedRows.length; i++) {
 				//const UR = updatedRows[i];
@@ -856,8 +850,6 @@ if (session.getAttribute("id") != null) {
 						    "chalf": chalf
 				});
 			}//for 끝
-			console.log(updatedRows[0].SCHDL_BGNG_DT);
-				// updateRow1.push({"ccd":ccd, "cyear":cyear,"chalf":chalf});
 			
 			$.post({
 				url :"/updateSchedule",
@@ -867,9 +859,7 @@ if (session.getAttribute("id") != null) {
 				contentType: 'application/json'
 			 }).done(function(data) {
 				alert("저장성공");
-				 // grid5.resetData(data.sList);
-				//$("#buttonGroup").show();
-				//alert(data.sList);
+				
 			}).fail(function() {
 				alert("문제가 발생했습니다.");
 				
@@ -901,10 +891,7 @@ if (session.getAttribute("id") != null) {
 				if(data.delOK == 0){
 				 alert("삭제되었습니다.");
 				 grid.resetData(data.delAfter);
-				
-				 // grid5.resetData(data.sList);
-				//$("#buttonGroup").show();
-				//alert(data.sList);
+			
 				} else{
 					alert("삭제할 수 없는 과정입니다.");
 				}
@@ -1012,7 +999,6 @@ if (session.getAttribute("id") != null) {
 							contentType: 'application/json',
 							dataType : "json"
 						}).done(function(data) {
-							//alert(data.ck);
 							if (data.ck == "dup") {
 								alert("이미 존재하는 교육훈련과정 입니다.")
 								return false;

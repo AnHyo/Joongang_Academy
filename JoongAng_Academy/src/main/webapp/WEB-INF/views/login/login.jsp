@@ -78,9 +78,7 @@
 
 	function getCookie(cookieName) {
 
-		//alert(document.cookie);
 		let val = document.cookie.split(";");
-		//alert(val);
 		for (let i = 0; i < val.length; i++) {
 			let name = val[i].substr(0, val[i].indexOf("="));
 			let value = val[i].substr(val[i].indexOf("=") + 1);
