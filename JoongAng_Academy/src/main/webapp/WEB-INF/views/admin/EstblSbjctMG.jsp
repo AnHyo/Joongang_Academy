@@ -483,7 +483,6 @@ if (session.getAttribute("id") != null) {
 			$("#saveBtn").attr("disabled",false);
 			$("#instructorSearchBtn").attr("disabled",false);
 			$("#g").attr("disabled",false);
-			$("#h").attr("disabled",false);
 			$("#i").attr("disabled",false);
 			$("#o").attr("disabled",false);
 			$("#a").val("");
@@ -501,6 +500,8 @@ if (session.getAttribute("id") != null) {
 			$("#n").val("");
 			$("#i").val("");
 			$("#z").val("");
+			
+			$("#timeButton").hide(0);
 		});
 		
 // 		저장 버튼 클릭 시 입력된 데이터를 DB에 저장하고 입력창을 다시 비활성화
@@ -747,6 +748,7 @@ if (session.getAttribute("id") != null) {
 			$("#z").val(sbjnm);
 			$("#f").val(sbjxp);
 			$("#g").val(hrs);
+			$("#h").val(Math.floor(hrs/26));
 			$("#estSubChoose").attr("disabled",true);
 			$("#estSubjectModal").modal("hide");
 			sbjno="";
