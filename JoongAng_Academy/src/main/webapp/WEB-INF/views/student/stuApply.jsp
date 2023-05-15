@@ -309,6 +309,36 @@ if (session.getAttribute("id") != null) {
 
         				}).done(function(data) {
         					let planList = data.planList;
+        					 $.post({
+        	     					url : "/plandetailAjax",
+        	     					data : {
+        	     						"SBJCT_NO" : SBJCT_NO,
+        	     						"CRCLM_HALF" : CRCLM_HALF,
+        	     						"CRCLM_CD" : CRCLM_CD,
+        	     						"CRCLM_YEAR" : CRCLM_YEAR
+        	     					},
+        	     					dataType : "json"
+
+        	     				}).done(function(data) {
+        	     					let plandetail = data.plandetail;
+        	     					var table = '';
+        	     					for(var i = 0; i<plandetail.length; i++){
+        	     						
+        	     						table += '<table class="table table-bordered table-sm mt-2 ">';
+        	     						table += '<tr> <td class="col-2 table-secondary text-center">계획번호</td>';
+        	     						table += '<td colspan="5">'+plandetail[i].DTL_NO+'</td></tr><tr>';
+        	     						table += '<td class="col-2 table-secondary text-center">강의제목</td>';
+        	     						table += '<td colspan="5" id="title">'+plandetail[i].LECT_TTL_NM+'</td></tr><tr>';
+        	     						table += '<td class="col-2 table-secondary text-center">강의주제</td>';
+        	     						table += '<td colspan="5" id="lecsbj">'+plandetail[i].LECT_TPC_NM+'</td></tr><tr>';
+        	     						table += '<td class="col-2 table-secondary text-center">강의내용</td>';
+        	     						table += '<td colspan="5" id="lecContent">'+plandetail[i].LECT_CN+'</td></tr></table>';
+        	     					}
+        	     						$("#plandtl").append(table);
+        	     					$("#sbjPlanModal").modal("show");
+        	     				}).fail(function() {
+        	     					alert("문제가 발생했습니다.");
+        	     				});
         					$("#sbjnm").text(planList[0].SBJCT_NM);
         					$("#sbjno").text(planList[0].SBJCT_NO);
         					$(".crclmYear").html(planList[0].CRCLM_YEAR);
@@ -319,11 +349,14 @@ if (session.getAttribute("id") != null) {
         					$("#sbjtrgt").text(planList[0].SBJCT_TRGT);
         					$("#sbjMthd").text(planList[0].MTHDNM);
         					$("#sbjCN").text(planList[0].SBJCT_CN);
-							$("#sbjPlanModal").modal("show");
+        					
+							
         				}).fail(function() {
         					alert("문제가 발생했습니다.");
         				});
         				
+        			 
+        		
         				
         				
         			});

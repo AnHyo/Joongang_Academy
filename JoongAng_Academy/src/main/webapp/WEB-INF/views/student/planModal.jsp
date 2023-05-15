@@ -65,6 +65,13 @@
 						</td>
 					</tr>
 				</table>
+				<hr>
+				<h6 class="modal-title">
+					<b>상세 강의계획서</b>
+				</h6>
+				<div id="plandtl">
+				</div>
+				
 			</div>
 		</div>
 	</div>

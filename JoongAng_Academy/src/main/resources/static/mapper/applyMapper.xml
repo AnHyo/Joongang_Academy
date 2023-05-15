@@ -165,6 +165,15 @@
 		SBJCT_NO=#{SBJCT_NO}
 	
 	</select>
+	<select id="planDTLAjax" parameterType="HashMap" resultType="HashMap">
+		SELECT * FROM SBJCT_PLAN_DTL
+		WHERE 
+		CRCLM_CD=#{CRCLM_CD} AND
+		CRCLM_YEAR=#{CRCLM_YEAR} AND
+		CRCLM_HALF=#{CRCLM_HALF} AND
+		SBJCT_NO=#{SBJCT_NO}
+	
+	</select>
 	<select id="timetableAjax"  parameterType="HashMap" resultType="HashMap">
 		SELECT * FROM timetable2
 		WHERE 
