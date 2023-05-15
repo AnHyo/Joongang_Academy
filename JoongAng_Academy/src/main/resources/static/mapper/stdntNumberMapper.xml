@@ -14,12 +14,6 @@
 		</if>
 		GROUP BY crclm.CRCLM_CD
 	</select>
-	
-	<select id="crclmCount" parameterType="HashMap" resultType="String">
-		SELECT LPAD(COUNT(*), 2, '0')  
-		FROM CRCLM_INFO
-		WHERE CRCLM_YEAR = #{year } and CRCLM_HALF = #{half };
-	</select>
 
 	<select id="getStuList" parameterType="HashMap" resultType="HashMap">
 		SELECT KORN_FLNM as stu_name, TELNO as stu_tel, STDNT_NO as stu_no, CRCLM_CD AS crclm_cd
@@ -32,12 +26,6 @@
 		<if test="stdntName != null">
 				AND KORN_FLNM = #{stdntName }
 		</if>
-	</select>
-
-	<select id="stdntCount" parameterType="HashMap" resultType="String">
-		SELECT LPAD(COUNT(*), 2, '0')
-		FROM APPL_INFO
-		WHERE CRCLM_CD = #{crclm_cd } and CRCLM_YEAR = #{crclm_year } and CRCLM_HALF = #{crclm_half }; 
 	</select>
 	
 	<select id="createStdntNo" parameterType="HashMap" resultType="HashMap">
