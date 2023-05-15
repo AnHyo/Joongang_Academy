@@ -17,9 +17,9 @@
 					<tr>
 						
 						<td class="col-2 table-secondary text-center">과목명</td>
-						<td class="col-2" colspan="2" id="sbjnm"></td>
+						<td class="col-2" colspan="3" id="sbjnm"></td>
 						<td class="col-2 table-secondary text-center" >과목번호</td>
-						<td class="col-2" colspan="2" id="sbjno"></td>
+						<td class="col-2"  id="sbjno"></td>
 					
 					</tr>
 					<tr>

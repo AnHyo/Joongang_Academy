@@ -30,7 +30,7 @@
 						<ul class="dropdown-menu dropdown-menu-end"
 							aria-labelledby="navbarDropdown">
 							<li><a class="dropdown-item" href="/stuinfoMod">개인정보수정</a></li>
-							<li><a class="dropdown-item" href="/pwCheckMod">비밀번호 수정</a></li>
+							<li><a class="dropdown-item" href="/stupwCheckMod">비밀번호 수정</a></li>
 							<li><hr class="dropdown-divider" /></li>
 							<li><a class="dropdown-item logout" href="/logout">로그아웃</a></li>
 						</ul></li>
