@@ -125,6 +125,14 @@ if (id != null) {
 				header : '필수구분',
 				name : 'ESNTL_YN',
 				width : 80,
+				formatter : function(value){
+					let YN = value.row.ESNTL_YN;
+					if(YN == 'Y'){
+						return '필수';
+					} else {
+						return '선택';
+					}
+				},
 				sortable: true
 			}, {
 				header : '과목명',
@@ -221,37 +229,33 @@ if (id != null) {
 		}).fail(function(xhr){
 			alert("문제발생");
 		});
-				
-// ---- 조회버튼 : 강의목록 ------		
-		$("#getCrclmList").click(function(){
+		
+		$("#summarySbjctName").html("");
+		$("#summaryEduHour").html("");
+		$("#summaryAtndHour").html("");
+		$("#summaryAbscHour").html("");
+		$("#summaryAtndPercent").html("");
+		
+		//alert("학생아이디 : " + id)
+		atndDetailList.resetData([]);
+		
+		let searchSbjct = $.trim($("#searchSbjct").val());
+		
+		$.post({
+			url : "/atndStdnt-sbjctList",
+			data : {
+				"id" : id,
+				"searchSbjct" : searchSbjct,
+			},
+			dataType : "json"
+		}).done(function(data){
+			sbjctList.resetData(data.sbjctList);
+			$("#crclmCount").html(sbjctList.getRowCount());
 			
-			$("#summarySbjctName").html("");
-			$("#summaryEduHour").html("");
-			$("#summaryAtndHour").html("");
-			$("#summaryAbscHour").html("");
-			$("#summaryAtndPercent").html("");
-			
-			//alert("학생아이디 : " + id)
-			atndDetailList.resetData([]);
-			
-			let searchSbjct = $.trim($("#searchSbjct").val());
-			
-			$.post({
-				url : "/atndStdnt-sbjctList",
-				data : {
-					"id" : id,
-					"searchSbjct" : searchSbjct,
-				},
-				dataType : "json"
-			}).done(function(data){
-				sbjctList.resetData(data.sbjctList);
-				$("#crclmCount").html(sbjctList.getRowCount());
-				
-			}).fail(function(xhr){
-				alert("문제발생");
-			});
-			
+		}).fail(function(xhr){
+			alert("문제발생");
 		});
+				
 
 // ---- 강의목록 행 클릭 ----
 		sbjctList.on('click',function(ev){
@@ -328,26 +332,6 @@ if (id != null) {
 									<div style="width: 100px; height: 25px; font-size: 14px; font-weight: bold; text-align: right; line-height: 25px; margin: 0 0 0 20px;">
 										훈련과정명</div>
 									<div id="crclmName" style="width: 400px; height: 25px; margin: 0 10px 0 0; font-size: 15px; text-align:center; line-height:25px; color: black;">
-									</div>
-									<!-- 
-									<div>
-										<div style="width: 300px; height: 30px; margin: 0 10px;">
-											<input type="text" class="form-control" id="searchCrclm" style="height: 25px; font-size: 13px; " readOnly>
-										</div>
-									</div>
-									 -->
-									<div style="width: 60px; height: 25px; font-size: 14px; text-align: right; font-weight: bold; line-height: 25px; margin: 0 0 0 10px;">
-										과목명</div>
-									<div>
-										<div style="width: 150px; height: 30px; margin: 0 10px;">
-											<input type="text" class="form-control" id="searchSbjct" style="height: 25px; font-size: 13px;">
-										</div>
-									</div>
-									<div class="float-end" style="width: 75px; height: auto; padding: 0; margin: 0 0 0 40px;">
-										<button type="button" id="getCrclmList" class="btn btn-secondary"
-											style="width: 75px; height: 25px; font-size: 14px; line-height: 5px; margin-top:-3px;">
-											조회
-										</button>
 									</div>
 								</div>
 							</div>

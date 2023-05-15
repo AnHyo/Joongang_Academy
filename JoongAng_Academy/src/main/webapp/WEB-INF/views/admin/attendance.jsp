@@ -82,6 +82,7 @@ if (id != null) {
 				}
 			}
 		});
+		
 
 		const lectureList = new tui.Grid({
 
@@ -123,8 +124,16 @@ if (id != null) {
 				header : '필수구분',
 				name : 'ESNTL_YN',
 				width : 80,
+				formatter : function(value){
+					let YN = value.row.ESNTL_YN;
+					if(YN == 'Y'){
+						return '필수';
+					} else {
+						return '선택';
+					}
+				},
 				sortable: true
-			},{
+			}, {
 				header : '강의시수',
 				name : 'EDU_HR',
 				width : 80
@@ -147,7 +156,6 @@ if (id != null) {
 				width : 150,
 				sortable: true
 			} ],
-			
 			bodyHeight : 230,
 
 		});
@@ -278,12 +286,9 @@ if (id != null) {
 			
 			let crclm_year = $.trim($("#crclm_year").val());
 			let crclm_half = $.trim($("#crclm_half").val());
-			//alert("학년도 : " + crclm_year +" / "+ "상하반기 : " + crclm_half);
-			
 			let searchCrclm = $.trim($("#searchCrclm").val());
 			let searchSbjct = $.trim($("#searchSbjct").val());
 			let searchInstr = $.trim($("#searchInstr").val());
-			//alert("과정명 : " + searchCrclm + " / 과목명 : " + searchSbjct + " / 강사명 : " + searchInstr);
 			
 			$.post({
 				url : "/atndCrclmList",
@@ -418,8 +423,6 @@ if (id != null) {
 			let columnName = ev.columnName;
 			
 			let lectureDay = crclm_year + columnName.replace('.','');
-			//alert(crclm_cd + " / " + crclm_year + " / " + crclm_half + " / " + sbjct_no + " / " + stdnt_no + " / " + lectureDay);
-			
 			
 			$("#stdnt_no").html(stdnt_no);
 			$("#stdnt_name").html(stdnt_name);
@@ -454,15 +457,12 @@ if (id != null) {
 // ---- 출결저장버튼 클릭 ----
 		$("#setStuAtnd").click(function(){
 			
-			//console.log(stuAtndData);
-			
 			const STDNT_NO = $("#stdnt_no").text();
 			
 			if(STDNT_NO != ''){
 			
 				let atndListfocusedCell = atndList.getFocusedCell();
 				let focusedColumnName = atndListfocusedCell.columnName;
-				//console.log(atndListfocusedCell);
 				
 				if(confirm("저장하시겠습니까?")){
 					//alert("!");
@@ -505,8 +505,6 @@ if (id != null) {
 					
 					}
 					
-					//console.log(stuAtndArr);
-					
 					function setStuAtnd(){
 						return new Promise(function(resolve, reject){
 							$.post({
@@ -525,14 +523,12 @@ if (id != null) {
 					function reloadList(){
 						let lec_focusedCell = lectureList.getFocusedCell();
 						let lec_rowKey = lec_focusedCell.rowKey;
-						//console.log("lec_focusedCell : " + lec_focusedCell.rowKey);
 						
 						let row = lectureList.getRow(lec_rowKey);
 						let crclm_cd = lectureList.getValue(lec_rowKey, 'CRCLM_CD');
 						let crclm_year = lectureList.getValue(lec_rowKey, 'CRCLM_YEAR');		
 						let crclm_half = lectureList.getValue(lec_rowKey, 'CRCLM_HALF');
 						let sbjct_no = lectureList.getValue(lec_rowKey, 'SBJCT_NO');
-						//console.log(crclm_cd + " / " + crclm_year + " / " + crclm_half + " / " + sbjct_no);
 						
 						$.post({
 							url : "/atndList",
@@ -558,7 +554,6 @@ if (id != null) {
 								let stdnt_no = dayAtnd.STDNT_NO;
 								let lec_day = dayAtnd.lec_day;
 								let atnd_day = Number(dayAtnd.ATND_DAY);
-								console.log("stdnt_no : " + stdnt_no);
 								
 								if(atnd_day == 2){
 									atnd_day = ' ';
@@ -578,7 +573,7 @@ if (id != null) {
 								
 							}
 							
-							atndList.focus(atndListfocusedCell.rowKey, focusedColumnName, true );
+							atndList.focus(atndListfocusedCell.rowKey, focusedColumnName, true);
 						
 						}).fail(function(xhr){
 							alert("문제발생");

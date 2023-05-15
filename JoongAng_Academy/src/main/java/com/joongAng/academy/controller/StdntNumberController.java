@@ -33,11 +33,8 @@ public class StdntNumberController {
 		
 		List<Map<String, Object>> crclmList = numberService.getCrclmList(map);
 		
-		String crclmCount = numberService.crclmCount(map);
-		
 		JSONObject json = new JSONObject();
 		json.put("crclmList", crclmList);
-		json.put("crclmCount", crclmCount);
 		
 		return json.toString();
 	}
@@ -48,11 +45,8 @@ public class StdntNumberController {
 		
 		List<Map<String, Object>> stuList = numberService.getStuList(map);
 		
-		String stdntCount = numberService.stdntCount(map);
-		
 		JSONObject json = new JSONObject();
 		json.put("stuList", stuList);
-		json.put("stdntCount", stdntCount);
 		
 		return json.toString();
 	}
@@ -76,7 +70,6 @@ public class StdntNumberController {
 	public String setStdntNo(@RequestParam Map<String, Object> map) {
 		
 		List<Map<String, Object>> setNoList = numberService.createStdntNo(map);
-		
 		int setNoResult = numberService.updateStdntNo(setNoList);
 		
 		JSONObject json = new JSONObject();

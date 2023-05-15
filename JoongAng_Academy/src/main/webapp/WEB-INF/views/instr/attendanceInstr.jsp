@@ -137,6 +137,14 @@ if (id != null) {
 				header : '필수구분',
 				name : 'ESNTL_YN',
 				width : 80,
+				formatter : function(value){
+					let YN = value.row.ESNTL_YN;
+					if(YN == 'Y'){
+						return '필수';
+					} else {
+						return '선택';
+					}
+				},
 				sortable: true
 			},{
 				header : '수강인원',
@@ -275,6 +283,8 @@ if (id != null) {
 			stuAtndList.resetData([]);
 			$("#setStuAtnd").prop("disabled", true);
 			$("#lecWeekCount").html("0");
+			$("#lec_date").html("");
+			$("#lec_hour").html("");
 			
 			let crclm_year = $.trim($("#crclm_year").val());
 			let crclm_half = $.trim($("#crclm_half").val());
@@ -467,7 +477,7 @@ if (id != null) {
 					//console.log(crclm_cd + " / " + crclm_year + " / " + crclm_half + " / " + sbjct_no);
 					
 					$.post({
-						url : "/lectureWeekList",
+						url : "/atndInstr-weekList",
 						data : {
 							"crclm_cd" : crclm_cd,
 							"crclm_year" : crclm_year,
