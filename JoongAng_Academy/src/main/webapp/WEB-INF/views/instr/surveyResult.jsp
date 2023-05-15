@@ -56,9 +56,6 @@ var Grid = tui.Grid;
 	});
 	
 	var loginID = $("#loginID").val(); //(로그인된 ID)
-// 	var CRCLM_YEAR = "";
-// 	var CRCLM_CD = "";
-// 	var CRCLM_HALF = "";
 	
 	/* 설문과목정보 ajax */
 	$.post({
@@ -82,7 +79,7 @@ var Grid = tui.Grid;
 				this.rowKey = props.rowKey;
 				this.el = el;
 				this.n = Nn;
-				this.render(props); //필수 !!!!!!!!!!!
+				this.render(props);
 			}
 			
 			getElement(){    	
@@ -101,10 +98,6 @@ var Grid = tui.Grid;
 				var CRCLM_YEAR = row.CRCLM_YEAR;
 				var CRCLM_HALF = row.CRCLM_HALF;
 				var SBJCT_NO = row.SBJCT_NO;
-				/* console.log("CRCLM_CD:"+CRCLM_CD);
-				console.log("CRCLM_YEAR:"+CRCLM_YEAR);
-				console.log("CRCLM_HALF:"+CRCLM_HALF);
-				console.log("SBJCT_NO:"+SBJCT_NO); */
 				
 				this.el.value="결과보기"; //value 값
 				this.el.id="survRs"; // id 값
@@ -183,40 +176,15 @@ var Grid = tui.Grid;
 					  sortingType: 'desc',
 					  sortable: true,
 					  renderer: buttonRenderer
-					  //formatter: buttonFormatter
-					}
-			/* 	{
-					  header : '결과조회2',
-					  name : 'BUTTON',
-					  align:'center',
-					  sortingType: 'desc',
-					  sortable: true,
-					  formatter: function (value, row) {
-						  return buttonRenderer(value, row);
-						}
-
-					},  */
-					
-				],
+					}],
 			selectionUnit: 'row'
 			
 			});
-		
-		
 		suvGrid.resetData(list);
-		//suvGrid.refreshLayout(list);
-		
 	
 	}).fail(function() {
 		alert("문제가 발생 했습니다.");
 	});
-	
-	
-	
-	
-	
-	
-	
 });
 
 </script>
@@ -228,8 +196,7 @@ var Grid = tui.Grid;
 </head>
 <body class="d-flex flex-column h-100 bg-light">
 	<main class="flex-shrink-0">
-		<%@include file="../portalbar/topbar.jsp"%>
-		<!-- Page Content-->
+		<%@include file="../portalbar/instrtopbar.jsp"%>
 		<!-- 설문조사 현황 -->
 		<div id ="readySuv">
 		<div class="my-5">
@@ -240,25 +207,13 @@ var Grid = tui.Grid;
 			</div>
 			<div class="row gx-1 justify-content-center">
 				<div class="col-xlg-11 col-xl-9 col-xxl-8">
-					
 					<input type="hidden" id="loginID" value="${sessionScope.id}">
-
 
 					<!-- Divider-->
 					<div class="pb-5"></div>
 					
 					<div class="d-flex align-items-center justify-content-between mb-4 px-3">
 						<h4 class="text-success fw-bolder mb-0">과목현황</h4>
-						<!-- 엑셀다운 설명-->
-							<!-- <div style="display: flex; align-items: center;">
-							    <div style="flex: 1; text-align: right; font-size: 11px; margin-right:8px; color:gray;">
-							        <span>표를 오른쪽 클릭 하시면</span>
-							        <br>
-							        <span>엑셀 다운받기가 가능합니다.</span>
-							    </div>
-							    <div style="line-height:0;">
-							    <i class="xi-help xi-x" style="color:gray;"></i></div>
-							</div> -->
 					</div>
 					<!-- 설문조사 현황  -->
 					<div class="card shadow border-0 rounded-2 mb-5">
