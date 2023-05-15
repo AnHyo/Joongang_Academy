@@ -338,8 +338,8 @@ $(function(){
 			this.el.addEventListener('click', (event) => {
 				
 				if(datetime>= startTime && datetime <= endTime){
-					alert("수강신청기간입니다.");
-					
+					/* alert("수강신청기간입니다.");
+					 */
 					var STDNT_NO=$("#stdntNo").val();
 					var SBJCT_NO= el.getAttribute("data-value");
 					$.post({
@@ -410,7 +410,6 @@ $(function(){
 			this.render(props);
 			this.el.addEventListener('click', (event) => {
 				if(datetime>= startTime && datetime <= endTime){
-					alert("수강신청기간입니다.");
 					var STDNT_NO=$("#stdntNo").val();
 					var SBJCT_NO= el.getAttribute("data-value");
 					   $.post({

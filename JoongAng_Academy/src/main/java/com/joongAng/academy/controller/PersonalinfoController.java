@@ -54,15 +54,20 @@ public class PersonalinfoController {
 		return json.toString();
 	}
 	
-	@GetMapping("/pwCheckMod")
+	@GetMapping("/stupwCheckMod")
 	public String pwCheckMod(HttpSession session) {
 		String userID = (String) session.getAttribute("id");
-		String grade = pesonalInfoService.gradeCheck(userID);
-		if(grade == "0010") {
+	
 			return "student/pwCheckMod";
-		}else {
-			return "instr/pwCheckMod";	
-		}
+	
+	}
+	
+	@GetMapping("/instrpwCheckMod")
+	public String instrpwCheckMod(HttpSession session) {
+		String userID = (String) session.getAttribute("id");
+		
+		return "instr/pwCheckMod";
+		
 	}
 	
 	
