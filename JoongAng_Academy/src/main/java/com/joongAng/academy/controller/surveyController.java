@@ -26,8 +26,8 @@ public class surveyController {
 	private SurveyService surveyService;
 	@Autowired
 	private CrclmInfoService crclmInfoService;
-	
-	//커리큘럼 select option 생성
+
+	// 커리큘럼 select option 생성
 	@GetMapping("survey")
 	public ModelAndView survey() {
 		ModelAndView mv = new ModelAndView("admin/survey");
@@ -35,170 +35,145 @@ public class surveyController {
 		mv.addObject("crclmName", list);
 		return mv;
 	}
-	
-	//설문리스트 + 검색
+
+	// 설문리스트 + 검색
 	@ResponseBody
 	@PostMapping(value = "/surveyListAjax", produces = "application/json;charset=UTF-8")
 	public String surveyListAjax(@RequestParam Map<String, String> map) {
 		JSONObject json = new JSONObject();
-		List<Map<String, Object>> list = surveyService.list(map); 
+		List<Map<String, Object>> list = surveyService.list(map);
 		json.put("list", list);
-		
+
 		return json.toString();
 	}
-	
-	//수정 + 리스트
+
+	// 수정 + 리스트
 	@ResponseBody
 	@PostMapping(value = "/surveyUpdate", produces = "application/json;charset=UTF-8")
 	public String surveyUpdate(@RequestParam Map<String, String> map) {
 		JSONObject json = new JSONObject();
-		int result = surveyService.update(map); 
-		json.put("result", result); 
-		//System.err.println("result:"+result); //1 (수정한값 있던없던 1)
-		
-		List<Map<String, Object>> list = surveyService.list(map); 
+		int result = surveyService.update(map);
+		json.put("result", result);
+
+		List<Map<String, Object>> list = surveyService.list(map);
 		json.put("list", list);
-		//System.out.println("list:"+list);
-		
+
 		return json.toString();
 	}
-	
-	//문항정보
+
+	// 문항정보
 	@ResponseBody
 	@PostMapping(value = "/surveyDetail", produces = "application/json;charset=UTF-8")
 	public String surveyDetail(@RequestParam Map<String, String> map) {
 		JSONObject json = new JSONObject();
-		List<Map<String, Object>> detaillist = surveyService.detaillist(map); 
+		List<Map<String, Object>> detaillist = surveyService.detaillist(map);
 		json.put("detaillist", detaillist);
-		//System.out.println("detaillist:"+detaillist);//ok
+
 		return json.toString();
 	}
-	
-	//문항정보 신규
+
+	// 문항정보 신규
 	@ResponseBody
 	@PostMapping(value = "/ITEMCreate", produces = "application/json;charset=UTF-8")
-	public String ITEMCreate(@RequestParam Map<String, Object> map,HttpServletRequest request){
+	public String ITEMCreate(@RequestParam Map<String, Object> map, HttpServletRequest request) {
 		JSONObject json = new JSONObject();
-	
+
 		boolean noExists = surveyService.checknoExists(map);
-		//중복문항번호 검사
-		if(noExists) {
+		// 중복문항번호 검사
+		if (noExists) {
 			json.put("result", "exist");
 			return json.toString();
 		} else {
-			int result = surveyService.ITEMCreate(map); 
-			//System.err.println(map.get("CRCLM_YEAR")); //ok
+			int result = surveyService.ITEMCreate(map);
 			json.put("result", result);
-			System.err.println(result); //1
+			
 			return json.toString();
 		}
 	}
-	
-	//문항정보 수정
+
+	// 문항정보 수정
 	@ResponseBody
 	@PostMapping(value = "/ITEMUpdate", produces = "application/json;charset=UTF-8")
-	public String ITEMUpdate(@RequestBody List<Map<String, Object>> updateData,HttpServletRequest request){
+	public String ITEMUpdate(@RequestBody List<Map<String, Object>> updateData, HttpServletRequest request) {
 		JSONObject json = new JSONObject();
-			int result = surveyService.ITEMUpdate(updateData); 
-			//System.err.println(updateData.get(0).get("DGSTFN_CN")); //ok
-			//System.err.println(updateData);//ok
-			json.put("result", result);
-			//System.err.println(result);//ok
+		int result = surveyService.ITEMUpdate(updateData);
+		json.put("result", result);
+
 		return json.toString();
 	}
-	
-	//문항정보 삭제
+
+	// 문항정보 삭제
 	@ResponseBody
 	@PostMapping(value = "/ITEMDelete", produces = "application/json;charset=UTF-8")
-	public String codeDelete(@RequestBody List<Map<String, Object>> deleteData, HttpServletRequest request){
-		    JSONObject json = new JSONObject();
-		    int result = surveyService.ITEMdelete(deleteData);
-		    System.err.println(deleteData.get(0).get("DGSTFN_CN"));//ok
-		    System.err.println(deleteData); //[{CD_CLSF=1, CD=1, CD_NM=1, CD_USE_YN=, CD_EXPLN=1, CD_SORT_SN=1}, {CD_CLSF=1, CD=2, CD_NM=1, CD_USE_YN=, CD_EXPLN=1, CD_SORT_SN=1}]
-		    json.put("result", result);
-		    System.err.println("result:"+result);//삭제된 행 갯수
-			
-		    
-		    
-//			//삭제 저장후 다시 전체리스트 조회페이지로 가야함(전체조회+검색) 
-//			String code_search = request.getParameter("code_search");
-//			List<Map<String, Object>> list = codeService.list(code_search); 
-//			JSONArray listJ = new JSONArray(list);
-//			json.put("list", listJ);
+	public String codeDelete(@RequestBody List<Map<String, Object>> deleteData, HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		int result = surveyService.ITEMdelete(deleteData);
+		json.put("result", result);
+		
 		return json.toString();
 	}
-	
-	//답변정보
+
+	// 답변정보
 	@ResponseBody
 	@PostMapping(value = "/surveyANS", produces = "application/json;charset=UTF-8")
 	public String surveyANS() {
 		JSONObject json = new JSONObject();
-		List<Map<String, Object>> anslist = surveyService.anslist(); 
+		List<Map<String, Object>> anslist = surveyService.anslist();
 		json.put("anslist", anslist);
-		//System.out.println("객관");//
+		
 		return json.toString();
 	}
-	
-	//참석자정보
+
+	// 참석자정보
 	@ResponseBody
 	@PostMapping(value = "/surveyStdnt", produces = "application/json;charset=UTF-8")
 	public String surveyStdnt(@RequestParam Map<String, String> map) {
 		JSONObject json = new JSONObject();
-		List<Map<String, Object>> stdntlist = surveyService.stdntlist(map); 
+		List<Map<String, Object>> stdntlist = surveyService.stdntlist(map);
 		json.put("stdntlist", stdntlist);
-		//System.out.println("객관");//
+		
 		return json.toString();
 	}
-	
+
 //--------------------------------------
-	
-	//강사조회 페이지
+
+	// 강사조회 페이지
 	@GetMapping("/surveyResult")
 	public String surveyResult() {
 		
 		return "instr/surveyResult";
 	}
-	
+
 	@ResponseBody
 	@PostMapping(value = "surveyResultAjax", produces = "application/json;charset=UTF-8")
-	public String surveyResultAjax(@RequestParam(value="loginID", required=false) String loginID) {
+	public String surveyResultAjax(@RequestParam(value = "loginID", required = false) String loginID) {
 		JSONObject json = new JSONObject();
-		
-		List<Map<String, Object>> surveySbj = surveyService.surveySbj(loginID); 
-		//System.err.println(surveySbj);
+		List<Map<String, Object>> surveySbj = surveyService.surveySbj(loginID);
 		JSONArray list = new JSONArray(surveySbj);
 		json.put("list", list);
-		
+
 		return json.toString();
 	}
-	
-	
-	//강사조회_디테일 페이지
+
+	// 강사조회_디테일 페이지
 	@GetMapping("/surveyResultDetail")
 	public String surveyResultDetail() {
-		
+
 		return "instr/surveyResultDetail";
 	}
-	
-	
+
 	@ResponseBody
 	@PostMapping(value = "ResultDetailAjax", produces = "application/json;charset=UTF-8")
 	public String ResultDetailAjax(@RequestParam Map<String, String> map) {
 		JSONObject json = new JSONObject();
-		
-		//설문조사결과
-		List<Map<String, Object>> resultDetail = surveyService.ResultDetailAjax(map); 
-		//JSONArray resultDetail = new JSONArray(resultDetail);
+		// 설문조사결과
+		List<Map<String, Object>> resultDetail = surveyService.ResultDetailAjax(map);
 		json.put("resultDetail", resultDetail);
-//		
-//		
-//		List<Map<String, Object>> dgstfnNo = surveyService.dgstfnNo(map); 
-//		json.put("dgstfnNo", dgstfnNo);
-		
-		//총계표
-		List<Map<String, Object>> resultDetail2 = surveyService.ResultDetailAjax2(map); 
+
+		// 총계표
+		List<Map<String, Object>> resultDetail2 = surveyService.ResultDetailAjax2(map);
 		json.put("resultDetail2", resultDetail2);
-		
+
 		return json.toString();
 	}
 

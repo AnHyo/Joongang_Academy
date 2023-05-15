@@ -2,44 +2,46 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.joongAng.academy.dao.SurveyDAO">
-	<select id="list" parameterType="HashMap" resultType="HashMap"> 
+	<select id="list" parameterType="HashMap" resultType="HashMap">
 		SELECT * FROM surveylist
 		WHERE 1=1
-			<if test="s_CRCLM_YEAR !='' and s_CRCLM_YEAR !=null">
-				AND CRCLM_YEAR = #{s_CRCLM_YEAR}
-			</if>
-			<if test="s_CRCLM_HALF !='' and s_CRCLM_HALF !=null">
-				AND CRCLM_HALF = #{s_CRCLM_HALF}
-			</if>
-			<if test="s_SBJCT_NM !='' and s_SBJCT_NM !=null">
-				AND SBJCT_NM LIKE CONCAT('%',#{s_SBJCT_NM},'%')		
-			</if>
-			<if test="s_CRCLM_CD !='' and s_CRCLM_CD !=null">
-				AND CRCLM_CD = #{s_CRCLM_CD}		
-			</if>
+		<if test="s_CRCLM_YEAR !='' and s_CRCLM_YEAR !=null">
+			AND CRCLM_YEAR = #{s_CRCLM_YEAR}
+		</if>
+		<if test="s_CRCLM_HALF !='' and s_CRCLM_HALF !=null">
+			AND CRCLM_HALF = #{s_CRCLM_HALF}
+		</if>
+		<if test="s_SBJCT_NM !='' and s_SBJCT_NM !=null">
+			AND SBJCT_NM LIKE CONCAT('%',#{s_SBJCT_NM},'%')
+		</if>
+		<if test="s_CRCLM_CD !='' and s_CRCLM_CD !=null">
+			AND CRCLM_CD = #{s_CRCLM_CD}
+		</if>
 	</select>
-	
-	<!--수정  -->
+
+	<!--수정 -->
 	<update id="update" parameterType="Hashmap">
 		UPDATE APPL_DGSTFN_LIST set
-		DGSTFN_RGDATE =#{u_DGSTFN_RGDATE},
 		DGSTFN_OP_YN =#{u_DGSTFN_OP_YN},
 		DGSTFN_TITLE =#{u_DGSTFN_TITLE},
-		DGSTFN_SDATE =#{u_DGSTFN_SDATE},
-		DGSTFN_FDATE =#{u_DGSTFN_FDATE},
 		DGSTFN_INTRO =#{u_DGSTFN_INTRO}
-		WHERE (CRCLM_YEAR=#{CRCLM_YEAR} and CRCLM_HALF=#{CRCLM_HALF} and CRCLM_CD=#{CRCLM_CD} and SBJCT_NO=#{SBJCT_NO})
+		WHERE (CRCLM_YEAR=#{CRCLM_YEAR} and
+		CRCLM_HALF=#{CRCLM_HALF} and CRCLM_CD=#{CRCLM_CD} and
+		SBJCT_NO=#{SBJCT_NO})
 	</update>
-	
-	<select id="detaillist" parameterType="HashMap" resultType="HashMap"> 
+
+	<select id="detaillist" parameterType="HashMap"
+		resultType="HashMap">
 		SELECT * FROM surveydetail
-		WHERE (CRCLM_CD = #{CRCLM_CD} AND CRCLM_HALF = #{CRCLM_HALF} AND 
+		WHERE (CRCLM_CD = #{CRCLM_CD} AND CRCLM_HALF =
+		#{CRCLM_HALF} AND
 		CRCLM_YEAR = #{CRCLM_YEAR} AND SBJCT_NO = #{SBJCT_NO})
 		ORDER BY DGSTFN_NO ASC
 	</select>
-	
+
 	<insert id="ITEMCreate" parameterType="HashMap">
-		INSERT INTO APPL_DGSTFN_ITEM
+		INSERT INTO
+		APPL_DGSTFN_ITEM
 		SET
 		DGSTFN_NO = #{DGSTFN_NO},
 		QITEM_CD = #{QITEM_CD},
@@ -50,143 +52,129 @@
 		SORT_SN=#{DGSTFN_NO},
 		SBJCT_NO=#{SBJCT_NO}
 	</insert>
-	
-	<select id="checknoExists" parameterType="HashMap" resultType="boolean">
- 		SELECT COUNT(*) FROM APPL_DGSTFN_ITEM 
-	 	WHERE CRCLM_CD = #{CRCLM_CD} AND
+
+	<select id="checknoExists" parameterType="HashMap"
+		resultType="boolean">
+		SELECT COUNT(*) FROM APPL_DGSTFN_ITEM
+		WHERE CRCLM_CD = #{CRCLM_CD} AND
 		CRCLM_YEAR=#{CRCLM_YEAR} AND
 		CRCLM_HALF=#{CRCLM_HALF} AND
 		SBJCT_NO=#{SBJCT_NO} AND
-		DGSTFN_NO = #{DGSTFN_NO}
+		DGSTFN_NO =
+		#{DGSTFN_NO}
 	</select>
-	
-		<update id="ITEMUpdate" parameterType="java.util.List">
-   		UPDATE APPL_DGSTFN_ITEM SET
-        DGSTFN_CN = CASE
-            <foreach collection="list" item="item" index="index" separator=" ">
-                WHEN CRCLM_CD = #{item.CRCLM_CD} AND 
-                CRCLM_YEAR = #{item.CRCLM_YEAR} AND 
-                CRCLM_HALF = #{item.CRCLM_HALF} AND
-                SBJCT_NO = #{item.SBJCT_NO} AND
-                DGSTFN_NO = #{item.DGSTFN_NO}
-                THEN #{item.DGSTFN_CN}
-            </foreach>
-            ELSE DGSTFN_CN
-        END,
-        QITEM_CD = CASE
-            <foreach collection="list" item="item" index="index" separator=" ">
-                WHEN CRCLM_CD = #{item.CRCLM_CD} AND 
-                CRCLM_YEAR = #{item.CRCLM_YEAR} AND 
-                CRCLM_HALF = #{item.CRCLM_HALF} AND
-                SBJCT_NO = #{item.SBJCT_NO} AND
-                DGSTFN_NO = #{item.DGSTFN_NO}
-                THEN #{item.QITEM_CD}
-            </foreach>
-            ELSE QITEM_CD
-        END,
-        SORT_SN = CASE
-            <foreach collection="list" item="item" index="index" separator=" ">
-                WHEN CRCLM_CD = #{item.CRCLM_CD} AND 
-                CRCLM_YEAR = #{item.CRCLM_YEAR} AND 
-                CRCLM_HALF = #{item.CRCLM_HALF} AND
-                SBJCT_NO = #{item.SBJCT_NO} AND
-                DGSTFN_NO = #{item.DGSTFN_NO}
-                THEN #{item.DGSTFN_NO}
-            </foreach>
-        	ELSE SORT_SN
-        END
-	    	<where>
-		        <foreach collection="list" item="item" separator="OR">
-			        CRCLM_CD = #{item.CRCLM_CD} AND 
-	                CRCLM_YEAR = #{item.CRCLM_YEAR} AND 
-	                CRCLM_HALF = #{item.CRCLM_HALF} AND
-	                SBJCT_NO = #{item.SBJCT_NO} AND
-	                DGSTFN_NO = #{item.DGSTFN_NO} 
-		        </foreach>
-	        </where>
+
+	<update id="ITEMUpdate" parameterType="java.util.List">
+		UPDATE APPL_DGSTFN_ITEM SET
+		DGSTFN_CN = CASE
+		<foreach collection="list" item="item" index="index"
+			separator=" ">
+			WHEN CRCLM_CD = #{item.CRCLM_CD} AND
+			CRCLM_YEAR = #{item.CRCLM_YEAR} AND
+			CRCLM_HALF = #{item.CRCLM_HALF} AND
+			SBJCT_NO = #{item.SBJCT_NO} AND
+			DGSTFN_NO = #{item.DGSTFN_NO}
+			THEN #{item.DGSTFN_CN}
+		</foreach>
+		ELSE DGSTFN_CN
+		END,
+		QITEM_CD = CASE
+		<foreach collection="list" item="item" index="index"
+			separator=" ">
+			WHEN CRCLM_CD = #{item.CRCLM_CD} AND
+			CRCLM_YEAR = #{item.CRCLM_YEAR} AND
+			CRCLM_HALF = #{item.CRCLM_HALF} AND
+			SBJCT_NO = #{item.SBJCT_NO} AND
+			DGSTFN_NO = #{item.DGSTFN_NO}
+			THEN #{item.QITEM_CD}
+		</foreach>
+		ELSE QITEM_CD
+		END,
+		SORT_SN = CASE
+		<foreach collection="list" item="item" index="index"
+			separator=" ">
+			WHEN CRCLM_CD = #{item.CRCLM_CD} AND
+			CRCLM_YEAR = #{item.CRCLM_YEAR} AND
+			CRCLM_HALF = #{item.CRCLM_HALF} AND
+			SBJCT_NO = #{item.SBJCT_NO} AND
+			DGSTFN_NO = #{item.DGSTFN_NO}
+			THEN #{item.DGSTFN_NO}
+		</foreach>
+		ELSE SORT_SN
+		END
+		<where>
+			<foreach collection="list" item="item" separator="OR">
+				CRCLM_CD = #{item.CRCLM_CD} AND
+				CRCLM_YEAR = #{item.CRCLM_YEAR} AND
+				CRCLM_HALF = #{item.CRCLM_HALF} AND
+				SBJCT_NO = #{item.SBJCT_NO} AND
+				DGSTFN_NO = #{item.DGSTFN_NO}
+			</foreach>
+		</where>
 	</update>
-	
+
 	<delete id="ITEMdelete" parameterType="java.util.List">
-	    DELETE FROM APPL_DGSTFN_ITEM
-	    <where> 
-			 <foreach collection="list" item="item" separator="OR">
-			        CRCLM_CD = #{item.CRCLM_CD} AND 
-	                CRCLM_YEAR = #{item.CRCLM_YEAR} AND 
-	                CRCLM_HALF = #{item.CRCLM_HALF} AND
-	                SBJCT_NO = #{item.SBJCT_NO} AND
-	                DGSTFN_NO = #{item.DGSTFN_NO} 
-		        </foreach>
-		</where> 
+		DELETE FROM APPL_DGSTFN_ITEM
+		<where>
+			<foreach collection="list" item="item" separator="OR">
+				CRCLM_CD = #{item.CRCLM_CD} AND
+				CRCLM_YEAR = #{item.CRCLM_YEAR} AND
+				CRCLM_HALF = #{item.CRCLM_HALF} AND
+				SBJCT_NO = #{item.SBJCT_NO} AND
+				DGSTFN_NO = #{item.DGSTFN_NO}
+			</foreach>
+		</where>
 	</delete>
-	
-	<select id="anslist" parameterType="HashMap" resultType="HashMap"> 
+
+	<select id="anslist" parameterType="HashMap"
+		resultType="HashMap">
 		SELECT CD_SORT_SN, CD_NM FROM CODE_INFO
 		WHERE CD_CLSF = '0016'
-		ORDER BY CD_SORT_SN ASC
+		ORDER BY
+		CD_SORT_SN ASC
 	</select>
-	
-	<select id="stdntlist" parameterType="HashMap" resultType="HashMap"> 
+
+	<select id="stdntlist" parameterType="HashMap"
+		resultType="HashMap">
 		SELECT * FROM surveystdnt
-		WHERE (CRCLM_CD = #{CRCLM_CD} AND CRCLM_HALF = #{CRCLM_HALF} AND 
+		WHERE (CRCLM_CD = #{CRCLM_CD} AND CRCLM_HALF =
+		#{CRCLM_HALF} AND
 		CRCLM_YEAR = #{CRCLM_YEAR} AND SBJCT_NM = #{SBJCT_NM})
 		ORDER BY STDNT_NO ASC
 	</select>
-	
+
 	<!-- 설문조사 결과 페이지 -->
-	<select id="surveySbj" resultType="HashMap" parameterType="HashMap">
-		SELECT *     
+	<select id="surveySbj" resultType="HashMap"
+		parameterType="HashMap">
+		SELECT *
 		FROM surveylist
 		WHERE USER_ID = #{loginID }
 		ORDER BY CRCLM_YEAR DESC
 	</select>
-	
-<!-- 	<select id="ResultDetailAjax" resultType="HashMap" parameterType="HashMap">
-		SELECT *     
-		FROM surveyResultDetail1
-		WHERE (CRCLM_CD = #{CRCLM_CD} AND CRCLM_HALF = #{CRCLM_HALF} AND 
-		CRCLM_YEAR = #{CRCLM_YEAR} AND SBJCT_NO = #{SBJCT_NO})
-	</select> -->
-	<select id="ResultDetailAjax" resultType="HashMap" parameterType="HashMap">
-	  SELECT sr.*, COUNT(ari.DGSTFN_NO) as DGSTFN_COUNT
-	  FROM surveyResultDetail1 sr
-	  LEFT JOIN APPL_DGSTFN_ITEM ari ON sr.CRCLM_CD = ari.CRCLM_CD 
-	    AND sr.CRCLM_HALF = ari.CRCLM_HALF 
-	    AND sr.CRCLM_YEAR = ari.CRCLM_YEAR 
-	    AND sr.SBJCT_NO = ari.SBJCT_NO
-	  WHERE sr.CRCLM_CD = #{CRCLM_CD} 
-	    AND sr.CRCLM_HALF = #{CRCLM_HALF} 
-	    AND sr.CRCLM_YEAR = #{CRCLM_YEAR} 
-	    AND sr.SBJCT_NO = #{SBJCT_NO}
-	    GROUP BY sr.STDNT_NO
+
+	<select id="ResultDetailAjax" resultType="HashMap"
+		parameterType="HashMap">
+		SELECT sr.*, COUNT(ari.DGSTFN_NO) as DGSTFN_COUNT
+		FROM surveyResultDetail1 sr
+		LEFT JOIN APPL_DGSTFN_ITEM ari ON sr.CRCLM_CD = ari.CRCLM_CD
+		AND sr.CRCLM_HALF = ari.CRCLM_HALF
+		AND sr.CRCLM_YEAR = ari.CRCLM_YEAR
+		AND sr.SBJCT_NO = ari.SBJCT_NO
+		WHERE sr.CRCLM_CD = #{CRCLM_CD}
+		AND sr.CRCLM_HALF = #{CRCLM_HALF}
+		AND sr.CRCLM_YEAR = #{CRCLM_YEAR}
+		AND sr.SBJCT_NO = #{SBJCT_NO}
+		GROUP BY sr.STDNT_NO
 	</select>
-	
-	
-<!-- 	<select id="dgstfnNo" resultType="HashMap" parameterType="HashMap">
+
+	<select id="ResultDetailAjax2" resultType="HashMap"
+		parameterType="HashMap">
 		SELECT *
-		FROM APPL_DGSTFN_RSLT adr JOIN APPL_DGSTFN_ITEM adi on (
-		WHERE (CRCLM_CD = #{CRCLM_CD} AND CRCLM_HALF = #{CRCLM_HALF} AND 
-		CRCLM_YEAR = #{CRCLM_YEAR} AND SBJCT_NO = #{SBJCT_NO}) )
-	</select>  -->
-	
-	<select id="ResultDetailAjax2" resultType="HashMap" parameterType="HashMap">
-		SELECT *     
 		FROM surveyresult2
-		WHERE (CRCLM_CD = #{CRCLM_CD} AND CRCLM_HALF = #{CRCLM_HALF} AND 
-		CRCLM_YEAR = #{CRCLM_YEAR} AND SBJCT_NO = #{SBJCT_NO}) AND 
+		WHERE (CRCLM_CD = #{CRCLM_CD} AND CRCLM_HALF =
+		#{CRCLM_HALF} AND
+		CRCLM_YEAR = #{CRCLM_YEAR} AND SBJCT_NO = #{SBJCT_NO}) AND
 		AVG_CHC_ANS_CD != 0
-	</select> 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	</select>
+
 </mapper>
