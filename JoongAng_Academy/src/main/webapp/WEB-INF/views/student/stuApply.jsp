@@ -309,6 +309,37 @@ if (session.getAttribute("id") != null) {
 
         				}).done(function(data) {
         					let planList = data.planList;
+        					 $.post({
+        	     					url : "/plandetailAjax",
+        	     					data : {
+        	     						"SBJCT_NO" : SBJCT_NO,
+        	     						"CRCLM_HALF" : CRCLM_HALF,
+        	     						"CRCLM_CD" : CRCLM_CD,
+        	     						"CRCLM_YEAR" : CRCLM_YEAR
+        	     					},
+        	     					dataType : "json"
+
+        	     				}).done(function(data) {
+        	     					let plandetail = data.plandetail;
+        	     					$("#plandtl").empty();
+        	     					var table = '';
+        	     					for(var i = 0; i<plandetail.length; i++){
+        	     						
+        	     						table += '<table class="table table-bordered table-sm mt-2 ">';
+        	     						table += '<tr> <td class="col-2 table-secondary text-center">계획번호</td>';
+        	     						table += '<td colspan="5">'+plandetail[i].DTL_NO+'</td></tr><tr>';
+        	     						table += '<td class="col-2 table-secondary text-center">강의제목</td>';
+        	     						table += '<td colspan="5" id="title">'+plandetail[i].LECT_TTL_NM+'</td></tr><tr>';
+        	     						table += '<td class="col-2 table-secondary text-center">강의주제</td>';
+        	     						table += '<td colspan="5" id="lecsbj">'+plandetail[i].LECT_TPC_NM+'</td></tr><tr>';
+        	     						table += '<td class="col-2 table-secondary text-center">강의내용</td>';
+        	     						table += '<td colspan="5" id="lecContent">'+plandetail[i].LECT_CN+'</td></tr></table>';
+        	     					}
+        	     						$("#plandtl").append(table);
+        	     					$("#sbjPlanModal").modal("show");
+        	     				}).fail(function() {
+        	     					alert("문제가 발생했습니다.");
+        	     				});
         					$("#sbjnm").text(planList[0].SBJCT_NM);
         					$("#sbjno").text(planList[0].SBJCT_NO);
         					$(".crclmYear").html(planList[0].CRCLM_YEAR);
@@ -319,11 +350,14 @@ if (session.getAttribute("id") != null) {
         					$("#sbjtrgt").text(planList[0].SBJCT_TRGT);
         					$("#sbjMthd").text(planList[0].MTHDNM);
         					$("#sbjCN").text(planList[0].SBJCT_CN);
-							$("#sbjPlanModal").modal("show");
+        					
+							
         				}).fail(function() {
         					alert("문제가 발생했습니다.");
         				});
         				
+        			 
+        		
         				
         				
         			});
@@ -345,6 +379,106 @@ if (session.getAttribute("id") != null) {
         			this.el.id="planbtn";
         			this.el.setAttribute("data-value", this.sbjctNo);
         			this.el.setAttribute("class", "planbtn btn rounded-1 fw-bold");
+        			this.el.setAttribute("style","width:50px; background-color:#6c757d; color:white;");
+        		}
+        	}
+        	class buttonRenderer4{
+        		constructor(props) {
+        			const el = document.createElement('input');
+        			el.type='button';
+        			const Nn = document.createElement('span');
+        			Nn.textContent = 'N';
+        			this.value = props.value; 
+        			this.sbjctNo = props.sbjctNo;
+        			this.el = el;
+        			this.n = Nn;
+        			this.render(props);
+        			this.el.addEventListener('click', (event) => {
+        				const delbtn = el.parentNode.nextElementSibling.querySelector('.delbtn');
+        				const SBJCT_NO = delbtn.getAttribute('data-value');
+    
+        			 $.post({
+        					url : "/planAjax",
+        					data : {
+        						"SBJCT_NO" : SBJCT_NO,
+        						"CRCLM_HALF" : CRCLM_HALF,
+        						"CRCLM_CD" : CRCLM_CD,
+        						"CRCLM_YEAR" : CRCLM_YEAR
+        					},
+        					dataType : "json"
+
+        				}).done(function(data) {
+        					let planList = data.planList;
+        					 $.post({
+        	     					url : "/plandetailAjax",
+        	     					data : {
+        	     						"SBJCT_NO" : SBJCT_NO,
+        	     						"CRCLM_HALF" : CRCLM_HALF,
+        	     						"CRCLM_CD" : CRCLM_CD,
+        	     						"CRCLM_YEAR" : CRCLM_YEAR
+        	     					},
+        	     					dataType : "json"
+
+        	     				}).done(function(data) {
+        	     					let plandetail = data.plandetail;
+        	     					$("#plandtl").empty();
+        	     					var table = '';
+        	     					for(var i = 0; i<plandetail.length; i++){
+        	     						
+        	     						table += '<table class="table table-bordered table-sm mt-2 ">';
+        	     						table += '<tr> <td class="col-2 table-secondary text-center">계획번호</td>';
+        	     						table += '<td colspan="5">'+plandetail[i].DTL_NO+'</td></tr><tr>';
+        	     						table += '<td class="col-2 table-secondary text-center">강의제목</td>';
+        	     						table += '<td colspan="5" id="title">'+plandetail[i].LECT_TTL_NM+'</td></tr><tr>';
+        	     						table += '<td class="col-2 table-secondary text-center">강의주제</td>';
+        	     						table += '<td colspan="5" id="lecsbj">'+plandetail[i].LECT_TPC_NM+'</td></tr><tr>';
+        	     						table += '<td class="col-2 table-secondary text-center">강의내용</td>';
+        	     						table += '<td colspan="5" id="lecContent">'+plandetail[i].LECT_CN+'</td></tr></table>';
+        	     					}
+        	     						$("#plandtl").append(table);
+        	     					$("#sbjPlanModal").modal("show");
+        	     				}).fail(function() {
+        	     					alert("문제가 발생했습니다.");
+        	     				});
+        					$("#sbjnm").text(planList[0].SBJCT_NM);
+        					$("#sbjno").text(planList[0].SBJCT_NO);
+        					$(".crclmYear").html(planList[0].CRCLM_YEAR);
+        					$(".crclmHalf").html(planList[0].CRCLM_HALF_NM);
+        					$("#instrNm").text(planList[0].KORN_FLNM);
+        					$("#crclmNm").text(planList[0].CRCLM_NM);
+        					$("#sbjBook").text(planList[0].CRS_BOOK);
+        					$("#sbjtrgt").text(planList[0].SBJCT_TRGT);
+        					$("#sbjMthd").text(planList[0].MTHDNM);
+        					$("#sbjCN").text(planList[0].SBJCT_CN);
+        					
+							
+        				}).fail(function() {
+        					alert("문제가 발생했습니다.");
+        				});
+        				
+        			 
+        		
+        				
+        				
+        			});
+        			
+        		}
+        		
+        		
+        		getElement(){    	
+        			if(this.value =='Y'){
+        				return this.el;
+        			} else if(this.value=='N'){
+        				return this.n;
+        			}
+
+        		}
+        		
+        		render(props){
+        			this.el.value="보기";
+        			this.el.id="planbtn";
+        			this.el.setAttribute("data-value", this.sbjctNo);
+        			this.el.setAttribute("class", "planbtn2 btn rounded-1 fw-bold");
         			this.el.setAttribute("style","width:50px; background-color:#6c757d; color:white;");
         		}
         	}
@@ -477,7 +611,10 @@ if (session.getAttribute("id") != null) {
         			minwidth:'auto',
         			align:'center',
         			sortable: true,
-        		    sortingType: 'desc'
+        		    sortingType: 'desc',
+	        		renderer:{
+	        			type: buttonRenderer4
+	        		}
         		},{ 	
         			header : '삭제',
         			name: 'SBJCT_NO', 

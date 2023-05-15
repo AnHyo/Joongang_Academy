@@ -40,6 +40,15 @@ public class ApplyStuController {
 		return json.toString();
 	}
 	@ResponseBody
+	@PostMapping(value = "/plandetailAjax", produces = "application/json;charset=UTF-8")
+	public String plandetailAjax(@RequestParam Map<String, Object> map) {
+		JSONObject json = new JSONObject();
+		List<Map<String, Object>> plan = applyService.planDTLAjax(map);
+		JSONArray plandetail = new JSONArray(plan);
+		json.put("plandetail", plandetail);
+		return json.toString();
+	}
+	@ResponseBody
 	@PostMapping(value = "/timetableAjax", produces = "application/json;charset=UTF-8")
 	public String timetableAjax(@RequestParam Map<String, Object> map) {
 		JSONObject json = new JSONObject();

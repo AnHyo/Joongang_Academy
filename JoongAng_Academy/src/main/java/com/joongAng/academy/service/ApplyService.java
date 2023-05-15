@@ -58,5 +58,8 @@ public class ApplyService {
 	public List<Map<String, Object>> schedule(Map<String, Object> map) {
 		return applyDAO.schedule(map);
 	}
+	public List<Map<String, Object>> planDTLAjax(Map<String, Object> map) {
+		return applyDAO.planDTLAjax(map);
+	}
 
 }

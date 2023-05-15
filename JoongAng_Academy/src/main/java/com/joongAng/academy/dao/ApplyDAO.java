@@ -40,4 +40,6 @@ public interface ApplyDAO {
 
 	List<Map<String, Object>> schedule(Map<String, Object> map);
 
+	List<Map<String, Object>> planDTLAjax(Map<String, Object> map);
+
 }
