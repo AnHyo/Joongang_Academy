@@ -261,10 +261,10 @@ if (session.getAttribute("id") != null) {
 					$("#f").val("");
 					$.fn.clsBgngCheck(crc,year,hlf).then(function(){
 						if(clsBgngChecker==1){
-							$("#a").attr("disabled",true);
-							$("#b").attr("disabled",true);
-							$("#c").attr("disabled",true);
-							$("#l").attr("disabled",true);
+							$("#a").attr("disabled",false);
+							$("#b").attr("disabled",false);
+							$("#c").attr("disabled",false);
+							$("#l").attr("disabled",false);
 						}else{
 							$("#a").attr("disabled",false);
 							$("#b").attr("disabled",false);
@@ -307,6 +307,21 @@ if (session.getAttribute("id") != null) {
 		}
 		$("#nav-detail-tab").click(function() {
 			detailPlanGrid.refreshLayout();
+			if(clsBgngChecker==1){
+				$("#initDetail").attr("disabled",true);
+				$("#insDetail").attr("disabled",true);
+				$("#delDetail").attr("disabled",true);
+				$("#d").attr("disabled",true);
+				$("#e").attr("disabled",true);
+				$("#f").attr("disabled",true);
+			}else{
+				$("#initDetail").attr("disabled",false);
+				$("#insDetail").attr("disabled",false);
+				$("#delDetail").attr("disabled",false);	
+				$("#d").attr("disabled",false);
+				$("#e").attr("disabled",false);
+				$("#f").attr("disabled",false);
+			}
 		});
 		//상세강의계획그리드클릭
 		detailPlanGrid.on("click", function(ev) {
@@ -317,10 +332,16 @@ if (session.getAttribute("id") != null) {
 					$("#initDetail").attr("disabled",true);
 					$("#insDetail").attr("disabled",true);
 					$("#delDetail").attr("disabled",true);
+					$("#d").attr("disabled",true);
+					$("#e").attr("disabled",true);
+					$("#f").attr("disabled",true);
 				}else{
 					$("#initDetail").attr("disabled",false);
 					$("#insDetail").attr("disabled",false);
-					$("#delDetail").attr("disabled",false);					
+					$("#delDetail").attr("disabled",false);
+					$("#d").attr("disabled",false);
+					$("#e").attr("disabled",false);
+					$("#f").attr("disabled",false);
 				}
 				$("#dtlno").val(detailPlanGrid.getValue(ev.rowKey,"DTL_NO"));
 				$("#d").val(detailPlanGrid.getValue(ev.rowKey,"LECT_TTL_NM"));

@@ -615,6 +615,8 @@ if (session.getAttribute("id") != null) {
 						alert("문제가 발생했습니다.");
 					});
 				})
+				alert("완료되었습니다");
+				$.fn.search();
 			}
 						
 		});
