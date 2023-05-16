@@ -244,6 +244,7 @@ if (id != null) {
 			}, {
 				header : '출결구분',
 				name : 'ATND_STT',
+				sortable: true,
 				editor : {
 					type : 'select',
 					options: {
