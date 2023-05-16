@@ -267,12 +267,18 @@ if (session.getAttribute("id") != null) {
 							text : '모집',
 							value : '0010'
 						}, {
-							text : '훈련',
+							text : '수강신청',
 							value : '0020'
 						}, {
-							text : '수료',
+							text : '훈련',
 							value : '0030'
-						} ]
+						} , {
+							text : '평가',
+							value : '0040'
+						} , {
+							text : '수료',
+							value : '0050'
+						}  ]
 					}
 				}
 
