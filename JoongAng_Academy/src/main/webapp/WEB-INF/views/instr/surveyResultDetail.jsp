@@ -177,7 +177,7 @@ tbody tr {
 </head>
 <body class="d-flex flex-column h-100 bg-light">
 	<main class="flex-shrink-0">
-		<%@include file="../portalbar/topbar.jsp"%>
+		<%@include file="../portalbar/instrtopbar.jsp"%>
 		<!-- Page Content-->
 		<!-- 설문조사 현황 -->
 		<div id="readySuv">

@@ -551,7 +551,7 @@ if (session.getAttribute("id") != null) {
 				},
 				dataType : "json"
 			}).done(function(data) {
-				alert("saved");
+				alert("저장되었습니다.");
 				$("#a").attr("disabled",true);
 				$("#b").attr("disabled",true);
 				$("#c").attr("disabled",true);
