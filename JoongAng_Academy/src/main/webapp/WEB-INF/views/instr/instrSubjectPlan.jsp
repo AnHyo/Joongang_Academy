@@ -512,7 +512,7 @@ $(document).ready(function(){
 </head>
 <body class="d-flex flex-column h-100 bg-light">
 	<main class="flex-shrink-0">
-		<%@include file="../portalbar/topbar.jsp"%>
+		<%@include file="../portalbar/instrtopbar.jsp"%>
 		<!-- Page Content-->
 		<div id ="readySuv">
 		<div class="my-5">
