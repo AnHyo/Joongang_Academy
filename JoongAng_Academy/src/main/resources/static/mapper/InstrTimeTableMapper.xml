@@ -21,7 +21,8 @@
 	<select id="stuAjax" parameterType= "instrDTO" resultType="Hashmap">
 		SELECT  STDNT_NO, KORN_FLNM, USER_BRDT, GENDER_CD, EML_ADDR, TELNO, REG_CD
 		FROM instrsearchview
-		WHERE CRCLM_YEAR = #{inputYear} AND CRCLM_HALF = #{selectHalf } AND SBJCT_NO =#{sbjctNo }
+		WHERE CRCLM_YEAR = #{cyear} AND CRCLM_HALF = #{chalf } AND SBJCT_NO =#{sbjctNo }
+		AND  CRCLM_CD= #{ccd} 
 		<if test="inputStuName != null and inputStuName !='' ">
 			AND ( STDNT_NO LIKE CONCAT('%',#{inputStuName},'%')
 			OR KORN_FLNM LIKE CONCAT('%',#{inputStuName},'%') )

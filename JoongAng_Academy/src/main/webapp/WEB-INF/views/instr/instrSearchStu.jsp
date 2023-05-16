@@ -149,18 +149,19 @@ if (session.getAttribute("id") != null) {
 				const rowKey = grid.getFocusedCell().rowKey
 				var obj = grid.getRow(rowKey);
 				var sbjctNo = obj.SBJCT_NO;
+				var cyear = obj.CRCLM_YEAR;
+				var chalf = obj.CRCLM_HALF;
+				var ccd = obj.CRCLM_CD;
 				var instrNo = $("#loginID").val();
-				var selectHalf = $('select[name=crclm_half]').val();
-				var inputYear = $("#inputYear").val();
-				
 				
 				$.post({
 					url :"/stuAjax",
 					cache: false,
 					data : JSON.stringify({
 						"sbjctNo" : sbjctNo,
-						"selectHalf" : selectHalf,
-						"inputYear" : inputYear
+						"chalf" : chalf,
+						"ccd" : ccd,
+						"cyear" : cyear
 					}),
 					dataType : "json",
 					contentType : 'application/json'
@@ -185,8 +186,10 @@ if (session.getAttribute("id") != null) {
 						cache: false,
 						data : JSON.stringify({
 							"sbjctNo" : sbjctNo,
-							"selectHalf" : selectHalf,
-							"inputYear" : inputYear,
+							"sbjctNo" : sbjctNo,
+							"chalf" : chalf,
+							"ccd" : ccd,
+							"cyear" : cyear,
 							"inputStuName":inputStuName
 						}),
 						dataType : "json",
