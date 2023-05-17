@@ -32,6 +32,7 @@
 		SELECT USER_NO AS user_no, CRCLM_CD AS crclm_cd, KORN_FLNM as stu_name, TELNO as stu_tel
 			, CONCAT(SUBSTRING(#{year }, 3),SUBSTRING(#{half }, 3),SUBSTRING(CRCLM_CD,3),LPAD(ROW_NUMBER() OVER(PARTITION BY CRCLM_CD ORDER BY CRCLM_CD), 2, '0')) AS stdnt_no
 		FROM APPL_INFO
+		WHERE CRCLM_YEAR = #{year } and CRCLM_HALF = #{half }
 	</select>
 	
 	<update id="updateStdntNo" parameterType="HashMap">
@@ -53,7 +54,7 @@
 		SELECT KORN_FLNM as stu_name, TELNO as stu_tel, STDNT_NO as stu_no, CRCLM_CD AS crclm_cd
 				, CASE WHEN (SELECT USER_ID FROM USER_INFO WHERE STDNT_NO = USER_INFO.USER_ID) != ' ' THEN 'Y' ELSE 'N' END AS ID_YN
 		FROM APPL_INFO
-		WHERE 1=1
+		WHERE CRCLM_YEAR = #{year } and CRCLM_HALF = #{half }
 		<choose>
 			<when test="radioVal == 'setNo'">
 				AND (SELECT USER_ID FROM USER_INFO WHERE STDNT_NO = USER_INFO.USER_ID) != ' '
